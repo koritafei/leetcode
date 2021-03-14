@@ -6,80 +6,93 @@
  * https://leetcode.com/problems/kth-largest-element-in-an-array/description/
  *
  * algorithms
- * Medium (56.12%)
- * Likes:    4266
- * Dislikes: 283
- * Total Accepted:    699.5K
- * Total Submissions: 1.2M
+ * Medium (58.57%)
+ * Likes:    5269
+ * Dislikes: 339
+ * Total Accepted:    847.8K
+ * Total Submissions: 1.4M
  * Testcase Example:  '[3,2,1,5,6,4]\n2'
  *
- * Find the kth largest element in an unsorted array. Note that it is the kth
- * largest element in the sorted order, not the kth distinct element.
+ * Given an integer array nums and an integer k, return the k^th largest
+ * element in the array.
+ *
+ * Note that it is the k^th largest element in the sorted order, not the k^th
+ * distinct element.
+ *
  *
  * Example 1:
- *
- *
- * Input: [3,2,1,5,6,4] and k = 2
+ * Input: nums = [3,2,1,5,6,4], k = 2
  * Output: 5
- *
- *
  * Example 2:
- *
- *
- * Input: [3,2,3,1,2,4,5,5,6] and k = 4
+ * Input: nums = [3,2,3,1,2,4,5,5,6], k = 4
  * Output: 4
  *
- * Note:
- * You may assume k is always valid, 1 ≤ k ≤ array's length.
+ *
+ * Constraints:
+ *
+ *
+ * 1 <= k <= nums.length <= 10^4
+ * -10^4 <= nums[i] <= 10^4
+ *
  *
  */
 
-#include <climits>
 #include <iostream>
 #include <vector>
-
-using namespace std;
 
 // @lc code=start
 class Solution {
 public:
-  int findKthLargest(vector<int>& nums, int k) {
-    int len = nums.size();
-    if (k <= 0 || k > len) {
-      return INT_MIN;
-    }
-    int low = 0, high = len;
-    while (low < high) {
-      int i = low, j = high - 1;
-      int key = nums[low];
-      while (i <= j) {
-        while (i <= j && nums[i] >= key) {
-          i++;
-        }
-        while (i <= j && nums[j] < key) {
-          j--;
-        }
-        if (i < j) {
-          swap(nums[i++], nums[j--]);
-        }
+  int findKthLargest(std::vector<int>& nums, int k) {
+    // print(nums);
+    return findKthLargest(nums, k, 0, nums.size() - 1);
+  }
+
+private:
+  int findKthLargest(std::vector<int>& nums, int k, int left, int right) {
+    int start = left;
+    int end   = right;
+    int key   = nums[left];
+    while (left < right) {
+      while (left < right && nums[right] <= key) {
+        right--;
       }
-      swap(nums[j], nums[low]);
-      if (j == k - 1) {
-        return nums[j];
-      } else if (j > k - 1) {
-        high = j;
-      } else {
-        low = j + 1;
+      if (left < right) {
+        std::swap(nums[left++], nums[right]);
+      }
+
+      while (left < right && nums[left] > key) {
+        left++;
+      }
+      if (left < right) {
+        std::swap(nums[left], nums[right--]);
       }
     }
-    return INT_MIN;
+    nums[left] = key;
+    // print(nums);
+    if (right == (k - 1)) {
+      return nums[right];
+    } else if (right < k) {
+      return findKthLargest(nums, k, left + 1, end);
+    } else {
+      return findKthLargest(nums, k, start, left);
+    }
+    return -1;
+  }
+
+  void print(std::vector<int>& nums) {
+    for (auto item : nums) {
+      std::cout << item << " ";
+    }
+
+    std::cout << std::endl;
   }
 };
 // @lc code=end
 
 int main(int argc, char** argv) {
-  vector<int> nums = {3, 2, 1, 5, 6, 4};
-  int         k    = 2;
-  Solution    solution;
-  cout << solution.findKthLargest(nums, k) << endl;  // 5
+  std::vector<int> nums = {3, 2, 3, 1, 2, 4, 5, 5, 6};
+  int              k    = 1;
+  Solution         solution;
+  std::cout << solution.findKthLargest(nums, k) << std::endl;
 }
