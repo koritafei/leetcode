@@ -6,40 +6,44 @@
  * https://leetcode.com/problems/invert-binary-tree/description/
  *
  * algorithms
- * Easy (67.10%)
- * Likes:    4897
- * Dislikes: 72
- * Total Accepted:    664.7K
- * Total Submissions: 990.3K
+ * Easy (67.67%)
+ * Likes:    5225
+ * Dislikes: 78
+ * Total Accepted:    699.4K
+ * Total Submissions: 1M
  * Testcase Example:  '[4,2,7,1,3,6,9]'
  *
- * Invert a binary tree.
- *
- * Example:
- *
- * Input:
+ * Given the root of a binary tree, invert the tree, and return its root.
  *
  *
- * ⁠    4
- * ⁠  /   \
- * ⁠ 2     7
- * ⁠/ \   / \
- * 1   3 6   9
- *
- * Output:
+ * Example 1:
  *
  *
- * ⁠    4
- * ⁠  /   \
- * ⁠ 7     2
- * ⁠/ \   / \
- * 9   6 3   1
+ * Input: root = [4,2,7,1,3,6,9]
+ * Output: [4,7,2,9,6,3,1]
  *
- * Trivia:
- * This problem was inspired by this original tweet by Max Howell:
  *
- * Google: 90% of our engineers use the software you wrote (Homebrew), but you
- * can’t invert a binary tree on a whiteboard so f*** off.
+ * Example 2:
+ *
+ *
+ * Input: root = [2,1,3]
+ * Output: [2,3,1]
+ *
+ *
+ * Example 3:
+ *
+ *
+ * Input: root = []
+ * Output: []
+ *
+ *
+ *
+ * Constraints:
+ *
+ *
+ * The number of nodes in the tree is in the range [0, 100].
+ * -100 <= Node.val <= 100
+ *
  *
  */
 
@@ -58,14 +62,13 @@
  */
 class Solution {
 public:
-  TreeNode *invertTree(TreeNode *root) {
-    if (!root) {
-      return nullptr;
+  TreeNode* invertTree(TreeNode* root) {
+    if (root == nullptr) {
+      return root;
     }
-
+    swap(root->left, root->right);
     invertTree(root->left);
     invertTree(root->right);
-    swap(root->left, root->right);
 
     return root;
   }

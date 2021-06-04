@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/house-robber/description/
  *
  * algorithms
- * Medium (42.92%)
- * Likes:    6650
- * Dislikes: 187
- * Total Accepted:    687K
- * Total Submissions: 1.6M
+ * Medium (43.34%)
+ * Likes:    7061
+ * Dislikes: 196
+ * Total Accepted:    719.3K
+ * Total Submissions: 1.7M
  * Testcase Example:  '[1,2,3,1]'
  *
  * You are a professional robber planning to rob houses along a street. Each
@@ -53,40 +53,21 @@
  *
  */
 
-// #include <iostream>
-// #include <vector>
+#include <iostream>
+#include <vector>
 
-// using namespace std;
+using namespace std;
 
 // @lc code=start
 class Solution {
 public:
   int rob(vector<int>& nums) {
-    int len = nums.size();
-    if (len == 0) {
-      return 0;
-    }
-
-    if (len == 1) {
-      return nums[0];
-    }
-
-    vector<int> dp(len + 1, 0);
-
-    dp[0] = nums[0];
-    dp[1] = max(nums[0], nums[1]);
-
-    for (int i = 2; i < len; i++) {
-      dp[i] = max(dp[i - 2] + nums[i], dp[i - 1]);
-    }
-
-    return dp[len - 1];
   }
 };
 // @lc code=end
 
-// int main(int argc, char** argv) {
-//   std::vector<int> nums = {1, 2, 3, 1};
-//   Solution         solution;
-//   std::cout << solution.rob(nums) << std::endl;
-// }
+int main(int argc, char** argv) {
+  vector<int> nums = {1, 2, 3, 1};
+  Solution    solution;
+  cout << solution.rob(nums) << endl;
+}

@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/kth-smallest-element-in-a-bst/description/
  *
  * algorithms
- * Medium (62.71%)
- * Likes:    3603
- * Dislikes: 83
- * Total Accepted:    511K
- * Total Submissions: 814.6K
+ * Medium (63.30%)
+ * Likes:    3914
+ * Dislikes: 88
+ * Total Accepted:    540.9K
+ * Total Submissions: 853.8K
  * Testcase Example:  '[3,1,4,null,2]\n1'
  *
  * Given the root of a binary search tree, and an integer k, return the k^th
@@ -62,7 +62,26 @@
 class Solution {
 public:
   int kthSmallest(TreeNode* root, int k) {
-    
+    traverse(root, k);
+    return res;
+  }
+
+private:
+  int  res  = 0;  // 记录结果
+  int  rank = 0;  // 记录排名
+  void traverse(TreeNode* root, int kth) {
+    if (root == nullptr) {
+      return;
+    }
+
+    traverse(root->left, kth);
+    rank++;
+    if (kth == rank) {
+      res = root->val;
+      return;
+    }
+
+    traverse(root->right, kth);
   }
 };
 // @lc code=end

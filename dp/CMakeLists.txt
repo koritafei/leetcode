@@ -1,4 +1,4 @@
-#add_executable(198.house-robber 198.house-robber.cpp)
+add_executable(198.house-robber 198.house-robber.cpp)
 add_executable(121.best-time-to-buy-and-sell-stock 121.best-time-to-buy-and-sell-stock.cpp)
 add_executable(122.best-time-to-buy-and-sell-stock-ii 122.best-time-to-buy-and-sell-stock-ii.cpp)
 add_executable(123.best-time-to-buy-and-sell-stock-iii 123.best-time-to-buy-and-sell-stock-iii.cpp)
