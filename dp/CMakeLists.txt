@@ -9,4 +9,6 @@ add_executable(1143.longest-common-subsequence 1143.longest-common-subsequence.c
 add_executable(583.delete-operation-for-two-strings 583.delete-operation-for-two-strings.cpp)
 add_executable(712.minimum-ascii-delete-sum-for-two-strings 712.minimum-ascii-delete-sum-for-two-strings.cpp)
 
+add_executable(416.partition-equal-subset-sum 416.partition-equal-subset-sum.cpp)
+
 
