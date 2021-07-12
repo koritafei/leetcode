@@ -10,5 +10,6 @@ add_executable(583.delete-operation-for-two-strings 583.delete-operation-for-two
 add_executable(712.minimum-ascii-delete-sum-for-two-strings 712.minimum-ascii-delete-sum-for-two-strings.cpp)
 
 add_executable(416.partition-equal-subset-sum 416.partition-equal-subset-sum.cpp)
+add_executable(518.coin-change-2 518.coin-change-2.cpp)
 
 
