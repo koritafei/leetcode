@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/maximum-binary-tree/description/
  *
  * algorithms
- * Medium (81.50%)
- * Likes:    2522
- * Dislikes: 272
- * Total Accepted:    165.3K
- * Total Submissions: 202.8K
+ * Medium (82.27%)
+ * Likes:    2861
+ * Dislikes: 280
+ * Total Accepted:    178.7K
+ * Total Submissions: 217.2K
  * Testcase Example:  '[3,2,1,6,0,5]'
  *
  * You are given an integer array nums with no duplicates. A maximum binary
@@ -66,24 +66,31 @@
  *
  */
 
+#include <limits.h>
+
+#include <vector>
+
+using namespace std;
+struct TreeNode {
+  int       val;
+  TreeNode* left;
+  TreeNode* right;
+  TreeNode() : val(0), left(nullptr), right(nullptr) {
+  }
+  TreeNode(int x) : val(x), left(nullptr), right(nullptr) {
+  }
+  TreeNode(int x, TreeNode* left, TreeNode* right)
+      : val(x), left(left), right(right) {
+  }
+};
+
 // @lc code=start
-/**
- * Definition for a binary tree node.
- * struct TreeNode {
- *     int val;
- *     TreeNode *left;
- *     TreeNode *right;
- *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
- *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
- *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left),
- * right(right) {}
- * };
- */
+
 class Solution {
 public:
   TreeNode* constructMaximumBinaryTree(vector<int>& nums) {
     int len = nums.size();
-    if (len < 1) {
+    if (len < 0) {
       return nullptr;
     }
 
@@ -91,19 +98,24 @@ public:
   }
 
 private:
-  TreeNode* constructMaximumBinaryTree(vector<int>& nums, int start, int end) {
-    if (start >= end) return nullptr;
-    int index = start, max = 0;
-    for (int i = start; i < end; i++) {
-      if (max < nums[i]) {
-        max   = nums[i];
-        index = i;
+  TreeNode* constructMaximumBinaryTree(vector<int>& nums, int lo, int hi) {
+    if (lo >= hi) {
+      return nullptr;
+    }
+
+    int index  = 0;
+    int maxVal = INT_MIN;
+
+    for (int i = lo; i < hi; i++) {
+      if (maxVal <= nums[i]) {
+        index  = i;
+        maxVal = nums[i];
       }
     }
 
-    TreeNode* root = new TreeNode(max);
-    root->left     = constructMaximumBinaryTree(nums, start, index);
-    root->right    = constructMaximumBinaryTree(nums, index + 1, end);
+    TreeNode* root = new TreeNode(maxVal);
+    root->left     = constructMaximumBinaryTree(nums, lo, index);
+    root->right    = constructMaximumBinaryTree(nums, index + 1, hi);
 
     return root;
   }
