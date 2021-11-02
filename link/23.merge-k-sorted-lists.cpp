@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/merge-k-sorted-lists/description/
  *
  * algorithms
- * Hard (42.79%)
- * Likes:    6725
- * Dislikes: 349
- * Total Accepted:    839.9K
- * Total Submissions: 2M
+ * Hard (44.98%)
+ * Likes:    9096
+ * Dislikes: 393
+ * Total Accepted:    1M
+ * Total Submissions: 2.3M
  * Testcase Example:  '[[1,4,5],[1,3,4],[2,6]]'
  *
  * You are given an array of k linked-lists lists, each linked-list is sorted
@@ -62,6 +62,19 @@
  *
  */
 
+#include <queue>
+#include <vector>
+struct ListNode {
+  int       val;
+  ListNode* next;
+  ListNode() : val(0), next(nullptr) {
+  }
+  ListNode(int x) : val(x), next(nullptr) {
+  }
+  ListNode(int x, ListNode* next) : val(x), next(next) {
+  }
+};
+
 // @lc code=start
 /**
  * Definition for singly-linked list.
@@ -75,64 +88,39 @@
  */
 class Solution {
 public:
-  ListNode *mergeKLists(vector<ListNode *> &lists) {
-    if (lists.empty()) {
-      return nullptr;
-    }
-
-    while (lists.size() >= 2) {
-      lists.push_back(mergeList(lists[0], lists[1]));
-      lists.erase(lists.begin());
-      lists.erase(lists.begin());
-    }
-
-    return lists.front();
-  }
-
-private:
-  ListNode *mergeList(ListNode *l1, ListNode *l2) {
-    if (!l1 && !l2) {
-      return nullptr;
-    }
-
-    ListNode *dummy = new ListNode(0);
-    ListNode *tail  = dummy;
-    while (l1 && l2) {
-      if (l1->val <= l2->val) {
-        ListNode *t = l1;
-        l1          = l1->next;
-        t->next     = tail->next;
-        tail->next  = t;
-        tail        = t;
-      } else {
-        ListNode *t = l2;
-        l2          = l2->next;
-        t->next     = tail->next;
-        tail->next  = t;
-        tail        = t;
+  ListNode* mergeKLists(std::vector<ListNode*>& lists) {
+    // 构建一个小根堆
+    std::priority_queue<ListNode*, std::vector<ListNode*>, greater> pq;
+    for (auto head : lists) {
+      if (head != nullptr) {
+        pq.push(head);
       }
     }
 
-    while (l1) {
-      ListNode *t = l1;
-      l1          = l1->next;
-      t->next     = tail->next;
-      tail->next  = t;
-      tail        = t;
+    ListNode* dummy = new ListNode();
+    ListNode* p     = dummy;
+
+    while (pq.size()) {
+      ListNode* node = pq.top();
+      pq.pop();
+      if (node->next != nullptr) {
+        pq.push(node->next);
+      }
+
+      p->next = node;
+      p       = node;
     }
 
-    while (l2) {
-      ListNode *t = l2;
-      l2          = l2->next;
-      t->next     = tail->next;
-      tail->next  = t;
-      tail        = t;
-    }
-
-    l1 = dummy->next;
-    delete (dummy);
-
-    return l1;
+    p = dummy->next;
+    delete dummy;
+    return p;
   }
+
+private:
+  struct greater {
+    bool operator()(const ListNode* t1, const ListNode* t2) {
+      return t1->val >= t2->val;
+    }
+  };
 };
 // @lc code=end

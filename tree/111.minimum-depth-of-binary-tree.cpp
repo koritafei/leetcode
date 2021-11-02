@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/minimum-depth-of-binary-tree/description/
  *
  * algorithms
- * Easy (39.59%)
- * Likes:    2206
- * Dislikes: 800
- * Total Accepted:    530.2K
- * Total Submissions: 1.3M
+ * Easy (41.31%)
+ * Likes:    3204
+ * Dislikes: 885
+ * Total Accepted:    645.3K
+ * Total Submissions: 1.6M
  * Testcase Example:  '[3,9,20,null,null,15,7]'
  *
  * Given a binary tree, find its minimum depth.
@@ -45,12 +45,7 @@
  *
  */
 
-#include <iostream>
-#include <list>
-#include <vector>
-
-using namespace std;
-
+#include <queue>
 struct TreeNode {
   int       val;
   TreeNode *left;
@@ -60,9 +55,7 @@ struct TreeNode {
   TreeNode(int x) : val(x), left(nullptr), right(nullptr) {
   }
   TreeNode(int x, TreeNode *left, TreeNode *right)
-      : val(x),
-        left(left),
-        right(right) {
+      : val(x), left(left), right(right) {
   }
 };
 
@@ -82,38 +75,32 @@ struct TreeNode {
 class Solution {
 public:
   int minDepth(TreeNode *root) {
-    if (root == nullptr) {
+    if (!root) {
       return 0;
     }
+    std::deque<TreeNode *> que;
+    que.push_back(root);
+    int depth = 1;
+    while (que.size()) {
+      int size = que.size();
+      for (int i = 0; i < size; ++i) {
+        TreeNode *curr = que.front();
+        que.pop_front();
+        if (curr->left == nullptr && curr->right == nullptr) {
+          return depth;
+        }
+        if (curr->left) {
+          que.push_back(curr->left);
+        }
 
-    if (root->left == nullptr && root->right == nullptr) {
-      return 1;
+        if (curr->right) {
+          que.push_back(curr->right);
+        }
+      }
+      depth++;
     }
 
-    if (root->left != nullptr && root->right != nullptr) {
-      return min(minDepth(root->left) + 1, minDepth(root->right) + 1);
-    }
-
-    if (root->right != nullptr && root->left == nullptr) {
-      return minDepth(root->right) + 1;
-    }
-
-    if (root->right == nullptr && root->left != nullptr) {
-      return minDepth(root->left) + 1;
-    }
     return 0;
   }
 };
 // @lc code=end
-
-int main(int argc, char **argv) {
-  Solution  solution;
-  TreeNode *root  = new TreeNode(1);
-  TreeNode *left  = new TreeNode(3);
-  TreeNode *right = new TreeNode(2);
-  root->right     = right;
-  right->left     = left;
-
-  int res = solution.minDepth(root);
-  std::cout << res << std::endl;
-}

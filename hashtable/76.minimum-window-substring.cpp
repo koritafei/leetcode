@@ -6,78 +6,109 @@
  * https://leetcode.com/problems/minimum-window-substring/description/
  *
  * algorithms
- * Hard (36.05%)
- * Likes:    6188
- * Dislikes: 419
- * Total Accepted:    507.2K
- * Total Submissions: 1.4M
+ * Hard (37.87%)
+ * Likes:    8452
+ * Dislikes: 497
+ * Total Accepted:    638.6K
+ * Total Submissions: 1.7M
  * Testcase Example:  '"ADOBECODEBANC"\n"ABC"'
  *
- * Given two strings s and t, return the minimum window in s which will contain
- * all the characters in t. If there is no such window in s that covers all
- * characters in t, return the empty string "".
+ * Given two strings s and t of lengths m and n respectively, return the
+ * minimum window substring of s such that every character in t (including
+ * duplicates) is included in the window. If there is no such substring, return
+ * the empty string "".
  *
- * Note that If there is such a window, it is guaranteed that there will always
- * be only one unique minimum window in s.
+ * The testcases will be generated such that the answer is unique.
+ *
+ * A substring is a contiguous sequence of characters within the string.
  *
  *
  * Example 1:
+ *
+ *
  * Input: s = "ADOBECODEBANC", t = "ABC"
  * Output: "BANC"
+ * Explanation: The minimum window substring "BANC" includes 'A', 'B', and 'C'
+ * from string t.
+ *
+ *
  * Example 2:
+ *
+ *
  * Input: s = "a", t = "a"
  * Output: "a"
+ * Explanation: The entire string s is the minimum window.
+ *
+ *
+ * Example 3:
+ *
+ *
+ * Input: s = "a", t = "aa"
+ * Output: ""
+ * Explanation: Both 'a's from t must be included in the window.
+ * Since the largest window of s only has one 'a', return empty string.
+ *
  *
  *
  * Constraints:
  *
  *
- * 1 <= s.length, t.length <= 10^5
- * s and t consist of English letters.
+ * m == s.length
+ * n == t.length
+ * 1 <= m, n <= 10^5
+ * s and t consist of uppercase and lowercase English letters.
  *
  *
  *
- * Follow up: Could you find an algorithm that runs in O(n) time?
+ * Follow up: Could you find an algorithm that runs in O(m + n) time?
  */
 
+#include <climits>
 #include <iostream>
-#include <vector>
+#include <string>
+#include <unordered_map>
 
 // @lc code=start
 class Solution {
 public:
   std::string minWindow(std::string s, std::string t) {
-    int len1 = s.length();
-    int len2 = t.length();
-    if (len1 < len2 || len1 < 0 || len2 < 0) {
-      return "";
-    }
-    std::vector<int> v(128, 0);
-    for (char c : t) {
-      v[c]++;
+    std::unordered_map<char, int> need, windows;
+    for (auto c : t) {
+      need[c]++;
     }
 
-    int begin = 0;
-    int end   = 0;
-    int head  = 0;
-    int count = len2, len = INT_MAX;
-    while (end < len1) {
-      if (v[s[end++]]-- > 0) {
-        --count;
-      }
+    int left = 0, right = 0;
+    int valid = 0;
+    int start = 0;
+    int len   = INT_MAX;
+    while (right < s.size()) {
+      char c = s[right++];
+      if (need.count(c)) {
+        windows[c]++;
 
-      while (!count) {
-        if (end - begin < len) {
-          len = end - (head = begin);
-        }
-
-        if (v[s[begin++]]++ == 0) {
-          ++count;
+        if (windows[c] == need[c]) {
+          valid++;
         }
       }
+
+      // 是否进行收缩
+      while (valid == need.size()) {
+        // 更新最小长度
+        if (right - left < len) {
+          start = left;
+          len   = right - left;
+        }
+        char d = s[left++];
+        if (windows.count(d)) {
+          if (windows[d] == need[d]) {
+            valid--;
+          }
+          windows[d]--;
+        }
+      }
     }
 
-    return len == INT_MAX ? "" : s.substr(head, len);
+    return len == INT_MAX ? "" : s.substr(start, len);
   }
 };
 // @lc code=end

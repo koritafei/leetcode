@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/merge-two-sorted-lists/description/
  *
  * algorithms
- * Easy (56.17%)
- * Likes:    6282
- * Dislikes: 737
- * Total Accepted:    1.3M
- * Total Submissions: 2.4M
+ * Easy (58.27%)
+ * Likes:    8930
+ * Dislikes: 889
+ * Total Accepted:    1.7M
+ * Total Submissions: 2.9M
  * Testcase Example:  '[1,2,4]\n[1,3,4]'
  *
  * Merge two sorted linked lists and return it as a sorted list. The list
@@ -49,6 +49,17 @@
  *
  */
 
+struct ListNode {
+  int       val;
+  ListNode* next;
+  ListNode() : val(0), next(nullptr) {
+  }
+  ListNode(int x) : val(x), next(nullptr) {
+  }
+  ListNode(int x, ListNode* next) : val(x), next(next) {
+  }
+};
+
 // @lc code=start
 /**
  * Definition for singly-linked list.
@@ -63,48 +74,30 @@
 class Solution {
 public:
   ListNode* mergeTwoLists(ListNode* l1, ListNode* l2) {
-    if (!l1 && !l2) {
-      return l1;
-    }
-
-    ListNode* dummy = new ListNode(0);
-    ListNode* tail  = dummy;
-
+    ListNode* dummy = new ListNode();  // 虚拟头结点
+    ListNode* p     = dummy;
     while (l1 && l2) {
       if (l1->val <= l2->val) {
-        ListNode* t = l1;
-        l1          = l1->next;
-        t->next     = tail->next;
-        tail->next  = t;
-        tail        = t;
+        p->next = l1;
+        l1      = l1->next;
+        p       = p->next;
       } else {
-        ListNode* t = l2;
-        l2          = l2->next;
-        t->next     = tail->next;
-        tail->next  = t;
-        tail        = t;
+        p->next = l2;
+        l2      = l2->next;
+        p       = p->next;
       }
     }
 
-    while (l1) {
-      ListNode* t = l1;
-      l1          = l1->next;
-      t->next     = tail->next;
-      tail->next  = t;
-      tail        = t;
+    if (l1) {
+      p->next = l1;
     }
-
-    while (l2) {
-      ListNode* t = l2;
-      l2          = l2->next;
-      t->next     = tail->next;
-      tail->next  = t;
-      tail        = t;
+    if (l2) {
+      p->next = l2;
     }
+    p = dummy->next;
+    delete dummy;
 
-    l1 = dummy->next;
-    delete (dummy);
-    return l1;
+    return p;
   }
 };
 // @lc code=end

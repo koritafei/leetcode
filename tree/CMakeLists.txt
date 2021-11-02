@@ -2,6 +2,6 @@ add_executable(94.binary-tree-inorder-traversal 94.binary-tree-inorder-traversal
 #add_executable(96.unique-binary-search-trees 96.unique-binary-search-trees.cpp)
 add_executable(102.binary-tree-level-order-traversal 102.binary-tree-level-order-traversal.cpp)
 add_executable(107.binary-tree-level-order-traversal-ii 107.binary-tree-level-order-traversal-ii.cpp)
-add_executable(111.minimum-depth-of-binary-tree 111.minimum-depth-of-binary-tree.cpp)
+#add_executable(111.minimum-depth-of-binary-tree 111.minimum-depth-of-binary-tree.cpp)
 #add_executable(101.symmetric-tree 101.symmetric-tree.cpp)
 add_executable(652.find-duplicate-subtrees 652.find-duplicate-subtrees.cpp)
