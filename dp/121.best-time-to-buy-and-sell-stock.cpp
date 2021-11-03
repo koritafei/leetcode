@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/best-time-to-buy-and-sell-stock/description/
  *
  * algorithms
- * Easy (51.77%)
- * Likes:    8536
- * Dislikes: 368
- * Total Accepted:    1.3M
- * Total Submissions: 2.5M
+ * Easy (52.94%)
+ * Likes:    11744
+ * Dislikes: 442
+ * Total Accepted:    1.6M
+ * Total Submissions: 3.1M
  * Testcase Example:  '[7,1,5,3,6,4]'
  *
  * You are given an array prices where prices[i] is the price of a given stock
@@ -53,38 +53,29 @@
  *
  */
 
-#include <iostream>
-#include <vector>
+#include <stdio.h>
 
-using namespace std;
+#include <vector>
 
 // @lc code=start
 class Solution {
 public:
-  int maxProfit(vector<int>& prices) {
-    int len = prices.size();
-    if (len < 2) {
-      return 0;
+  int maxProfit(std::vector<int>& prices) {
+    int                           size = prices.size();
+    std::vector<std::vector<int>> dp(size + 1, std::vector<int>(2, 0));
+
+    for (int i = 0; i < size; ++i) {
+      if (-1 == i - 1) {
+        dp[i][0] = 0;
+        dp[i][1] = -prices[i];
+
+        continue;
+      }
+      dp[i][0] = std::max(dp[i - 1][0], dp[i - 1][1] + prices[i]);
+      dp[i][1] = std::max(dp[i - 1][1], -prices[i]);
     }
 
-    vector<vector<int> > dp(len, std::vector<int>(2, 0));
-
-    // base case
-    dp[0][0] = 0;
-    dp[0][1] = -prices[0];
-
-    for (int i = 1; i < len; i++) {
-      dp[i][0] = max(dp[i - 1][0], dp[i - 1][1] + prices[i]);
-      dp[i][1] = max(dp[i - 1][1], -prices[i]);
-    }
-
-    return dp[len - 1][0];
+    return dp[size - 1][0];
   }
 };
 // @lc code=end
-
-int main(int argc, char** argv) {
-  vector<int> prices = {7, 1, 5, 3, 6, 4};
-  Solution    solution;
-  cout << solution.maxProfit(prices) << std::endl;
-}

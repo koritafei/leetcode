@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/best-time-to-buy-and-sell-stock-with-transaction-fee/description/
  *
  * algorithms
- * Medium (58.26%)
- * Likes:    2560
- * Dislikes: 74
- * Total Accepted:    110.4K
- * Total Submissions: 189.5K
+ * Medium (60.08%)
+ * Likes:    3216
+ * Dislikes: 86
+ * Total Accepted:    133.1K
+ * Total Submissions: 221.6K
  * Testcase Example:  '[1,3,2,8,4,9]\n2'
  *
  * You are given an array prices where prices[i] is the price of a given stock
@@ -55,35 +55,27 @@
  *
  */
 
-#include <iostream>
 #include <vector>
-#include <climits>
-
-using namespace std;
 
 // @lc code=start
 class Solution {
 public:
-  int maxProfit(vector<int>& prices, int fee) {
-    int len = prices.size();
-    if (len < 2) {
-      return 0;
+  int maxProfit(std::vector<int>& prices, int fee) {
+    int                           size = prices.size();
+    std::vector<std::vector<int>> dp(size + 1, std::vector<int>(2, 0));
+
+    for (int i = 0; i < size; i++) {
+      if (-1 == i - 1) {
+        dp[i][0] = 0;
+        dp[i][1] = -prices[i] - fee;
+        continue;
+      }
+
+      dp[i][0] = std::max(dp[i - 1][0], dp[i - 1][1] + prices[i]);
+      dp[i][1] = std::max(dp[i - 1][1], dp[i - 1][0] - prices[i] - fee);
     }
 
-    int d_i0 = 0, d_i1 = INT_MIN;
-    for (int i = 0; i < len; i++) {
-      d_i0 = max(d_i0, d_i1 + prices[i]);
-      d_i1 = max(d_i1, d_i0 - prices[i] - fee);
-    }
-
-    return d_i0;
+    return dp[size - 1][0];
   }
 };
 // @lc code=end
-
-int main(int argc, char** argv) {
-  vector<int> prices = {1, 3, 2, 8, 4, 9};
-  int         fee    = 2;
-  Solution    solution;
-  cout << solution.maxProfit(prices, fee) << endl;
-}

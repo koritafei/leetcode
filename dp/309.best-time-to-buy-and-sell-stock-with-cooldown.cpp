@@ -1,14 +1,3 @@
-/**
- * @ Description  :
- * @ Version      : 1.0
- * @ Author       : koritafei(koritafei@gmail.com)
- * @ Date         : 2021-06-10 14:44:33
- * @ LastEditors  : koritafei(koritafei@gmail.com)
- * @ LastEditTime : 2021-06-10 14:47:00
- * @ FilePath     :
- * /leetcode/dp/309.best-time-to-buy-and-sell-stock-with-cooldown.cpp
- * @ Copyright (C) 2021 koritafei(koritafei@gmail.com). All rights reserved.
- * */
 /*
  * @lc app=leetcode id=309 lang=cpp
  *
@@ -17,11 +6,11 @@
  * https://leetcode.com/problems/best-time-to-buy-and-sell-stock-with-cooldown/description/
  *
  * algorithms
- * Medium (48.58%)
- * Likes:    3660
- * Dislikes: 117
- * Total Accepted:    194.1K
- * Total Submissions: 399.5K
+ * Medium (50.68%)
+ * Likes:    4800
+ * Dislikes: 161
+ * Total Accepted:    234.6K
+ * Total Submissions: 462.9K
  * Testcase Example:  '[1,2,3,0,2]'
  *
  * You are given an array prices where prices[i] is the price of a given stock
@@ -65,38 +54,34 @@
  *
  */
 
-#include <climits>
-#include <iostream>
 #include <vector>
-
-using namespace std;
 
 // @lc code=start
 class Solution {
 public:
-  int maxProfit(vector<int>& prices) {
-    int len = prices.size();
-    if (len < 2) {
-      return 0;
+  int maxProfit(std::vector<int>& prices) {
+    int                           size = prices.size();
+    std::vector<std::vector<int>> dp(size + 1, std::vector<int>(2, 0));
+
+    for (int i = 0; i < size; i++) {
+      if (-1 == i - 1) {
+        dp[i][0] = 0;
+        dp[i][1] = -prices[i];
+
+        continue;
+      }
+
+      if (0 == i - 1) {
+        dp[i][0] = std::max(dp[i - 1][0], dp[i - 1][1] + prices[i]);
+        dp[i][1] = std::max(-prices[0], -prices[i]);
+        continue;
+      }
+
+      dp[i][0] = std::max(dp[i - 1][0], dp[i - 1][1] + prices[i]);
+      dp[i][1] = std::max(dp[i - 1][1], dp[i - 2][0] - prices[i]);
     }
 
-    int d_i0 = 0, d_i1 = INT_MIN;
-    int pre = 0;
-
-    for (int i = 0; i < len; i++) {
-      int tmp = d_i0;
-      d_i0    = max(d_i0, d_i1 + prices[i]);
-      d_i1    = max(d_i1, pre - prices[i]);
-      pre     = tmp;
-    }
-
-    return d_i0;
+    return dp[size - 1][0];
   }
 };
 // @lc code=end
-
-int main(int argc, char** argv) {
-  vector<int> prices = {1, 2, 3, 0, 2};
-  Solution    solution;
-  cout << solution.maxProfit(prices) << endl;
-}
