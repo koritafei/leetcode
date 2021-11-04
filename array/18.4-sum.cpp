@@ -6,32 +6,44 @@
  * https://leetcode.com/problems/4sum/description/
  *
  * algorithms
- * Medium (34.64%)
- * Likes:    3046
- * Dislikes: 403
- * Total Accepted:    396.9K
- * Total Submissions: 1.1M
+ * Medium (36.69%)
+ * Likes:    4737
+ * Dislikes: 562
+ * Total Accepted:    500.3K
+ * Total Submissions: 1.4M
  * Testcase Example:  '[1,0,-1,0,-2,2]\n0'
  *
- * Given an array nums of n integers and an integer target, are there elements
- * a, b, c, and d in nums such that a + b + c + d = target? Find all unique
- * quadruplets in the array which gives the sum of target.
+ * Given an array nums of n integers, return an array of all the unique
+ * quadruplets [nums[a], nums[b], nums[c], nums[d]] such that:
  *
- * Notice that the solution set must not contain duplicate quadruplets.
+ *
+ * 0 <= a, b, c, d < n
+ * a, b, c, and d are distinct.
+ * nums[a] + nums[b] + nums[c] + nums[d] == target
+ *
+ *
+ * You may return the answer in any order.
  *
  *
  * Example 1:
+ *
+ *
  * Input: nums = [1,0,-1,0,-2,2], target = 0
  * Output: [[-2,-1,1,2],[-2,0,0,2],[-1,0,0,1]]
+ *
+ *
  * Example 2:
- * Input: nums = [], target = 0
- * Output: []
+ *
+ *
+ * Input: nums = [2,2,2,2,2], target = 8
+ * Output: [[2,2,2,2]]
+ *
  *
  *
  * Constraints:
  *
  *
- * 0 <= nums.length <= 200
+ * 1 <= nums.length <= 200
  * -10^9 <= nums[i] <= 10^9
  * -10^9 <= target <= 10^9
  *
@@ -39,80 +51,66 @@
  */
 
 #include <algorithm>
-#include <iostream>
 #include <vector>
-
-using namespace std;
 
 // @lc code=start
 class Solution {
 public:
-  vector<vector<int>> fourSum(vector<int>& nums, int target) {
-    vector<vector<int>> result;
-    int                 len = nums.size();
-    if (len < 4) {
-      return result;
-    }
+  std::vector<std::vector<int>> fourSum(std::vector<int>& nums, int target) {
+    std::sort(nums.begin(), nums.end());
+    std::vector<std::vector<int>> res;
 
-    sort(nums.begin(), nums.end());
+    fourSum(nums, res, target);
+    return res;
+  }
 
-    for (int i = 0; i < len - 3; i++) {
-      int targeter = target - nums[i];
-
-      for (int j = i + 1; j < len - 2; j++) {
-        int tmp   = targeter - nums[j];
-        int left  = j + 1;
-        int right = len - 1;
-
+private:
+  void fourSum(std::vector<int>&              nums,
+               std::vector<std::vector<int>>& res,
+               int                            target) {
+    std::sort(nums.begin(), nums.end());
+    for (int i = 0; i < nums.size() - 1; i++) {
+      int t = target - nums[i];
+      for (int j = i + 1; j < nums.size(); j++) {
+        int a    = t - nums[j];
+        int left = j + 1, right = nums.size() - 1;
         while (left < right) {
           int sum = nums[left] + nums[right];
-          if (sum == tmp) {
-            vector<int> t{nums[i], nums[j], nums[left], nums[right]};
-            result.push_back(t);
-            while (left < len && nums[left] == t[2]) {
+          int t1 = nums[left], t2 = nums[right];
+          if (sum == a) {
+            std::vector<int> tmp;
+            tmp.push_back(nums[j]);
+            tmp.push_back(nums[i]);
+            tmp.push_back(nums[left]);
+            tmp.push_back(nums[right]);
+            res.push_back(tmp);
+
+            while (left < right && nums[left] == t1) {
               left++;
             }
-            while (right > 0 && nums[right] == t[3]) {
+
+            while (left < right && t2 == nums[right]) {
               right--;
             }
-          } else if (sum > tmp) {
-            right--;
-            while (right > 0 && nums[right] == nums[right + 1]) {
-              right--;
+          } else if (sum < a) {
+            while (left < right && t1 == nums[left]) {
+              left++;
             }
           } else {
-            left++;
-            while (left < len && nums[left] == nums[left - 1]) {
-              left++;
+            while (left < right && nums[right] == t2) {
+              right--;
             }
           }
         }
 
-        while (j < len - 2 && nums[j] == nums[j + 1]) {
+        while (j + 1 < nums.size() - 1 && nums[j] == nums[j + 1]) {
           j++;
         }
       }
-
-      while (i < len - 3 && nums[i] == nums[i + 1]) {
+      while (i + 1 < nums.size() - 2 && nums[i] == nums[i + 1]) {
         i++;
       }
     }
-
-    return result;
   }
 };
-// @lc code=ends
-
-int main(int argc, char** argv) {
-  std::vector<int> in = {0, 0, 0, 0};
-  Solution         solution;
-  int              target = 0;
-  auto             res    = solution.fourSum(in, target);
-  for (auto item : res) {
-    for (auto i : item) {
-      std::cout << i << " ";
-    }
-    std::cout << std::endl;
-  }
-  std::cout << std::endl;
-}
+// @lc code=end

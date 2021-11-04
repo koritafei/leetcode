@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/two-sum/description/
  *
  * algorithms
- * Easy (46.21%)
- * Likes:    19717
- * Dislikes: 692
- * Total Accepted:    4M
- * Total Submissions: 8.5M
+ * Easy (47.81%)
+ * Likes:    25967
+ * Dislikes: 845
+ * Total Accepted:    5.3M
+ * Total Submissions: 11M
  * Testcase Example:  '[2,7,11,15]\n9'
  *
  * Given an array of integers nums and an integer target, return indices of the
@@ -48,55 +48,38 @@
  * Constraints:
  *
  *
- * 2 <= nums.length <= 10^3
+ * 2 <= nums.length <= 10^4
  * -10^9 <= nums[i] <= 10^9
  * -10^9 <= target <= 10^9
  * Only one valid answer exists.
  *
  *
+ *
+ * Follow-up: Can you come up with an algorithm that is less than O(n^2) time
+ * complexity?
  */
 
-#include <iostream>
-#include <map>
+#include <unordered_map>
 #include <vector>
-
-using namespace std;
 
 // @lc code=start
 class Solution {
 public:
-  vector<int> twoSum(vector<int>& nums, int target) {
-    int         len = nums.size();
-    vector<int> res;
-    if (len < 2) {
-      return res;
-    }
+  std::vector<int> twoSum(std::vector<int>& nums, int target) {
+    std::vector<int>             res;
+    std::unordered_map<int, int> map;
 
-    std::map<int, int> m;
-
-    for (int i = 0; i < len; i++) {
-      int sub = target - nums[i];
-      if (m.find(sub) != m.end()) {
-        res.push_back(m[sub]);
+    for (int i = 0; i < nums.size(); i++) {
+      if (map.count(target - nums[i])) {
         res.push_back(i);
+        res.push_back(map[target - nums[i]]);
         return res;
-      } else {
-        m[nums[i]] = i;
       }
+
+      map[nums[i]] = i;
     }
 
     return res;
   }
 };
 // @lc code=end
-
-int main(int argc, char** argv) {
-  Solution    solution;
-  vector<int> in     = {2, 7, 11, 15};
-  int         target = 9;
-  auto        res    = solution.twoSum(in, target);
-  for (auto item : res) {
-    std::cout << item << " ";
-  }
-  std::cout << std::endl;
-}

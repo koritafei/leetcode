@@ -6,16 +6,16 @@
  * https://leetcode.com/problems/3sum/description/
  *
  * algorithms
- * Medium (27.78%)
- * Likes:    9734
- * Dislikes: 999
- * Total Accepted:    1.2M
- * Total Submissions: 4.4M
+ * Medium (29.85%)
+ * Likes:    14082
+ * Dislikes: 1359
+ * Total Accepted:    1.6M
+ * Total Submissions: 5.3M
  * Testcase Example:  '[-1,0,1,2,-1,-4]'
  *
- * Given an array nums of n integers, are there elements a, b, c in nums such
- * that a + b + c = 0? Find all unique triplets in the array which gives the
- * sum of zero.
+ * Given an integer array nums, return all the triplets [nums[i], nums[j],
+ * nums[k]] such that i != j, i != k, and j != k, and nums[i] + nums[j] +
+ * nums[k] == 0.
  *
  * Notice that the solution set must not contain duplicate triplets.
  *
@@ -41,67 +41,56 @@
  */
 
 #include <algorithm>
-#include <iostream>
 #include <vector>
-
-using namespace std;
 
 // @lc code=start
 class Solution {
 public:
-  vector<vector<int>> threeSum(vector<int>& nums) {
-    vector<vector<int>> result;
-    int                 len = nums.size();
-    if (len < 3) {
-      return result;
-    }
+  std::vector<std::vector<int>> threeSum(std::vector<int> &nums) {
+    std::vector<std::vector<int>> res;
+    threeSum(nums, res, 0);
+    return res;
+  }
 
-    sort(nums.begin(), nums.end());
-
-    for (int i = 0; i < len; i++) {
-      int target = -nums[i];
-      int left   = i + 1;
-      int right  = len - 1;
+private:
+  void threeSum(std::vector<int> &             nums,
+                std::vector<std::vector<int>> &res,
+                int                            target) {
+    std::sort(nums.begin(), nums.end());
+    for (int i = 0; i < nums.size(); i++) {
+      int left = i + 1, right = nums.size() - 1;
+      int t = target - nums[i];
       while (left < right) {
         int sum = nums[left] + nums[right];
+        int t1 = nums[left], t2 = nums[right];
+        if (sum == t) {
+          std::vector<int> tmp;
+          tmp.push_back(nums[i]);
+          tmp.push_back(nums[left]);
+          tmp.push_back(nums[right]);
+          res.push_back(tmp);
 
-        if (sum == target) {
-          vector<int> t{nums[i], nums[left], nums[right]};
-          result.push_back(t);
-
-          while (left < right && nums[left] == t[1]) {
+          while (left < right && nums[left] == t1) {
             left++;
           }
 
-          while (left < right && nums[right] == t[2]) {
+          while (left < right && t2 == nums[right]) {
             right--;
           }
-        } else if (sum < target) {
-          left++;
+        } else if (sum < t) {
+          while (left < right && t1 == nums[left]) {
+            left++;
+          }
         } else {
-          right--;
+          while (left < right && nums[right] == t2) {
+            right--;
+          }
         }
       }
-
-      while (i < len - 1 && nums[i] == nums[i + 1]) {
+      while (i + 1 < nums.size() - 1 && nums[i] == nums[i + 1]) {
         i++;
       }
     }
-
-    return result;
   }
 };
 // @lc code=end
-
-int main(int argc, char** argv) {
-  std::vector<int> in = {-1, 0, 1, 2, -1, -4};
-  Solution         solution;
-  auto             res = solution.threeSum(in);
-  for (auto item : res) {
-    for (auto i : item) {
-      std::cout << i << " ";
-    }
-    std::cout << std::endl;
-  }
-  std::cout << std::endl;
-}
