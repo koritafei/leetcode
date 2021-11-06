@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/lru-cache/description/
  *
  * algorithms
- * Medium (36.64%)
- * Likes:    8658
- * Dislikes: 354
- * Total Accepted:    775.3K
- * Total Submissions: 2.1M
+ * Medium (38.35%)
+ * Likes:    10715
+ * Dislikes: 427
+ * Total Accepted:    899.2K
+ * Total Submissions: 2.3M
  * Testcase Example:
  '["LRUCache","put","put","get","put","get","put","get","get","get"]\n' +
   '[[2],[1,1],[2,2],[1],[3,3],[2],[4,4],[1],[3],[4]]'
@@ -31,8 +31,7 @@
  * key.
  *
  *
- * Follow up:
- * Could you do get and put in O(1) time complexity?
+ * The functions get and put must each run in O(1) average time complexity.
  *
  *
  * Example 1:
@@ -62,114 +61,66 @@
  *
  *
  * 1 <= capacity <= 3000
- * 0 <= key <= 3000
- * 0 <= value <= 10^4
- * At most 3 * 10^4 calls will be made to get and put.
+ * 0 <= key <= 10^4
+ * 0 <= value <= 10^5
+ * At most 2 * 10^5 calls will be made to get and put.
  *
  *
  */
 
-#include <cstddef>
-#include <iostream>
-#include <map>
+#include <list>
 #include <unordered_map>
 
 // @lc code=start
+
 class LRUCache {
 public:
-  LRUCache(int capacity) : head(nullptr), tail(nullptr), _capacity(capacity) {
-  }
+  typedef std::list<std::pair<int, int>>::iterator node;
 
-  ~LRUCache() {
-    while (head) {
-      Node* tmp = head;
-      head      = head->next;
-      delete tmp;
-    }
+  LRUCache(int capacity)
+      : capacity_(capacity), head_(new std::list<std::pair<int, int>>) {
   }
 
   int get(int key) {
-    Node* node = map[key];
-    if (nullptr == node) {
+    if (map_.count(key) == 0) {
       return -1;
-    } else {
-      // 当前node放置到末尾
-      moveToBack(node);
-      return node->_val.second;
     }
+    node val = map_[key];
+    int  res = val->second;
+    // 删除老节点
+    map_.erase(key);
+    head_->erase(val);
+    // 构造一个新节点,并插入头部
+    head_->push_front(std::make_pair(key, res));
+    map_[key] = head_->begin();
+    return res;
   }
 
   void put(int key, int value) {
-    Node* node = map[key];
-    if (nullptr == node) {
-      // node 不存在
-      node = new Node(key, value);
-      // 插入尾部
-      insertNodeTail(node);
-      _count++;
-      checkCapacity();
+    // 判断是否已经存在这个key
+    if (map_.count(key)) {
+      // 已经存在
+      // 删除老节点，并插入头部
+      node old = map_[key];
+      map_.erase(key);
+      head_->erase(old);
     } else {
-      node->_val.second = value;
-      moveToBack(node);
+      // 不存在
+      if (map_.size() == capacity_) {
+        // 已满，移除最后一个
+        int key = head_->back().first;
+        head_->pop_back();
+        map_.erase(key);
+      }
     }
+    head_->push_front(std::make_pair(key, value));
+    map_[key] = head_->begin();
   }
 
 private:
-  struct Node {
-    std::pair<int, int> _val;  // <key,value>对
-    Node*               next;
-    Node*               prev;
-
-    Node(int key, int value)
-        : _val(std::make_pair(key, value)), next(nullptr), prev(nullptr) {
-    }
-  };
-
-  void checkCapacity() {
-    if (_count > _capacity) {
-      // 超出容量，删除队头
-      Node* tmp = head;
-      head      = head->next;
-      _count--;
-      map.erase(tmp->_val.first);
-      delete tmp;
-    }
-  }
-
-  void insertNodeTail(Node* node) {
-    map[node->_val.first] = node;
-    if (head == nullptr) {
-      head = tail = node;
-      return;
-    }
-
-    tail->next = node;
-    node->prev = tail;
-    tail       = tail->next;
-  }
-
-  void moveToBack(Node* node) {
-    if (node == tail) {
-      return;
-    } else if (head == node) {
-      head       = head->next;
-      head->prev = nullptr;
-    } else {
-      node->prev->next = node->next;
-      node->next->prev = node->prev;
-    }
-
-    tail->next = node;
-    node->prev = tail;
-    node->next = nullptr;
-    tail       = tail->next;
-  }
-
-  std::unordered_map<int, Node*> map;
-  Node*                          head;       // 链表头
-  Node*                          tail;       // 链表尾
-  int                            _capacity;  // cache容量
-  int                            _count;     // 当前cache元素个数
+  std::list<std::pair<int, int>> *head_;  // 存储数据
+  std::unordered_map<int, node>   map_;   // 存储key， node*
+  const int                       capacity_;
 };
 
 /**
@@ -179,16 +130,3 @@ private:
  * obj->put(key,value);
  */
 // @lc code=end
-
-int main(int argc, char** argv) {
-  LRUCache* lRUCache = new LRUCache(2);
-  lRUCache->put(1, 1);                         // cache is {1=1}
-  lRUCache->put(2, 2);                         // cache is {1=1, 2=2}
-  std::cout << lRUCache->get(1) << std::endl;  // return 1
-  lRUCache->put(3, 3);  // LRU key was 2, evicts key 2, cache is {1=1, 3=3}
-  std::cout << lRUCache->get(2) << std::endl;  // returns -1 (not found)
-  lRUCache->put(4, 4);  // LRU key was 1, evicts key 1, cache is {4=4, 3=3}
-  std::cout << lRUCache->get(1) << std::endl;  // return -1 (not found)
-  std::cout << lRUCache->get(3) << std::endl;  // return 3
-  std::cout << lRUCache->get(4) << std::endl;  // return 4
-}

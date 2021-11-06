@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/longest-common-subsequence/description/
  *
  * algorithms
- * Medium (58.78%)
- * Likes:    3349
- * Dislikes: 40
- * Total Accepted:    218.8K
- * Total Submissions: 372.1K
+ * Medium (58.81%)
+ * Likes:    4728
+ * Dislikes: 57
+ * Total Accepted:    293K
+ * Total Submissions: 498.2K
  * Testcase Example:  '"abcde"\n"ace"'
  *
  * Given two strings text1 and text2, return the length of their longest common
@@ -69,28 +69,18 @@
 class Solution {
 public:
   int longestCommonSubsequence(std::string text1, std::string text2) {
-    int m = text1.length();
-    int n = text2.length();
-
-    std::vector<std::vector<int>> dp =
-        std::vector<std::vector<int>>(m + 1, std::vector<int>(n + 1, 0));
-
-    for (int i = 1; i <= m; i++) {
-      for (int j = 1; j <= n; j++) {
+    std::vector<std::vector<int>> dp(text1.length() + 1,
+                                     std::vector<int>(text2.length() + 1, 0));
+    for (int i = 1; i <= text1.size(); i++) {
+      for (int j = 1; j <= text2.size(); j++) {
         if (text1[i - 1] == text2[j - 1]) {
-          dp[i][j] = 1 + dp[i - 1][j - 1];
+          dp[i][j] = dp[i - 1][j - 1] + 1;
         } else {
           dp[i][j] = std::max(dp[i - 1][j], dp[i][j - 1]);
         }
       }
     }
-    return dp[m][n];
+    return dp[text1.length()][text2.length()];
   }
 };
 // @lc code=end
-
-int main(int argc, char** argv) {
-  std::string text1 = "abc", text2 = "def";
-  Solution    solution;
-  std::cout << solution.longestCommonSubsequence(text1, text2) << std::endl;
-}

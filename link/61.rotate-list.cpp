@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/rotate-list/description/
  *
  * algorithms
- * Medium (31.81%)
- * Likes:    2156
- * Dislikes: 1135
- * Total Accepted:    361K
- * Total Submissions: 1.1M
+ * Medium (33.05%)
+ * Likes:    3368
+ * Dislikes: 1206
+ * Total Accepted:    441.4K
+ * Total Submissions: 1.3M
  * Testcase Example:  '[1,2,3,4,5]\n2'
  *
  * Given the head of a linked list, rotate the list to the right by k
@@ -42,6 +42,17 @@
  *
  */
 
+struct ListNode {
+  int       val;
+  ListNode* next;
+  ListNode() : val(0), next(nullptr) {
+  }
+  ListNode(int x) : val(x), next(nullptr) {
+  }
+  ListNode(int x, ListNode* next) : val(x), next(next) {
+  }
+};
+
 // @lc code=start
 /**
  * Definition for singly-linked list.
@@ -56,27 +67,45 @@
 class Solution {
 public:
   ListNode* rotateRight(ListNode* head, int k) {
-    if (head == nullptr || head->next == nullptr || k < 1) {
+    if (head == nullptr || k <= 0) {
       return head;
     }
 
     int       count = 1;
-    ListNode* p     = head;
-    while (p->next) {
-      p = p->next;
+    ListNode* curr  = head;
+    while (curr->next) {
+      curr = curr->next;
       count++;
     }
-    p->next = head;
-    k %= count;
-    int l = count - k;
 
-    while (l--) {
+    k = k % count;
+    if (count <= 1 || k <= 0) {
+      return head;
+    }
+
+    ListNode* dummy = new ListNode();
+    dummy->next     = head;
+    ListNode* prev  = dummy;
+    ListNode* p     = head;
+    for (int i = 1; i <= k && p; i++) {
       p = p->next;
     }
 
-    head    = p->next;
-    p->next = nullptr;
+    ListNode* q = head;
+    while (p) {
+      prev = q;
+      p    = p->next;
+      q    = q->next;
+    }
 
+    prev->next = nullptr;
+    head       = q;
+    while (q->next) {
+      q = q->next;
+    }
+
+    q->next = dummy->next;
+    delete dummy;
     return head;
   }
 };

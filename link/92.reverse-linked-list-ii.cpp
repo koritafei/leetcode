@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/reverse-linked-list-ii/description/
  *
  * algorithms
- * Medium (40.66%)
- * Likes:    3413
- * Dislikes: 176
- * Total Accepted:    335.3K
- * Total Submissions: 824.5K
+ * Medium (42.51%)
+ * Likes:    4931
+ * Dislikes: 242
+ * Total Accepted:    420.1K
+ * Total Submissions: 987.9K
  * Testcase Example:  '[1,2,3,4,5]\n2\n4'
  *
  * Given the head of a singly linked list and two integers left and right where
@@ -46,6 +46,27 @@
  * Follow up: Could you do it in one pass?
  */
 
+#include <stdio.h>
+
+struct ListNode {
+  int       val;
+  ListNode* next;
+  ListNode() : val(0), next(nullptr) {
+  }
+  ListNode(int x) : val(x), next(nullptr) {
+  }
+  ListNode(int x, ListNode* next) : val(x), next(next) {
+  }
+};
+
+void print(ListNode* head) {
+  ListNode* p = head;
+  while (p) {
+    printf("%d ", p->val);
+    p = p->next;
+  }
+}
+
 // @lc code=start
 /**
  * Definition for singly-linked list.
@@ -59,51 +80,37 @@
  */
 class Solution {
 public:
-  ListNode* reverseBetween(ListNode* head, int left, int right) {
-    ListNode* dummy1 = new ListNode(0);
-    ListNode* dummy2 = new ListNode(0);
-    ListNode* dummy3 = new ListNode(0);
-
-    ListNode* tail1 = dummy1;
-    ListNode* tail2 = dummy2;
-    ListNode* tail3 = dummy3;
-
-    int count = 1;
-    while (count++ < left) {
-      ListNode* t1 = head;
-      head         = head->next;
-      t1->next     = tail1->next;
-      tail1->next  = t1;
-      tail1        = t1;
+  ListNode* reverseBetween(ListNode* head, int m, int n) {
+    if (head == nullptr || m >= n) {
+      return head;
     }
 
-    while (count++ <= right+1) {
-      ListNode* t2 = head;
-      head         = head->next;
-      t2->next     = dummy2->next;
-      dummy2->next = t2;
+    if (m == n) return head;
+    n -= m;
+    ListNode prehead(0);
+    prehead.next  = head;
+    ListNode* pre = &prehead;
+    while (--m) pre = pre->next;
+    ListNode* pstart = pre->next;
+    int       len    = n - m;
+    while (len--) {
+      ListNode* p  = pstart->next;
+      pstart->next = p->next;
+      p->next      = pre->next;
+      pre->next    = p;
     }
-
-    while (tail2->next) {
-      tail2 = tail2->next;
-    }
-
-    while (head) {
-      ListNode* t3 = head;
-      head         = head->next;
-      t3->next     = tail1->next;
-      tail3->next  = t3;
-      tail3        = t3;
-    }
-
-    tail1->next = dummy2->next;
-    tail2->next = dummy3->next;
-    head        = dummy1->next;
-    delete (dummy1);
-    delete (dummy2);
-    delete (dummy3);
-
-    return head;
+    return prehead.next;
   }
 };
+
 // @lc code=end
+
+int main(int argc, char** argv) {
+  ListNode* p1 = new ListNode(3);
+  ListNode* p2 = new ListNode(5);
+  p1->next     = p2;
+
+  Solution  solution;
+  ListNode* t = solution.reverseBetween(p1, 1, 2);
+  print(t);
+}

@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/longest-increasing-subsequence/description/
  *
  * algorithms
- * Medium (44.18%)
- * Likes:    6662
- * Dislikes: 153
- * Total Accepted:    510.4K
- * Total Submissions: 1.2M
+ * Medium (47.35%)
+ * Likes:    9390
+ * Dislikes: 193
+ * Total Accepted:    688.5K
+ * Total Submissions: 1.5M
  * Testcase Example:  '[10,9,2,5,3,7,101,18]'
  *
  * Given an integer array nums, return the length of the longest strictly
@@ -53,37 +53,31 @@
  *
  *
  *
- * Follow up:
- *
- *
- * Could you come up with the O(n^2) solution?
- * Could you improve it to O(n log(n)) time complexity?
- *
+ * Follow up: Can you come up with an algorithm that runs in O(n log(n)) time
+ * complexity?
  *
  */
+
+#include <vector>
 
 // @lc code=start
 class Solution {
 public:
-  int lengthOfLIS(vector<int>& nums) {
-    int len = nums.size();
-    if (len == 0) {
-      return 0;
-    }
-
-    vector<int> dp(len + 1, 1);
+  int lengthOfLIS(std::vector<int>& nums) {
+    int              len = nums.size();
+    std::vector<int> dp(len + 1, 1);
 
     for (int i = 1; i < len; i++) {
       for (int j = 0; j < i; j++) {
-        if (nums[i] > nums[j]) {
-          dp[i] = max(dp[i], dp[j] + 1);
+        if (nums[j] < nums[i]) {
+          dp[i] = std::max(dp[i], dp[j] + 1);
         }
       }
     }
 
     int res = 0;
     for (auto item : dp) {
-      res = max(res, item);
+      res = res > item ? res : item;
     }
 
     return res;
