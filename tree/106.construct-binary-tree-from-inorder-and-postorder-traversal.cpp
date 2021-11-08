@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/construct-binary-tree-from-inorder-and-postorder-traversal/description/
  *
  * algorithms
- * Medium (50.52%)
- * Likes:    2675
- * Dislikes: 53
- * Total Accepted:    298K
- * Total Submissions: 589.4K
+ * Medium (52.65%)
+ * Likes:    3414
+ * Dislikes: 57
+ * Total Accepted:    337.4K
+ * Total Submissions: 640.6K
  * Testcase Example:  '[9,3,15,20,7]\n[9,15,7,20,3]'
  *
  * Given two integer arrays inorder and postorder where inorder is the inorder
@@ -47,6 +47,21 @@
  *
  */
 
+#include <vector>
+
+struct TreeNode {
+  int       val;
+  TreeNode *left;
+  TreeNode *right;
+  TreeNode() : val(0), left(nullptr), right(nullptr) {
+  }
+  TreeNode(int x) : val(x), left(nullptr), right(nullptr) {
+  }
+  TreeNode(int x, TreeNode *left, TreeNode *right)
+      : val(x), left(left), right(right) {
+  }
+};
+
 // @lc code=start
 /**
  * Definition for a binary tree node.
@@ -62,50 +77,43 @@
  */
 class Solution {
 public:
-  TreeNode* buildTree(vector<int>& inorder, vector<int>& postorder) {
-    int len1 = inorder.size();
-    int len2 = postorder.size();
-    if (len1 < 1 || len2 < 1 || len1 != len2) {
+  TreeNode *buildTree(std::vector<int> &inorder, std::vector<int> &postorder) {
+    int leni = inorder.size();
+    int lenp = postorder.size();
+
+    if (leni <= 0 || lenp <= 0 || leni != lenp) {
       return nullptr;
     }
 
-    return buildTree(inorder, 0, len1 - 1, postorder, 0, len2 - 1);
+    return buildTree(inorder, 0, leni - 1, postorder, 0, lenp - 1);
   }
 
 private:
-  TreeNode* buildTree(vector<int>& inorder,
-                      int          start,
-                      int          end,
-                      vector<int>& postorder,
-                      int          pstart,
-                      int          pend) {
-    if (start > end) {
+  TreeNode *buildTree(std::vector<int> &inorder,
+                      int               lo1,
+                      int               hi1,
+                      std::vector<int> &postorder,
+                      int               lo2,
+                      int               hi2) {
+    if (lo1 > hi1) {
       return nullptr;
     }
-    int rootVal = postorder[pend];
-    int index   = start;
-    for (int i = start; i <= end; i++) {
-      if (inorder[i] == rootVal) {
+
+    TreeNode *root  = new TreeNode(postorder[hi2]);
+    int       index = hi2;
+    for (int i = lo1; i <= hi1; i++) {
+      if (inorder[i] == postorder[hi2]) {
         index = i;
         break;
       }
     }
 
-    TreeNode* root     = new TreeNode(rootVal);
-    int       leftSize = index - start;
-
-    root->left  = buildTree(inorder,
-                           start,
-                           index - 1,
-                           postorder,
-                           pstart,
-                           pstart + leftSize - 1);
-    root->right = buildTree(inorder,
-                            index + 1,
-                            end,
-                            postorder,
-                            pstart + leftSize,
-                            pend - 1);
+    // 左子树长度
+    int leftlen = index - lo1;
+    root->left =
+        buildTree(inorder, lo1, index - 1, postorder, lo2, lo2 + leftlen - 1);
+    root->right =
+        buildTree(inorder, index + 1, hi1, postorder, lo2 + leftlen, hi2 - 1);
 
     return root;
   }

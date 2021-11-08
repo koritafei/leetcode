@@ -6,14 +6,14 @@
  * https://leetcode.com/problems/populating-next-right-pointers-in-each-node/description/
  *
  * algorithms
- * Medium (50.11%)
- * Likes:    3396
- * Dislikes: 168
- * Total Accepted:    492.1K
- * Total Submissions: 981.7K
+ * Medium (53.10%)
+ * Likes:    4683
+ * Dislikes: 201
+ * Total Accepted:    587.8K
+ * Total Submissions: 1.1M
  * Testcase Example:  '[1,2,3,4,5,6,7]'
  *
- * You are given a perfect binary tree where all leaves are on the same level,
+ * You are given a perfect binary tree where all leaves are on the same level,
  * and every parent has two children. The binary tree has the following
  * definition:
  *
@@ -32,19 +32,7 @@
  * Initially, all next pointers are set to NULL.
  *
  *
- *
- * Follow up:
- *
- *
- * You may only use constant extra space.
- * Recursive approach is fine, you may assume implicit stack space does not
- * count as extra space for this problem.
- *
- *
- *
  * Example 1:
- *
- *
  *
  *
  * Input: root = [1,2,3,4,5,6,7]
@@ -55,14 +43,51 @@
  * next pointers, with '#' signifying the end of each level.
  *
  *
+ * Example 2:
+ *
+ *
+ * Input: root = []
+ * Output: []
+ *
+ *
  *
  * Constraints:
  *
  *
- * The number of nodes in the given tree is less than 4096.
- * -1000 <= node.val <= 1000
+ * The number of nodes in the tree is in the range [0, 2^12 - 1].
+ * -1000 <= Node.val <= 1000
+ *
+ *
+ *
+ * Follow-up:
+ *
+ *
+ * You may only use constant extra space.
+ * The recursive approach is fine. You may assume implicit stack space does not
+ * count as extra space for this problem.
+ *
  *
  */
+
+#include <iostream>
+
+class Node {
+public:
+  int   val;
+  Node* left;
+  Node* right;
+  Node* next;
+
+  Node() : val(0), left(NULL), right(NULL), next(NULL) {
+  }
+
+  Node(int _val) : val(_val), left(NULL), right(NULL), next(NULL) {
+  }
+
+  Node(int _val, Node* _left, Node* _right, Node* _next)
+      : val(_val), left(_left), right(_right), next(_next) {
+  }
+};
 
 // @lc code=start
 /*
@@ -86,25 +111,25 @@ public:
 class Solution {
 public:
   Node* connect(Node* root) {
-    if (root == nullptr) {
+    if (!root) {
       return root;
     }
-
-    connect(root->left, root->right);
+    connectTwoNode(root->left, root->right);
 
     return root;
   }
 
 private:
-  void connect(Node* node1, Node* node2) {
-    if (node1 == nullptr || node2 == nullptr) {
+  void connectTwoNode(Node* node1, Node* node2) {
+    if (nullptr == node1 || nullptr == node2) {
       return;
     }
-    node1->next = node2;
 
-    connect(node1->left, node1->right);
-    connect(node2->left, node2->right);
-    connect(node1->right, node2->left);
+    node1->next = node2;
+    connectTwoNode(node1->left, node1->right);
+    connectTwoNode(node2->left, node2->right);
+
+    connectTwoNode(node1->right, node2->left);
   }
 };
 // @lc code=end

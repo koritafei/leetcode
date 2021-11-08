@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/count-complete-tree-nodes/description/
  *
  * algorithms
- * Medium (49.41%)
- * Likes:    2766
- * Dislikes: 251
- * Total Accepted:    284.1K
- * Total Submissions: 574.7K
+ * Medium (53.35%)
+ * Likes:    3992
+ * Dislikes: 295
+ * Total Accepted:    356.6K
+ * Total Submissions: 667.9K
  * Testcase Example:  '[1,2,3,4,5,6]'
  *
  * Given the root of a complete binary tree, return the number of the nodes in
@@ -20,6 +20,8 @@
  * filled in a complete binary tree, and all nodes in the last level are as far
  * left as possible. It can have between 1 and 2^h nodes inclusive at the last
  * level h.
+ *
+ * Design an algorithm that runs in less than O(n) time complexity.
  *
  *
  * Example 1:
@@ -52,10 +54,20 @@
  * The tree is guaranteed to be complete.
  *
  *
- *
- * Follow up: Traversing the tree to count the number of nodes in the tree is
- * an easy solution but with O(n) complexity. Could you find a faster algorithm?
  */
+
+struct TreeNode {
+  int       val;
+  TreeNode *left;
+  TreeNode *right;
+  TreeNode() : val(0), left(nullptr), right(nullptr) {
+  }
+  TreeNode(int x) : val(x), left(nullptr), right(nullptr) {
+  }
+  TreeNode(int x, TreeNode *left, TreeNode *right)
+      : val(x), left(left), right(right) {
+  }
+};
 
 // @lc code=start
 /**
@@ -72,18 +84,12 @@
  */
 class Solution {
 public:
-  int countNodes(TreeNode* root) {
+  int countNodes(TreeNode *root) {
     if (root == nullptr) {
       return 0;
     }
-    if (root->left == nullptr && root->right == nullptr) {
-      return 1;
-    }
 
-    int left  = countNodes(root->left);
-    int right = countNodes(root->right);
-
-    return left + right + 1;
+    return 1 + countNodes(root->left) + countNodes(root->right);
   }
 };
 // @lc code=end

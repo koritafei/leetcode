@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal/description/
  *
  * algorithms
- * Medium (52.85%)
- * Likes:    5251
- * Dislikes: 131
- * Total Accepted:    497.2K
- * Total Submissions: 939.9K
+ * Medium (55.47%)
+ * Likes:    6834
+ * Dislikes: 172
+ * Total Accepted:    599.1K
+ * Total Submissions: 1.1M
  * Testcase Example:  '[3,9,20,15,7]\n[9,3,15,20,7]'
  *
  * Given two integer arrays preorder and inorder where preorder is the preorder
@@ -47,6 +47,20 @@
  *
  */
 
+#include <vector>
+struct TreeNode {
+  int       val;
+  TreeNode *left;
+  TreeNode *right;
+  TreeNode() : val(0), left(nullptr), right(nullptr) {
+  }
+  TreeNode(int x) : val(x), left(nullptr), right(nullptr) {
+  }
+  TreeNode(int x, TreeNode *left, TreeNode *right)
+      : val(x), left(left), right(right) {
+  }
+};
+
 // @lc code=start
 /**
  * Definition for a binary tree node.
@@ -62,50 +76,48 @@
  */
 class Solution {
 public:
-  TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
-    int len1 = preorder.size();
-    int len2 = inorder.size();
-    if (len2 < 1 || len1 < 1 || len1 != len2) {
+  TreeNode *buildTree(std::vector<int> &preorder, std::vector<int> &inorder) {
+    int lenp = preorder.size();
+    int leni = inorder.size();
+    if (lenp <= 0 || leni <= 0) {
       return nullptr;
     }
-
-    return buildTree(preorder, 0, len1 - 1, inorder, 0, len2 - 1);
+    return buildTree(preorder,
+                     0,
+                     preorder.size() - 1,
+                     inorder,
+                     0,
+                     inorder.size() - 1);
   }
 
 private:
-  TreeNode* buildTree(vector<int>& preorder,
-                      int          start1,
-                      int          end1,
-                      vector<int>& inorder,
-                      int          start2,
-                      int          end2) {
-    if (start1 > end1) {
+  TreeNode *buildTree(std::vector<int> &preorder,
+                      int               plo,
+                      int               phi,
+                      std::vector<int> &inorder,
+                      int               ilo,
+                      int               ihi) {
+    if (plo > phi) {
       return nullptr;
     }
-    int rootVal = preorder[start1];
-    int index   = start2;
-    for (int i = start2; i <= end2; i++) {
-      if (inorder[i] == rootVal) {
+
+    TreeNode *root = new TreeNode(preorder[plo]);
+    // 查找preorder[plo]在inorder中的位置
+    int index = ilo;
+    for (int i = ilo; i <= ihi; i++) {
+      if (inorder[i] == preorder[plo]) {
         index = i;
         break;
       }
     }
 
-    int leftsize = index - start2;
+    // 数组左侧长度
+    int leftlen = index - ilo;
+    root->left =
+        buildTree(preorder, plo + 1, plo + leftlen, inorder, ilo, index - 1);
+    root->right =
+        buildTree(preorder, plo + leftlen + 1, phi, inorder, index + 1, ihi);
 
-    TreeNode* root = new TreeNode(rootVal);
-    root->left     = buildTree(preorder,
-                           start1 + 1,
-                           start1 + leftsize,
-                           inorder,
-                           start2,
-                           index - 1);
-    root->right    = buildTree(preorder,
-                            start1 + leftsize + 1,
-                            end1,
-                            inorder,
-                            index + 1,
-                            end2);
     return root;
   }
 };
