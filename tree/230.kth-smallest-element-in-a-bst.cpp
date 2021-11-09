@@ -6,15 +6,15 @@
  * https://leetcode.com/problems/kth-smallest-element-in-a-bst/description/
  *
  * algorithms
- * Medium (63.30%)
- * Likes:    3914
- * Dislikes: 88
- * Total Accepted:    540.9K
- * Total Submissions: 853.8K
+ * Medium (65.12%)
+ * Likes:    5041
+ * Dislikes: 101
+ * Total Accepted:    633.7K
+ * Total Submissions: 972.8K
  * Testcase Example:  '[3,1,4,null,2]\n1'
  *
  * Given the root of a binary search tree, and an integer k, return the k^th
- * (1-indexed) smallest element in the tree.
+ * smallest value (1-indexed) of all the values of the nodes in the tree.
  *
  *
  * Example 1:
@@ -44,7 +44,21 @@
  * Follow up: If the BST is modified often (i.e., we can do insert and delete
  * operations) and you need to find the kth smallest frequently, how would you
  * optimize?
+ *
  */
+
+struct TreeNode {
+  int       val;
+  TreeNode *left;
+  TreeNode *right;
+  TreeNode() : val(0), left(nullptr), right(nullptr) {
+  }
+  TreeNode(int x) : val(x), left(nullptr), right(nullptr) {
+  }
+  TreeNode(int x, TreeNode *left, TreeNode *right)
+      : val(x), left(left), right(right) {
+  }
+};
 
 // @lc code=start
 /**
@@ -61,27 +75,29 @@
  */
 class Solution {
 public:
-  int kthSmallest(TreeNode* root, int k) {
+  int kthSmallest(TreeNode *root, int k) {
+    rank = 0;
+    res  = 0;
     traverse(root, k);
+
     return res;
   }
 
 private:
-  int  res  = 0;  // 记录结果
-  int  rank = 0;  // 记录排名
-  void traverse(TreeNode* root, int kth) {
+  void traverse(TreeNode *root, int k) {
     if (root == nullptr) {
       return;
     }
-
-    traverse(root->left, kth);
+    traverse(root->left, k);
     rank++;
-    if (kth == rank) {
+    if (k == rank) {
       res = root->val;
       return;
     }
-
-    traverse(root->right, kth);
+    traverse(root->right, k);
   }
+
+  int res;
+  int rank;
 };
 // @lc code=end

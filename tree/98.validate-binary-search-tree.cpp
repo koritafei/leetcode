@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/validate-binary-search-tree/description/
  *
  * algorithms
- * Medium (28.81%)
- * Likes:    5639
- * Dislikes: 664
- * Total Accepted:    929.3K
- * Total Submissions: 3.2M
+ * Medium (29.75%)
+ * Likes:    7809
+ * Dislikes: 781
+ * Total Accepted:    1.2M
+ * Total Submissions: 3.9M
  * Testcase Example:  '[2,1,3]'
  *
  * Given the root of a binary tree, determine if it is a valid binary search
@@ -53,6 +53,19 @@
  *
  */
 
+struct TreeNode {
+  int       val;
+  TreeNode *left;
+  TreeNode *right;
+  TreeNode() : val(0), left(nullptr), right(nullptr) {
+  }
+  TreeNode(int x) : val(x), left(nullptr), right(nullptr) {
+  }
+  TreeNode(int x, TreeNode *left, TreeNode *right)
+      : val(x), left(left), right(right) {
+  }
+};
+
 // @lc code=start
 /**
  * Definition for a binary tree node.
@@ -68,27 +81,25 @@
  */
 class Solution {
 public:
-  bool isValidBST(TreeNode* root) {
-    if (!root || (!root->left && !root->right)) {
-      return true;
-    }
-
-    return isValid(root, nullptr, nullptr);
+  bool isValidBST(TreeNode *root) {
+    return isValidBST(root, nullptr, nullptr);
   }
 
 private:
-  bool isValid(TreeNode* root, TreeNode* maxNode, TreeNode* minNode) {
-    if (!root) {
+  bool isValidBST(TreeNode *root, TreeNode *min, TreeNode *max) {
+    if (root == nullptr) {
       return true;
-    
+    }
 
-    if (minNode && minNode->val >= root->val ||
-        maxNode && maxNode->val <= root->val) {
+    if (min && root->val <= min->val) {
+      return false;
+    }
+    if (max && root->val >= max->val) {
       return false;
     }
 
-    return isValid(root->right, maxNode, root) &&
-           isValid(root->left, root, minNode);
+    return isValidBST(root->left, min, root) &&
+           isValidBST(root->right, root, max);
   }
 };
 // @lc code=end
