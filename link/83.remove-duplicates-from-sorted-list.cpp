@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/remove-duplicates-from-sorted-list/description/
  *
  * algorithms
- * Easy (46.58%)
- * Likes:    2340
- * Dislikes: 143
- * Total Accepted:    567.1K
- * Total Submissions: 1.2M
+ * Easy (47.86%)
+ * Likes:    3563
+ * Dislikes: 164
+ * Total Accepted:    709.1K
+ * Total Submissions: 1.5M
  * Testcase Example:  '[1,1,2]'
  *
  * Given the head of a sorted linked list, delete all duplicates such that each
@@ -42,6 +42,17 @@
  *
  */
 
+struct ListNode {
+  int       val;
+  ListNode* next;
+  ListNode() : val(0), next(nullptr) {
+  }
+  ListNode(int x) : val(x), next(nullptr) {
+  }
+  ListNode(int x, ListNode* next) : val(x), next(next) {
+  }
+};
+
 // @lc code=start
 /**
  * Definition for singly-linked list.
@@ -56,27 +67,21 @@
 class Solution {
 public:
   ListNode* deleteDuplicates(ListNode* head) {
-    if (head == nullptr) {
+    if (nullptr == head) {
       return head;
     }
-    ListNode* dummy = head;
-    head            = head->next;
-    ListNode* tail  = dummy;
-    tail->next      = nullptr;
+    ListNode *slow = head, *fast = head->next;
 
-    while (head) {
-      if (head->val != tail->val) {
-        ListNode* t = head;
-        head        = head->next;
-        t->next     = tail->next;
-        tail->next  = t;
-        tail        = t;
-      } else {
-        head = head->next;
+    while (fast) {
+      if (slow->val != fast->val) {
+        slow->next = fast;
+        slow       = slow->next;
       }
+      fast = fast->next;
     }
 
-    return dummy;
+    slow->next = nullptr;
+    return head;
   }
 };
 // @lc code=end
