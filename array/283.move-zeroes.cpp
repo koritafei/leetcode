@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/move-zeroes/description/
  *
  * algorithms
- * Easy (58.59%)
- * Likes:    5175
- * Dislikes: 162
- * Total Accepted:    1.1M
- * Total Submissions: 1.8M
+ * Easy (59.61%)
+ * Likes:    7146
+ * Dislikes: 198
+ * Total Accepted:    1.4M
+ * Total Submissions: 2.3M
  * Testcase Example:  '[0,1,0,3,12]'
  *
  * Given an integer array nums, move all 0's to the end of it while maintaining
@@ -38,41 +38,19 @@
  * Follow up: Could you minimize the total number of operations done?
  */
 
-#include <iostream>
 #include <vector>
 
 // @lc code=start
 class Solution {
 public:
   void moveZeroes(std::vector<int>& nums) {
-    int len = nums.size();
-    if (len < 2) {
-      return;
-    }
-    int k = 0;
-    for (int i = 0; i < len; i++) {
-      if (nums[i] != 0) {
-        nums[k++] = nums[i];
+    int slow = 0, fast = 0;
+    while (fast < nums.size()) {
+      if (nums[fast] != 0) {
+        swap(nums[slow++], nums[fast]);
       }
-    }
-
-    while (k < len) {
-      nums[k++] = 0;
+      fast++;
     }
   }
 };
 // @lc code=end
-
-int main(int argc, char** argv) {
-  std::vector<int> nums = {0, 1, 0, 3, 12};
-  Solution         solution;
-  for (auto item : nums) {
-    std::cout << item << "";
-  }
-  std::cout << std::endl;
-  solution.moveZeroes(nums);
-  for (auto item : nums) {
-    std::cout << item << "";
-  }
-  std::cout << std::endl;
-}
