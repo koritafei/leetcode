@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/minimum-path-sum/description/
  *
  * algorithms
- * Medium (56.29%)
- * Likes:    4403
- * Dislikes: 80
- * Total Accepted:    516.8K
- * Total Submissions: 917.9K
+ * Medium (58.07%)
+ * Likes:    6072
+ * Dislikes: 89
+ * Total Accepted:    619.9K
+ * Total Submissions: 1.1M
  * Testcase Example:  '[[1,3,1],[1,5,1],[4,2,1]]'
  *
  * Given a m x n grid filled with non-negative numbers, find a path from top
@@ -47,38 +47,35 @@
  *
  */
 
+#include <vector>
+
 // @lc code=start
 class Solution {
 public:
-  int minPathSum(vector<vector<int>>& grid) {
-    int row = grid.size();
+  int minPathSum(std::vector<std::vector<int>>& grid) {
+    int row = grid.size(), col = 0;
     if (row == 0) {
       return 0;
+    } else {
+      col = grid[0].size();
     }
-    int col = grid[0].size();
-    if (col == 0) {
-      return 0;
-    }
+    std::vector<std::vector<int>> dp =
+        std::vector<std::vector<int>>(row + 1, std::vector<int>(col + 1, 0));
+    dp[0][0] = grid[0][0];
 
-    vector<vector<int>> dp(row, vector<int>(col, 0));
-
-    for (int i = 0; i < col; i++) {
-      dp[0][i] = grid[0][i];
-    }
-    for (int i = 0; i < row; i++) {
-      dp[i][0] = grid[i][0];
+    // base case
+    for (int i = 1; i < row; i++) {
+      dp[i][0] = dp[i - 1][0] + grid[i][0];
     }
 
     for (int i = 1; i < col; i++) {
       dp[0][i] = dp[0][i - 1] + grid[0][i];
     }
-    for (int i = 1; i < row; i++) {
-      dp[i][0] = dp[i - 1][0] + grid[i][0];
-    }
 
+    // 计算dp
     for (int i = 1; i < row; i++) {
       for (int j = 1; j < col; j++) {
-        dp[i][j] = min(dp[i][j - 1], dp[i - 1][j]) + grid[i][j];
+        dp[i][j] = std::min(dp[i - 1][j], dp[i][j - 1]) + grid[i][j];
       }
     }
 

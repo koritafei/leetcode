@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/coin-change-2/description/
  *
  * algorithms
- * Medium (53.32%)
- * Likes:    3407
- * Dislikes: 80
- * Total Accepted:    205.8K
- * Total Submissions: 385.9K
+ * Medium (55.09%)
+ * Likes:    4118
+ * Dislikes: 90
+ * Total Accepted:    239.6K
+ * Total Submissions: 433.5K
  * Testcase Example:  '5\n[1,2,5]'
  *
  * You are given an integer array coins representing coins of different
@@ -63,7 +63,6 @@
  *
  */
 
-#include <iostream>
 #include <vector>
 
 // @lc code=start
@@ -73,16 +72,21 @@ public:
     int                           len = coins.size();
     std::vector<std::vector<int>> dp =
         std::vector<std::vector<int>>(len + 1, std::vector<int>(amount + 1, 0));
+
+    // base case
+    // 当amount = 0时，都有一种方法
     for (int i = 0; i <= len; i++) {
       dp[i][0] = 1;
     }
 
+    // 计算dp数组
     for (int i = 1; i <= len; i++) {
       for (int j = 1; j <= amount; j++) {
-        if (j - coins[i - 1] >= 0) {
-          dp[i][j] = dp[i - 1][j] + dp[i][j - coins[i - 1]];
-        } else {
+        if (j - coins[i - 1] < 0) {
+          // 不可放入
           dp[i][j] = dp[i - 1][j];
+        } else {
+          dp[i][j] = dp[i - 1][j] + dp[i][j - coins[i - 1]];
         }
       }
     }
@@ -91,16 +95,3 @@ public:
   }
 };
 // @lc code=end
-
-int main(int argc, char* argv[]) {
-  Solution         solution;
-  std::vector<int> coins  = {1, 2, 5};
-  int              amount = 5;
-  std::cout << solution.change(amount, coins) << std::endl;  // 4
-  coins  = {2};
-  amount = 3;
-  std::cout << solution.change(amount, coins) << std::endl;  // 0
-  coins  = {10};
-  amount = 10;
-  std::cout << solution.change(amount, coins) << std::endl;  // 1
-}

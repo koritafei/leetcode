@@ -1,0 +1,1 @@
+add_executable(56.merge-intervals 56.merge-intervals.cpp)
