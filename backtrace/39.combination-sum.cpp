@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/combination-sum/description/
  *
  * algorithms
- * Medium (59.41%)
- * Likes:    5569
- * Dislikes: 146
- * Total Accepted:    698.8K
- * Total Submissions: 1.2M
+ * Medium (62.55%)
+ * Likes:    7949
+ * Dislikes: 188
+ * Total Accepted:    881K
+ * Total Submissions: 1.4M
  * Testcase Example:  '[2,3,6,7]\n7'
  *
  * Given an array of distinct integers candidates and a target integer target,
@@ -77,29 +77,54 @@
  *
  */
 
+#include <algorithm>
+#include <vector>
+
 // @lc code=start
 class Solution {
 public:
-  vector<vector<int>> combinationSum(vector<int>& candidates, int target) {
-    combinationSum(candidates, target, 0);
+  std::vector<std::vector<int>> combinationSum(std::vector<int> &candidates,
+                                               int               target) {
+    std::sort(candidates.begin(), candidates.end());
+
+    sum = 0;
+    backtrace(candidates, 0, target, sum);
     return res;
   }
 
 private:
-  void combinationSum(vector<int>& candidates, int target, int index) {
-    if (target == 0) {
-      res.push_back(path);
+  void backtrace(std::vector<int> &candidates,
+                 int               index,
+                 int               target,
+                 int &             sum) {
+    if (sum > target) {
+      return;
+    }
+
+    if (sum == target) {
+      res.push_back(subset);
       return;
     }
 
     for (int i = index; i < candidates.size(); i++) {
-      path.push_back(candidates[i]);
-      combinationSum(candidates, target - candidates[i], i + 1);
-      path.pop_back();
+      if (sum + candidates[i] > target) {
+        continue;
+      } else {
+        // 做选择
+        sum += candidates[i];
+        subset.push_back(candidates[i]);
+        // 递归，因为元素可以重复，所以递归开始字段仍为当前索引
+        backtrace(candidates, i, target, sum);
+
+        // 撤销选择
+        sum -= candidates[i];
+        subset.pop_back();
+      }
     }
   }
 
-  vector<vector<int>> res;
-  vector<int>         path;
+  std::vector<int>              subset;  // 遍历路径
+  int                           sum;     // 路径上元素和
+  std::vector<std::vector<int>> res;
 };
 // @lc code=end

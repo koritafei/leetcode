@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/permutations-ii/description/
  *
  * algorithms
- * Medium (49.53%)
- * Likes:    2811
- * Dislikes: 78
- * Total Accepted:    439.2K
- * Total Submissions: 886.2K
+ * Medium (52.15%)
+ * Likes:    3953
+ * Dislikes: 87
+ * Total Accepted:    529.9K
+ * Total Submissions: 1M
  * Testcase Example:  '[1,1,2]'
  *
  * Given a collection of numbers, nums, that might contain duplicates, return
@@ -44,57 +44,49 @@
  *
  */
 
-#include <iostream>
+#include <algorithm>
 #include <vector>
-
-using namespace std;
 
 // @lc code=start
 class Solution {
 public:
-  vector<vector<int>> permuteUnique(vector<int>& nums) {
-    visited = vector<bool>(nums.size() + 1, false);
-    sort(nums.begin(), nums.end());
-    permuteUnique(nums, 0);
-    return result;
+  std::vector<std::vector<int>> permuteUnique(std::vector<int>& nums) {
+    std::sort(nums.begin(), nums.end());
+    int len = nums.size();
+    visited = std::vector<bool>(len + 1, false);
+    backtrace(nums, len);
+    return res;
   }
 
 private:
-  void permuteUnique(vector<int>& nums, int index) {
-    if (index == nums.size()) {
-      result.push_back(path);
+  void backtrace(std::vector<int>& nums, int len) {
+    if (track.size() == len) {
+      res.push_back(track);
       return;
     }
 
-    for (int i = 0; i < nums.size(); i++) {
-      if (!visited[i]) {
-        if (i > 0 && nums[i] == nums[i - 1] && !visited[i - 1]) {
-          continue;
-        }
-        path.push_back(nums[i]);
-        visited[i] = true;
-        permuteUnique(nums, index + 1);
-        path.pop_back();
-        visited[i] = false;
+    for (int i = 0; i < len; i++) {
+      if (visited[i]) {
+        continue;
       }
+
+      if (i > 0 && !visited[i - 1] && nums[i] == nums[i - 1]) {
+        continue;
+      }
+
+      // 做选择
+      visited[i] = true;
+      track.push_back(nums[i]);
+      backtrace(nums, len);
+
+      // 撤销选择
+      visited[i] = false;
+      track.pop_back();
     }
   }
 
-  vector<vector<int>> result;
-  vector<int>         path;
-  vector<bool>        visited;
+  std::vector<bool>             visited;
+  std::vector<int>              track;  // 遍历路径
+  std::vector<std::vector<int>> res;    // 结果集
 };
 // @lc code=end
-
-int main(int argc, char** argv) {
-  Solution         solution;
-  std::vector<int> nums = {1, 2, 2, 3};
-  auto             res  = solution.permuteUnique(nums);
-  for (auto item : res) {
-    for (auto i : item) {
-      std::cout << i << " ";
-    }
-    std::cout << std::endl;
-  }
-  std::cout << std::endl;
-}

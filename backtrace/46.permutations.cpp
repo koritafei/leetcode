@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/permutations/description/
  *
  * algorithms
- * Medium (66.75%)
- * Likes:    5588
- * Dislikes: 129
- * Total Accepted:    775.3K
- * Total Submissions: 1.2M
+ * Medium (69.91%)
+ * Likes:    8056
+ * Dislikes: 158
+ * Total Accepted:    976.8K
+ * Total Submissions: 1.4M
  * Testcase Example:  '[1,2,3]'
  *
  * Given an array nums of distinct integers, return all the possible
@@ -38,38 +38,43 @@
  *
  */
 
+#include <vector>
+
 // @lc code=start
 class Solution {
 public:
-  vector<vector<int>> permute(vector<int>& nums) {
+  std::vector<std::vector<int>> permute(std::vector<int>& nums) {
     int len = nums.size();
-    visited = vector<bool>(len + 1, false);
-    permute(nums, 0);
-    return result;
+    visited = std::vector<bool>(len + 1, false);
+    backtrace(nums, len);
+    return res;
   }
 
 private:
-  void permute(vector<int>& nums, int index) {
-    if (index == nums.size()) {
-      result.push_back(path);
+  void backtrace(std::vector<int>& nums, int len) {
+    if (track.size() == len) {
+      res.push_back(track);
       return;
     }
 
-    for (int i = 0; i < nums.size(); i++) {
-      if (visited[i] == false) {
-        path.push_back(nums[i]);
-        visited[i] = true;
-        permute(nums, index + 1);
-        path.pop_back();
-        visited[i] = false;
+    for (int i = 0; i < len; i++) {
+      // 是否已遍历过，如果已遍历过，继续循环
+      if (visited[i]) {
+        continue;
       }
-    }
 
-    return;
+      // 做选择
+      visited[i] = true;
+      track.push_back(nums[i]);
+      backtrace(nums, len);
+      // 撤销选择
+      visited[i] = false;
+      track.pop_back();
+    }
   }
 
-  vector<vector<int>> result;
-  vector<int>         path;
-  vector<bool>        visited;
+  std::vector<int>              track;    // 遍历路径
+  std::vector<std::vector<int>> res;      // 遍历结果集
+  std::vector<bool>             visited;  // 是否遍历过标记
 };
 // @lc code=end

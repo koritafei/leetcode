@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/subsets/description/
  *
  * algorithms
- * Medium (65.27%)
- * Likes:    5391
- * Dislikes: 109
- * Total Accepted:    733.8K
- * Total Submissions: 1.1M
+ * Medium (68.47%)
+ * Likes:    7530
+ * Dislikes: 126
+ * Total Accepted:    901.1K
+ * Total Submissions: 1.3M
  * Testcase Example:  '[1,2,3]'
  *
  * Given an integer array nums of unique elements, return all possible subsets
@@ -45,32 +45,31 @@
  *
  */
 
+#include <vector>
+
 // @lc code=start
 class Solution {
 public:
-  vector<vector<int>> subsets(vector<int>& nums) {
-    visited = vector<bool>(nums.size(), false);
-    subsets(nums, 0);
-    return result;
+  std::vector<std::vector<int>> subsets(std::vector<int>& nums) {
+    backtrace(nums, 0);
+
+    return res;
   }
 
 private:
-  void subsets(vector<int>& nums, int index) {
-    result.push_back(path);
+  void backtrace(std::vector<int>& nums, int index) {
+    res.push_back(subset);
 
     for (int i = index; i < nums.size(); i++) {
-      if (!visited[i]) {
-        path.push_back(nums[i]);
-        visited[i] = true;
-        subsets(nums, i + 1);
-        path.pop_back();
-        visited[i] = false;
-      }
+      // 做选择
+      subset.push_back(nums[i]);
+      backtrace(nums, i + 1);
+      // 撤销选择
+      subset.pop_back();
     }
   }
 
-  vector<vector<int>> result;
-  vector<int>         path;
-  vector<bool>        visited;
+  std::vector<int>              subset;
+  std::vector<std::vector<int>> res;
 };
 // @lc code=end

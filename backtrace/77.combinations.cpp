@@ -6,15 +6,15 @@
  * https://leetcode.com/problems/combinations/description/
  *
  * algorithms
- * Medium (57.62%)
- * Likes:    2086
- * Dislikes: 80
- * Total Accepted:    350.7K
- * Total Submissions: 608.2K
+ * Medium (61.08%)
+ * Likes:    3203
+ * Dislikes: 109
+ * Total Accepted:    437.1K
+ * Total Submissions: 712.9K
  * Testcase Example:  '4\n2'
  *
  * Given two integers n and k, return all possible combinations of k numbers
- * out of 1 ... n.
+ * out of the range [1, n].
  *
  * You may return the answer in any order.
  *
@@ -51,29 +51,34 @@
  *
  */
 
+#include <vector>
+
 // @lc code=start
 class Solution {
 public:
-  vector<vector<int>> combine(int n, int k) {
-    combine(n, k, 1);
+  std::vector<std::vector<int>> combine(int n, int k) {
+    backtrace(n, k, 1);
     return res;
   }
 
 private:
-  void combine(int n, int k, int start) {
-    if (path.size() == k) {
-      res.push_back(path);
+  void backtrace(int n, int k, int index) {
+    if (subset.size() == k) {
+      // 满足条件加入结果集
+      res.push_back(subset);
       return;
     }
 
-    for (int i = start; i <= n; i++) {
-      path.push_back(i);
-      combine(n, k, i + 1);
-      path.pop_back();
+    for (int i = index; i <= n; i++) {
+      // 做选择
+      subset.push_back(i);
+      backtrace(n, k, i + 1);
+      // 撤销选择
+      subset.pop_back();
     }
   }
 
-  vector<vector<int>> res;
-  vector<int>         path;
+  std::vector<int>              subset;  // 遍历路径
+  std::vector<std::vector<int>> res;     // 结果集
 };
 // @lc code=end

@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/combination-sum-ii/description/
  *
  * algorithms
- * Medium (50.22%)
- * Likes:    2553
- * Dislikes: 86
- * Total Accepted:    393.6K
- * Total Submissions: 783.4K
+ * Medium (51.55%)
+ * Likes:    3895
+ * Dislikes: 105
+ * Total Accepted:    475.8K
+ * Total Submissions: 921.9K
  * Testcase Example:  '[10,1,2,7,6,1,5]\n8'
  *
  * Given a collection of candidate numbers (candidates) and a target number
@@ -57,39 +57,56 @@
  *
  */
 
+#include <algorithm>
+#include <vector>
+
 // @lc code=start
 class Solution {
 public:
-  vector<vector<int>> combinationSum2(vector<int>& candidates, int target) {
-    sort(candidates.begin(), candidates.end());
-    visited = vector<bool>(candidates.size(), false);
-    combinationSum(candidates, target, 0);
+  std::vector<std::vector<int>> combinationSum2(std::vector<int> &candidates,
+                                                int               target) {
+    std::sort(candidates.begin(), candidates.end());
+    sum = 0;
+    backtrace(candidates, 0, target, sum);
     return res;
   }
 
 private:
-  void combinationSum(vector<int>& candidates, int target, int index) {
-    if (target == 0) {
-      res.push_back(path);
+  void backtrace(std::vector<int> &nums, int index, int target, int &sum) {
+    if (target < sum) {
       return;
     }
 
-    for (int i = index; i < candidates.size(); i++) {
-      if (!visited[i] && candidates[i] <= target) {
-        if (i > 0 && candidates[i] == candidates[i - 1] && !visited[i - 1]) {
-          continue;
-        }
-        visited[i] = true;
-        path.push_back(candidates[i]);
-        combinationSum(candidates, target - candidates[i], i + 1);
-        path.pop_back();
-        visited[i] = false;
+    if (target == sum) {
+      res.push_back(subset);
+      return;
+    }
+
+    for (int i = index; i < nums.size(); i++) {
+      // 去重
+      if (i > index && nums[i] == nums[i - 1]) {
+        continue;
+      }
+
+      if (sum + nums[i] > target) {
+        // 当前和大于target, 不做处理
+        continue;
+      } else {
+        // 加入结果集
+        sum += nums[i];
+        // 做选择
+        subset.push_back(nums[i]);
+        backtrace(nums, i + 1, target, sum);
+
+        // 撤销选择
+        sum -= nums[i];
+        subset.pop_back();
       }
     }
   }
 
-  vector<vector<int>> res;
-  vector<int>         path;
-  vector<bool>        visited;
+  std::vector<int>              subset;  // 走过的路径
+  int                           sum;     // 路径中所有元素之和
+  std::vector<std::vector<int>> res;     // 结果集
 };
 // @lc code=end

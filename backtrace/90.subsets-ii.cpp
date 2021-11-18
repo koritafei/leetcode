@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/subsets-ii/description/
  *
  * algorithms
- * Medium (48.94%)
- * Likes:    2332
- * Dislikes: 102
- * Total Accepted:    330.5K
- * Total Submissions: 675.1K
+ * Medium (51.47%)
+ * Likes:    3779
+ * Dislikes: 128
+ * Total Accepted:    427.4K
+ * Total Submissions: 828.3K
  * Testcase Example:  '[1,2,2]'
  *
  * Given an integer array nums that may contain duplicates, return all possible
@@ -37,36 +37,34 @@
  *
  */
 
+#include <algorithm>
+#include <vector>
+
 // @lc code=start
 class Solution {
 public:
-  vector<vector<int>> subsetsWithDup(vector<int>& nums) {
-    sort(nums.begin(), nums.end());
-    visited = vector<bool>(nums.size(), false);
-    subsetsWithDup(nums, 0);
-    return result;
+  std::vector<std::vector<int>> subsetsWithDup(std::vector<int>& nums) {
+    std::sort(nums.begin(), nums.end());
+    backtrack(nums, 0);
+    return res;
   }
 
 private:
-  void subsetsWithDup(vector<int>& nums, int index) {
-    result.push_back(path);
+  void backtrack(std::vector<int>& nums, int index) {
+    res.push_back(subset);
 
     for (int i = index; i < nums.size(); i++) {
-      if (!visited[i]) {
-        if (i > 0 && nums[i] == nums[i - 1] && !visited[i - 1]) {
-          continue;
-        }
-        visited[i] = true;
-        path.push_back(nums[i]);
-        subsetsWithDup(nums, i + 1);
-        path.pop_back();
-        visited[i] = false;
+      // 跳过重复元素
+      if (i > index && nums[i] == nums[i - 1]) {
+        continue;
       }
+      subset.push_back(nums[i]);  // 做选择
+      backtrack(nums, i + 1);
+      subset.pop_back();  // 撤销选择
     }
   }
 
-  vector<vector<int>> result;
-  vector<int>         path;
-  vector<bool>        visited;
+  std::vector<int>              subset;  // 记录走过的路
+  std::vector<std::vector<int>> res;     // 记录结果
 };
 // @lc code=end
