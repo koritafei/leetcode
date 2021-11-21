@@ -12,4 +12,5 @@
 # add_executable(416.partition-equal-subset-sum 416.partition-equal-subset-sum.cpp)
 # add_executable(518.coin-change-2 518.coin-change-2.cpp)
 
-
+add_executable(completepackage completepackage.cc)
+add_executable(multipartsum multipartsum.cc)
