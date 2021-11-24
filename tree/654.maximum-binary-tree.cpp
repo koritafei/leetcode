@@ -66,14 +66,19 @@
  *
  */
 
+#include <climits>
 #include <vector>
 struct TreeNode {
   int       val;
   TreeNode *left;
   TreeNode *right;
-  TreeNode() : val(0), left(nullptr), right(nullptr) {
-  }
-  TreeNode(int x) : val(x), left(nullptr), right(nullptr) {
+  TreeNode()
+      : val(0),
+        left(nullptr),
+        right(nullptr){} * TreeNode(int x)
+      : val(x),
+        left(nullptr),
+        right(nullptr) {
   }
   TreeNode(int x, TreeNode *left, TreeNode *right)
       : val(x), left(left), right(right) {
@@ -96,36 +101,29 @@ struct TreeNode {
 class Solution {
 public:
   TreeNode *constructMaximumBinaryTree(std::vector<int> &nums) {
-    int len = nums.size();
-    if (0 >= len) {
-      return nullptr;
-    }
-
-    return constructMaximumBinaryTree(nums, 0, len - 1, len);
+    return constructMaximumBinaryTree(nums, 0, nums.size() - 1);
   }
 
 private:
   TreeNode *constructMaximumBinaryTree(std::vector<int> &nums,
-                                       int               lo,
-                                       int               hi,
-                                       int               len) {
-    if (0 > lo || len <= hi || lo > hi) {
+                                       int               left,
+                                       int               right) {
+    if (left > right) {
       return nullptr;
     }
-
-    // 查找最大值
-    int m     = nums[lo];
-    int index = lo;
-    for (int i = lo; i <= hi; i++) {
-      if (m < nums[i]) {
-        m     = nums[i];
+    int i     = 0;
+    int index = left;
+    int max   = INT_MIN;
+    for (i = left; i <= right; i++) {
+      if (max < nums[i]) {
+        max   = nums[i];
         index = i;
       }
     }
 
-    TreeNode *root = new TreeNode(m);
-    root->left     = constructMaximumBinaryTree(nums, lo, index - 1, len);
-    root->right    = constructMaximumBinaryTree(nums, index + 1, hi, len);
+    TreeNode *root = new TreeNode(max);
+    root->left     = constructMaximumBinaryTree(nums, left, index - 1);
+    root->right    = constructMaximumBinaryTree(nums, index + 1, right);
 
     return root;
   }
