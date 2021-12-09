@@ -6,14 +6,14 @@
  * https://leetcode.com/problems/longest-substring-without-repeating-characters/description/
  *
  * algorithms
- * Medium (31.46%)
- * Likes:    13433
- * Dislikes: 696
- * Total Accepted:    2.1M
- * Total Submissions: 6.6M
+ * Medium (32.53%)
+ * Likes:    19372
+ * Dislikes: 888
+ * Total Accepted:    2.7M
+ * Total Submissions: 8.4M
  * Testcase Example:  '"abcabcbb"'
  *
- * Given a string s, find the length of thelongest substring without repeating
+ * Given a string s, find the length of the longest substring without repeating
  * characters.
  *
  *
@@ -60,44 +60,31 @@
  *
  */
 
-#include <iostream>
+#include <climits>
+#include <map>
 #include <string>
 
 // @lc code=start
 class Solution {
 public:
   int lengthOfLongestSubstring(std::string s) {
-    int length = s.length();
-    if (length < 1) {
-      return 0;
-    }
-    int freq[256] = {0};
-    int lengthest = 0;
-    int left = 0, right = -1;
+    int                 maxlen = INT_MIN;
+    int                 i = 0, j = 0;
+    std::map<char, int> freq;
 
-    while (left < length) {
-      if (right + 1 < length && freq[s[right + 1]] == 0) {
-        freq[s[++right]]++;
-      } else {
-        freq[s[left++]]--;
+    while (j < s.size()) {
+      char ch = s[j++];
+      freq[ch]++;
+
+      while (freq[ch] > 1) {
+        char c = s[i++];
+        freq[c]--;
       }
 
-      lengthest = std::max(lengthest, right - left + 1);
+      maxlen = std::max(maxlen, j - i);
     }
 
-    return lengthest;
+    return maxlen == INT_MIN ? 0 : maxlen;
   }
 };
 // @lc code=end
-
-int main(int argc, char **argv) {
-  Solution    solution;
-  std::string s = "abcabcbb";
-  std::cout << solution.lengthOfLongestSubstring(s) << std::endl;
-  s = "bbbbb";
-  std::cout << solution.lengthOfLongestSubstring(s) << std::endl;
-  s = "pwwkew";
-  std::cout << solution.lengthOfLongestSubstring(s) << std::endl;
-  s = "";
-  std::cout << solution.lengthOfLongestSubstring(s) << std::endl;
-}

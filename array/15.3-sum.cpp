@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/3sum/description/
  *
  * algorithms
- * Medium (29.85%)
- * Likes:    14082
- * Dislikes: 1359
+ * Medium (30.08%)
+ * Likes:    14659
+ * Dislikes: 1404
  * Total Accepted:    1.6M
- * Total Submissions: 5.3M
+ * Total Submissions: 5.4M
  * Testcase Example:  '[-1,0,1,2,-1,-4]'
  *
  * Given an integer array nums, return all the triplets [nums[i], nums[j],
@@ -46,51 +46,49 @@
 // @lc code=start
 class Solution {
 public:
-  std::vector<std::vector<int>> threeSum(std::vector<int> &nums) {
-    std::vector<std::vector<int>> res;
-    threeSum(nums, res, 0);
-    return res;
-  }
-
-private:
-  void threeSum(std::vector<int> &             nums,
-                std::vector<std::vector<int>> &res,
-                int                            target) {
+  std::vector<std::vector<int>> threeSum(std::vector<int>& nums) {
     std::sort(nums.begin(), nums.end());
-    for (int i = 0; i < nums.size(); i++) {
-      int left = i + 1, right = nums.size() - 1;
-      int t = target - nums[i];
+    int                           len = nums.size();
+    std::vector<std::vector<int>> res;
+
+    int i = 0;
+    while (i < len) {
+      int target = -nums[i];
+      int left = i + 1, right = len - 1;
       while (left < right) {
         int sum = nums[left] + nums[right];
-        int t1 = nums[left], t2 = nums[right];
-        if (sum == t) {
-          std::vector<int> tmp;
-          tmp.push_back(nums[i]);
-          tmp.push_back(nums[left]);
-          tmp.push_back(nums[right]);
-          res.push_back(tmp);
-
-          while (left < right && nums[left] == t1) {
+        if (sum < target) {
+          // 跳过重复部分
+          while (left + 1 < right && nums[left] == nums[left + 1]) {
             left++;
           }
-
-          while (left < right && t2 == nums[right]) {
+          left++;
+        } else if (sum > target) {
+          while (right - 1 > left && nums[right] == nums[right - 1]) {
             right--;
           }
-        } else if (sum < t) {
-          while (left < right && t1 == nums[left]) {
-            left++;
-          }
+          right--;
         } else {
-          while (left < right && nums[right] == t2) {
+          res.push_back(std::vector<int>{nums[i], nums[left], nums[right]});
+          while (right - 1 > left && nums[right] == nums[right - 1]) {
             right--;
           }
+          while (left + 1 < right && nums[left] == nums[left + 1]) {
+            left++;
+          }
+          left++;
+          right--;
         }
       }
-      while (i + 1 < nums.size() - 1 && nums[i] == nums[i + 1]) {
+
+      // 跳过i重复的部分
+      while (i + 1 < len && nums[i] == nums[i + 1]) {
         i++;
       }
+      i++;
     }
+
+    return res;
   }
 };
 // @lc code=end

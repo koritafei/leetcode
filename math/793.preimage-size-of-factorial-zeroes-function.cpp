@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/preimage-size-of-factorial-zeroes-function/description/
  *
  * algorithms
- * Hard (41.02%)
- * Likes:    265
+ * Hard (41.11%)
+ * Likes:    266
  * Dislikes: 65
- * Total Accepted:    10.9K
- * Total Submissions: 26.7K
+ * Total Accepted:    11.1K
+ * Total Submissions: 27K
  * Testcase Example:  '0'
  *
  * Let f(x) be the number of zeroes at the end of x!. Recall that x! = 1 * 2 *
@@ -57,9 +57,10 @@
  *
  */
 
+// @lc code=start
+
 #include <climits>
 
-// @lc code=start
 class Solution {
 public:
   long preimageSizeFZF(long k) {
@@ -67,53 +68,43 @@ public:
   }
 
 private:
-  // 查找左边界
   long left_bound(long k) {
     long left = 0, right = LONG_MAX;
-
-    while (left < right) {
+    while (left <= right) {
       long mid = left + (right - left) / 2;
-      long tmp = trailingZeroes(mid);
-      if (k == tmp) {
-        right = mid;
-      } else if (tmp < k) {
-        left = mid + 1;
+      long tmp = countZero(mid);
+      if (tmp >= k) {
+        right = mid - 1;
       } else {
-        right = mid;
+        left = mid + 1;
       }
     }
 
     return left;
   }
 
-  // 查找右边界
   long right_bound(long k) {
     long left = 0, right = LONG_MAX;
-
-    while (left < right) {
+    while (left <= right) {
       long mid = left + (right - left) / 2;
-      long tmp = trailingZeroes(mid);
-      if (k == tmp) {
-        left = mid + 1;
-      } else if (tmp < k) {
+      long tmp = countZero(mid);
+      if (tmp <= k) {
         left = mid + 1;
       } else {
-        right = mid;
+        right = mid - 1;
       }
     }
 
-    return left - 1;
+    return right;
   }
 
-  long trailingZeroes(long n) {
-    // 计算n的阶乘中0的个数
-    long res = 0;
-
-    for (long d = n; d / 5 > 0; d = d / 5) {
-      res += d / 5;
+  long countZero(long k) {
+    long count = 0;
+    for (long d = k; d / 5 > 0; d /= 5) {
+      count += d / 5;
     }
 
-    return res;
+    return count;
   }
 };
 // @lc code=end

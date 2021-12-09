@@ -7,10 +7,10 @@
  *
  * algorithms
  * Medium (50.98%)
- * Likes:    1128
- * Dislikes: 71
- * Total Accepted:    49.6K
- * Total Submissions: 97.2K
+ * Likes:    1145
+ * Dislikes: 72
+ * Total Accepted:    50K
+ * Total Submissions: 98K
  * Testcase Example:  '[2,7,11,15]\n[1,10,4,11]'
  *
  * You are given two integer arrays nums1 and nums2 both of the same length.
@@ -48,24 +48,27 @@ class Solution {
 public:
   std::vector<int> advantageCount(std::vector<int>& nums1,
                                   std::vector<int>& nums2) {
-    int len = nums1.size();
-    for (int i = 0; i < nums2.size(); ++i) {
-      maxpq.push(std::make_pair(i, nums2[i]));
+    std::vector<int> res;
+    res.resize(nums1.size());
+    std::sort(nums1.begin(), nums1.end());
+
+    std::priority_queue<std::pair<int, int>,
+                        std::vector<std::pair<int, int>>,
+                        less>
+        hp;
+
+    for (int i = 0; i < nums2.size(); i++) {
+      hp.push(std::make_pair(nums2[i], i));
     }
 
-    std::vector<int> res(len, 0);
-
-    sort(nums1.begin(), nums1.end());
-    int left = 0, right = len - 1;  // 分别对应nums1中的最大值和最小值
-
-    while (!maxpq.empty()) {
-      std::pair<int, int> tmp = maxpq.top();
-      maxpq.pop();
-      int index = tmp.first, value = tmp.second;
-      if (nums1[right] > value) {
-        res[index] = nums1[right--];
+    int left = 0, right = nums1.size() - 1;
+    while (hp.size()) {
+      std::pair<int, int> p = hp.top();
+      hp.pop();
+      if (nums1[right] > p.first) {
+        res[p.second] = nums1[right--];
       } else {
-        res[index] = nums1[left++];
+        res[p.second] = nums1[left++];
       }
     }
 
@@ -73,15 +76,11 @@ public:
   }
 
 private:
-  struct greater {
-    bool operator()(std::pair<int, int> a, std::pair<int, int> b) {
-      return b.second >= a.second;
+  struct less {
+    bool operator()(const std::pair<int, int>& v1,
+                    const std::pair<int, int>& v2) {
+      return v1.first < v2.first;
     }
   };
-
-  std::priority_queue<std::pair<int, int>,
-                      std::vector<std::pair<int, int>>,
-                      greater>
-      maxpq;
 };
 // @lc code=end

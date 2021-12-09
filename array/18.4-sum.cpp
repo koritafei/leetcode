@@ -6,10 +6,10 @@
  * https://leetcode.com/problems/4sum/description/
  *
  * algorithms
- * Medium (36.69%)
- * Likes:    4737
- * Dislikes: 562
- * Total Accepted:    500.3K
+ * Medium (36.78%)
+ * Likes:    4933
+ * Dislikes: 593
+ * Total Accepted:    511.7K
  * Total Submissions: 1.4M
  * Testcase Example:  '[1,0,-1,0,-2,2]\n0'
  *
@@ -58,59 +58,55 @@ class Solution {
 public:
   std::vector<std::vector<int>> fourSum(std::vector<int>& nums, int target) {
     std::sort(nums.begin(), nums.end());
+
     std::vector<std::vector<int>> res;
+    int                           len = nums.size();
 
-    fourSum(nums, res, target);
-    return res;
-  }
+    for (int i = 0; i < len;) {
+      int tmp1 = target - nums[i];
+      for (int j = i + 1; j < len;) {
+        int tmp2 = tmp1 - nums[j];
 
-private:
-  void fourSum(std::vector<int>&              nums,
-               std::vector<std::vector<int>>& res,
-               int                            target) {
-    std::sort(nums.begin(), nums.end());
-    for (int i = 0; i < nums.size() - 1; i++) {
-      int t = target - nums[i];
-      for (int j = i + 1; j < nums.size(); j++) {
-        int a    = t - nums[j];
-        int left = j + 1, right = nums.size() - 1;
+        int left = j + 1, right = len - 1;
         while (left < right) {
           int sum = nums[left] + nums[right];
-          int t1 = nums[left], t2 = nums[right];
-          if (sum == a) {
-            std::vector<int> tmp;
-            tmp.push_back(nums[j]);
-            tmp.push_back(nums[i]);
-            tmp.push_back(nums[left]);
-            tmp.push_back(nums[right]);
-            res.push_back(tmp);
-
-            while (left < right && nums[left] == t1) {
+          if (sum < tmp2) {
+            while (left + 1 < right && nums[left + 1] == nums[left]) {
               left++;
             }
-
-            while (left < right && t2 == nums[right]) {
+            left++;
+          } else if (sum > tmp2) {
+            while (right - 1 > left && nums[right - 1] == nums[right]) {
               right--;
             }
-          } else if (sum < a) {
-            while (left < right && t1 == nums[left]) {
-              left++;
-            }
+            right--;
           } else {
-            while (left < right && nums[right] == t2) {
+            res.push_back(
+                std::vector<int>{nums[i], nums[j], nums[left], nums[right]});
+            while (right - 1 > left && nums[right - 1] == nums[right]) {
               right--;
             }
+            right--;
+            while (left + 1 < right && nums[left + 1] == nums[left]) {
+              left++;
+            }
+            left++;
           }
         }
 
-        while (j + 1 < nums.size() - 1 && nums[j] == nums[j + 1]) {
+        while (j + 1 < len && nums[j] == nums[j + 1]) {
           j++;
         }
+        j++;
       }
-      while (i + 1 < nums.size() - 2 && nums[i] == nums[i + 1]) {
+
+      while (i + 1 < len && nums[i] == nums[i + 1]) {
         i++;
       }
+      i++;
     }
+
+    return res;
   }
 };
 // @lc code=end

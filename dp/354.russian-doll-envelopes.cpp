@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/russian-doll-envelopes/description/
  *
  * algorithms
- * Hard (39.18%)
- * Likes:    2625
+ * Hard (39.36%)
+ * Likes:    2677
  * Dislikes: 66
- * Total Accepted:    123.9K
- * Total Submissions: 315.9K
+ * Total Accepted:    125.9K
+ * Total Submissions: 319.9K
  * Testcase Example:  '[[5,4],[6,4],[6,7],[2,3]]'
  *
  * You are given a 2D array of integers envelopes where envelopes[i] = [wi, hi]
@@ -59,25 +59,27 @@
 class Solution {
 public:
   int maxEnvelopes(std::vector<std::vector<int>> &envelopes) {
+    // 宽度升序排序，宽度相同时，按照高度降序
     std::sort(envelopes.begin(),
               envelopes.end(),
-              [](const std::vector<int> &a, const std::vector<int> &b) {
-                return a[0] != b[0] ? a[0] < b[0] : a[1] > b[1];
+              [](std::vector<int> &s1, const std::vector<int> &s2) {
+                if (s1[0] == s2[0]) {
+                  return s1[1] > s2[1];
+                }
+                return s1[0] < s2[0];
               });
+    int len = envelopes.size();
+
+    // base case 每个字符串都可以看做单独的一个上升子序列
+    std::vector<int> dp = std::vector<int>(len, 1);
 
     std::vector<int> height;
-    for (int i = 0; i < envelopes.size(); i++) {
+    for (int i = 0; i < len; i++) {
       height.push_back(envelopes[i][1]);
     }
 
-    return longofLIS(height);
-  }
-
-private:
-  int longofLIS(std::vector<int> &height) {
-    std::vector<int> dp(height.size() + 1, 1);
-
-    for (int i = 1; i < height.size(); i++) {
+    // 计算dp数组
+    for (int i = 1; i < len; i++) {
       for (int j = 0; j < i; j++) {
         if (height[j] < height[i]) {
           dp[i] = std::max(dp[i], dp[j] + 1);
@@ -85,12 +87,12 @@ private:
       }
     }
 
-    int max = 0;
-    for (auto item : dp) {
-      max = (max > item ? max : item);
+    int res = 0;
+    for (auto it : dp) {
+      res = res > it ? res : it;
     }
 
-    return max;
+    return res;
   }
 };
 // @lc code=end
