@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/reverse-linked-list-ii/description/
  *
  * algorithms
- * Medium (42.51%)
- * Likes:    4931
- * Dislikes: 242
- * Total Accepted:    420.1K
- * Total Submissions: 987.9K
+ * Medium (42.68%)
+ * Likes:    5132
+ * Dislikes: 245
+ * Total Accepted:    429.5K
+ * Total Submissions: 1M
  * Testcase Example:  '[1,2,3,4,5]\n2\n4'
  *
  * Given the head of a singly linked list and two integers left and right where
@@ -46,26 +46,7 @@
  * Follow up: Could you do it in one pass?
  */
 
-#include <stdio.h>
-
-struct ListNode {
-  int       val;
-  ListNode* next;
-  ListNode() : val(0), next(nullptr) {
-  }
-  ListNode(int x) : val(x), next(nullptr) {
-  }
-  ListNode(int x, ListNode* next) : val(x), next(next) {
-  }
-};
-
-void print(ListNode* head) {
-  ListNode* p = head;
-  while (p) {
-    printf("%d ", p->val);
-    p = p->next;
-  }
-}
+#include "linkNode.h"
 
 // @lc code=start
 /**
@@ -80,37 +61,52 @@ void print(ListNode* head) {
  */
 class Solution {
 public:
-  ListNode* reverseBetween(ListNode* head, int m, int n) {
-    if (head == nullptr || m >= n) {
-      return head;
+  ListNode *reverseBetween(ListNode *head, int left, int right) {
+    if (head == nullptr) {
+      return nullptr;
     }
 
-    if (m == n) return head;
-    n -= m;
-    ListNode prehead(0);
-    prehead.next  = head;
-    ListNode* pre = &prehead;
-    while (--m) pre = pre->next;
-    ListNode* pstart = pre->next;
-    int       len    = n - m;
-    while (len--) {
-      ListNode* p  = pstart->next;
-      pstart->next = p->next;
-      p->next      = pre->next;
-      pre->next    = p;
+    ListNode *dummy = new ListNode(-1);
+    dummy->next     = head;
+
+    ListNode *a = dummy, *b = head;
+    while (--left) {
+      if (a == nullptr) {
+        return head;
+      }
+      a = a->next;
     }
-    return prehead.next;
+
+    while (right--) {
+      if (b == nullptr) {
+        break;
+      }
+      b = b->next;
+    }
+
+    // 反转(a,b)
+    reverseBetween(a, b);
+
+    head = dummy->next;
+    delete dummy;
+
+    return head;
+  }
+
+private:
+  ListNode *reverseBetween(ListNode *a, ListNode *b) {
+    ListNode *dummy = a;
+    ListNode *curr  = a->next;
+
+    while (curr->next != b) {
+      ListNode *tmp = curr->next;
+      curr->next    = tmp->next;
+
+      tmp->next   = dummy->next;
+      dummy->next = tmp;
+    }
+
+    return a;
   }
 };
-
 // @lc code=end
-
-int main(int argc, char** argv) {
-  ListNode* p1 = new ListNode(3);
-  ListNode* p2 = new ListNode(5);
-  p1->next     = p2;
-
-  Solution  solution;
-  ListNode* t = solution.reverseBetween(p1, 1, 2);
-  print(t);
-}

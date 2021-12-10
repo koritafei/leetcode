@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/container-with-most-water/description/
  *
  * algorithms
- * Medium (52.82%)
- * Likes:    8846
- * Dislikes: 684
- * Total Accepted:    893.1K
- * Total Submissions: 1.7M
+ * Medium (53.23%)
+ * Likes:    13065
+ * Dislikes: 821
+ * Total Accepted:    1.2M
+ * Total Submissions: 2.2M
  * Testcase Example:  '[1,8,6,2,5,4,8,3,7]'
  *
  * Given n non-negative integers a1, a2, ..., an , where each represents a
@@ -64,42 +64,25 @@
  *
  */
 
-#include <iostream>
 #include <vector>
 
 // @lc code=start
 class Solution {
 public:
   int maxArea(std::vector<int>& height) {
-    int len     = height.size();
-    int maxArea = 0;
-    int h       = 0;
-    int i = 0, j = len - 1;
-
-    while (i < j) {
-      h       = std::min(height[i], height[j]);
-      maxArea = std::max(maxArea, (j - i) * h);
-      while (height[i] <= h && i < j) {
-        i++;
-      }
-      while (height[j] <= h && i < j) {
-        j--;
+    int left = 0, right = height.size() - 1;
+    int res = 0;
+    while (left < right) {
+      res =
+          std::max(res, std::min(height[left], height[right]) * (right - left));
+      if (height[left] < height[right]) {
+        left++;
+      } else {
+        right--;
       }
     }
 
-    return maxArea;
+    return res;
   }
 };
 // @lc code=end
-
-int main(int argc, char** argv) {
-  Solution         solution;
-  std::vector<int> nums = {1, 8, 6, 2, 5, 4, 8, 3, 7};
-  std::cout << solution.maxArea(nums) << std::endl;  // 49
-  nums = {1, 1};
-  std::cout << solution.maxArea(nums) << std::endl;  // 1
-  nums = {4, 3, 2, 1, 4};
-  std::cout << solution.maxArea(nums) << std::endl;  // 16
-  nums = {1, 2, 1};
-  std::cout << solution.maxArea(nums) << std::endl;  // 2
-}

@@ -6,10 +6,10 @@
  * https://leetcode.com/problems/remove-element/description/
  *
  * algorithms
- * Easy (50.39%)
- * Likes:    2793
- * Dislikes: 4338
- * Total Accepted:    1M
+ * Easy (50.50%)
+ * Likes:    2874
+ * Dislikes: 4447
+ * Total Accepted:    1.1M
  * Total Submissions: 2.1M
  * Testcase Example:  '[3,2,2,3]\n3'
  *
@@ -89,15 +89,20 @@
 class Solution {
 public:
   int removeElement(std::vector<int>& nums, int val) {
-    int slow = 0, fast = 0;
-    while (fast < nums.size()) {
+    int len = nums.size();
+    if (0 == len) {
+      return 0;
+    }
+
+    int slow = -1, fast = 0;
+    while (fast < len) {
       if (nums[fast] != val) {
-        nums[slow++] = nums[fast];
+        nums[++slow] = nums[fast];
       }
       fast++;
     }
 
-    return slow;
+    return slow + 1;
   }
 };
 // @lc code=end

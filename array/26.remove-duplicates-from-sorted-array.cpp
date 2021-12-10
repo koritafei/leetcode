@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/remove-duplicates-from-sorted-array/description/
  *
  * algorithms
- * Easy (47.73%)
- * Likes:    5082
- * Dislikes: 8478
+ * Easy (47.82%)
+ * Likes:    5227
+ * Dislikes: 8677
  * Total Accepted:    1.8M
- * Total Submissions: 3.7M
+ * Total Submissions: 3.8M
  * Testcase Example:  '[1,1,2]'
  *
  * Given an integer array nums sorted in non-decreasing order, remove the
@@ -86,17 +86,15 @@
 class Solution {
 public:
   int removeDuplicates(std::vector<int>& nums) {
-    int n = nums.size();
-    if (0 == n) {
+    if (nums.size() == 0) {
       return 0;
     }
 
-    int slow = 0, fast = 1;
-    while (fast < n) {
+    int slow = 0, fast = 0;
+    while (fast < nums.size()) {
       if (nums[slow] != nums[fast]) {
         nums[++slow] = nums[fast];
       }
-
       fast++;
     }
 

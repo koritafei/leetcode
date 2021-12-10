@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/remove-nth-node-from-end-of-list/description/
  *
  * algorithms
- * Medium (37.13%)
- * Likes:    7352
- * Dislikes: 374
+ * Medium (37.33%)
+ * Likes:    7799
+ * Dislikes: 393
  * Total Accepted:    1.1M
- * Total Submissions: 2.9M
+ * Total Submissions: 3M
  * Testcase Example:  '[1,2,3,4,5]\n2'
  *
  * Given the head of a linked list, remove the n^th node from the end of the
@@ -53,16 +53,7 @@
  *
  */
 
-struct ListNode {
-  int       val;
-  ListNode* next;
-  ListNode() : val(0), next(nullptr) {
-  }
-  ListNode(int x) : val(x), next(nullptr) {
-  }
-  ListNode(int x, ListNode* next) : val(x), next(next) {
-  }
-};
+#include "linkNode.h"
 
 // @lc code=start
 /**
@@ -78,52 +69,27 @@ struct ListNode {
 class Solution {
 public:
   ListNode* removeNthFromEnd(ListNode* head, int n) {
-    if (head == nullptr || n < 1) {
-      return head;
-    }
-
-    ListNode* dummy = new ListNode(-1);
+    ListNode* curr  = head;
+    ListNode* dummy = new ListNode(0);
     dummy->next     = head;
-    ListNode* p     = FindKthNode(dummy, n + 1);
+    ListNode* pre   = dummy;
 
-    p->next = p->next->next;
+    while (curr && n--) {  // 需要查找n+1个位置
+      curr = curr->next;
+    }
 
-    p = dummy->next;
+    while (curr) {  // 中间相差n+1个元素
+      curr = curr->next;
+      pre  = pre->next;
+    }
+
+    // 找到第n个节点
+    pre->next = pre->next->next;
+
+    head = dummy->next;
+
     delete dummy;
-    return p;
-  }
-
-private:
-  ListNode* FindKthNode(ListNode* head, int k) {
-    ListNode* p = head;
-    for (int i = 1; i <= k; i++) {
-      p = p->next;
-    }
-
-    ListNode* q = head;
-    while (p != nullptr) {
-      p = p->next;
-      q = q->next;
-    }
-
-    return q;
+    return head;
   }
 };
 // @lc code=end
-
-int main(int argc, char** argv) {
-  // [1,2,3,4,5], n = 2
-  ListNode* head  = new ListNode(1);
-  ListNode* h1    = new ListNode(2);
-  ListNode* head2 = new ListNode(3);
-  ListNode* head3 = new ListNode(4);
-  ListNode* head4 = new ListNode(5);
-
-  head->next  = h1;
-  h1->next    = head2;
-  head2->next = head3;
-  head3->next = head4;
-
-  Solution solution;
-  solution.removeNthFromEnd(head, 2);
-}

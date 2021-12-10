@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/merge-k-sorted-lists/description/
  *
  * algorithms
- * Hard (44.98%)
- * Likes:    9096
- * Dislikes: 393
- * Total Accepted:    1M
- * Total Submissions: 2.3M
+ * Hard (45.30%)
+ * Likes:    9511
+ * Dislikes: 403
+ * Total Accepted:    1.1M
+ * Total Submissions: 2.4M
  * Testcase Example:  '[[1,4,5],[1,3,4],[2,6]]'
  *
  * You are given an array of k linked-lists lists, each linked-list is sorted
@@ -64,16 +64,8 @@
 
 #include <queue>
 #include <vector>
-struct ListNode {
-  int       val;
-  ListNode* next;
-  ListNode() : val(0), next(nullptr) {
-  }
-  ListNode(int x) : val(x), next(nullptr) {
-  }
-  ListNode(int x, ListNode* next) : val(x), next(next) {
-  }
-};
+
+#include "linkNode.h"
 
 // @lc code=start
 /**
@@ -89,37 +81,36 @@ struct ListNode {
 class Solution {
 public:
   ListNode* mergeKLists(std::vector<ListNode*>& lists) {
-    // 构建一个小根堆
-    std::priority_queue<ListNode*, std::vector<ListNode*>, greater> pq;
-    for (auto head : lists) {
-      if (head != nullptr) {
-        pq.push(head);
+    std::priority_queue<ListNode*, std::vector<ListNode*>, greator> heap;
+    for (auto it : lists) {
+      if (it != nullptr) {
+        heap.push(it);
       }
     }
 
-    ListNode* dummy = new ListNode();
-    ListNode* p     = dummy;
+    ListNode* dummy = new ListNode(-1);
+    ListNode* curr  = dummy;
 
-    while (pq.size()) {
-      ListNode* node = pq.top();
-      pq.pop();
-      if (node->next != nullptr) {
-        pq.push(node->next);
+    while (heap.size()) {
+      ListNode* tmp = heap.top();
+      heap.pop();
+      if (tmp->next) {
+        heap.push(tmp->next);
       }
-
-      p->next = node;
-      p       = node;
+      curr->next = tmp;
+      curr       = tmp;
     }
 
-    p = dummy->next;
+    curr = dummy->next;
     delete dummy;
-    return p;
+
+    return curr;
   }
 
 private:
-  struct greater {
-    bool operator()(const ListNode* t1, const ListNode* t2) {
-      return t1->val >= t2->val;
+  struct greator {
+    bool operator()(ListNode* l1, ListNode* l2) {
+      return l1->val > l2->val;
     }
   };
 };

@@ -6,10 +6,10 @@
  * https://leetcode.com/problems/intersection-of-two-linked-lists/description/
  *
  * algorithms
- * Easy (47.49%)
- * Likes:    7063
- * Dislikes: 740
- * Total Accepted:    787.9K
+ * Easy (47.94%)
+ * Likes:    7356
+ * Dislikes: 754
+ * Total Accepted:    811.7K
  * Total Submissions: 1.7M
  * Testcase Example:  '8\n[4,1,8,4,5]\n[5,6,1,8,4,5]\n2\n3'
  *
@@ -90,26 +90,21 @@
  *
  * The number of nodes of listA is in the m.
  * The number of nodes of listB is in the n.
- * 0 <= m, n <= 3 * 10^4
+ * 1 <= m, n <= 3 * 10^4
  * 1 <= Node.val <= 10^5
- * 0 <= skipA <= m
- * 0 <= skipB <= n
+ * 0 <= skipA < m
+ * 0 <= skipB < n
  * intersectVal is 0 if listA and listB do not intersect.
  * intersectVal == listA[skipA] == listB[skipB] if listA and listB
  * intersect.
  *
  *
  *
- * Follow up: Could you write a solution that runs in O(n) time and use only
- * O(1) memory?
+ * Follow up: Could you write a solution that runs in O(m + n) time and use
+ * only O(1) memory?
  */
 
-struct ListNode {
-  int       val;
-  ListNode *next;
-  ListNode(int x) : val(x), next(NULL) {
-  }
-};
+#include "linkNode.h"
 
 // @lc code=start
 /**
@@ -123,24 +118,22 @@ struct ListNode {
 class Solution {
 public:
   ListNode *getIntersectionNode(ListNode *headA, ListNode *headB) {
-    ListNode *p1 = headA;
-    ListNode *p2 = headB;
-
-    while (p1 != p2) {
-      if (p1 == nullptr) {
-        p1 = headB;
+    ListNode *l1 = headA, *l2 = headB;
+    while (l1 != l2) {
+      if (l1 == nullptr) {
+        l1 = headB;
       } else {
-        p1 = p1->next;
+        l1 = l1->next;
       }
 
-      if (p2 == nullptr) {
-        p2 = headA;
+      if (l2 == nullptr) {
+        l2 = headA;
       } else {
-        p2 = p2->next;
+        l2 = l2->next;
       }
     }
 
-    return p1;
+    return l1;
   }
 };
 // @lc code=end

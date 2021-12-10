@@ -6,10 +6,10 @@
  * https://leetcode.com/problems/trapping-rain-water/description/
  *
  * algorithms
- * Hard (54.27%)
- * Likes:    14941
- * Dislikes: 212
- * Total Accepted:    927.8K
+ * Hard (54.73%)
+ * Likes:    15401
+ * Dislikes: 219
+ * Total Accepted:    954.9K
  * Total Submissions: 1.7M
  * Testcase Example:  '[0,1,0,2,1,0,1,3,2,1,2,1]'
  *
@@ -45,31 +45,35 @@
  *
  */
 
+#include <climits>
 #include <vector>
 
 // @lc code=start
 class Solution {
 public:
   int trap(std::vector<int>& height) {
-    int len  = height.size();
-    int ans  = 0;
-    int left = 0, right = len - 1;
-    int left_max = height[0], right_max = height[len - 1];
+    int              len = height.size();
+    std::vector<int> leftMax;
+    leftMax.resize(len);
+    std::vector<int> rightMax;
+    rightMax.resize(len);
+    int res           = 0;
+    leftMax[0]        = height[0];
+    rightMax[len - 1] = height[len - 1];
 
-    while (left <= right) {
-      left_max  = std::max(left_max, height[left]);
-      right_max = std::max(right_max, height[right]);
-
-      if (left_max < right_max) {
-        ans += left_max - height[left];
-        left++;
-      } else {
-        ans += right_max - height[right];
-        right--;
-      }
+    for (int i = 1; i < len; i++) {
+      leftMax[i] = std::max(leftMax[i - 1], height[i]);
     }
 
-    return ans;
+    for (int i = len - 2; i >= 0; i--) {
+      rightMax[i] = std::max(rightMax[i + 1], height[i]);
+    }
+
+    for (int i = 0; i < len; i++) {
+      res += std::min(leftMax[i], rightMax[i]) - height[i];
+    }
+
+    return res;
   }
 };
 // @lc code=end

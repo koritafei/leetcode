@@ -6,9 +6,9 @@
  * https://leetcode.com/problems/move-zeroes/description/
  *
  * algorithms
- * Easy (59.61%)
- * Likes:    7146
- * Dislikes: 198
+ * Easy (59.79%)
+ * Likes:    7354
+ * Dislikes: 205
  * Total Accepted:    1.4M
  * Total Submissions: 2.3M
  * Testcase Example:  '[0,1,0,3,12]'
@@ -44,10 +44,15 @@
 class Solution {
 public:
   void moveZeroes(std::vector<int>& nums) {
-    int slow = 0, fast = 0;
-    while (fast < nums.size()) {
+    int len = nums.size();
+    if (1 == len) {
+      return;
+    }
+
+    int slow = -1, fast = 0;
+    while (fast < len) {
       if (nums[fast] != 0) {
-        swap(nums[slow++], nums[fast]);
+        std::swap(nums[++slow], nums[fast]);
       }
       fast++;
     }

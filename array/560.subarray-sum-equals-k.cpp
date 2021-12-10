@@ -6,10 +6,10 @@
  * https://leetcode.com/problems/subarray-sum-equals-k/description/
  *
  * algorithms
- * Medium (43.70%)
- * Likes:    9693
- * Dislikes: 319
- * Total Accepted:    602.2K
+ * Medium (43.77%)
+ * Likes:    10033
+ * Dislikes: 332
+ * Total Accepted:    623.7K
  * Total Submissions: 1.4M
  * Testcase Example:  '[1,1,1]\n2'
  *
@@ -42,22 +42,26 @@
 class Solution {
 public:
   int subarraySum(std::vector<int>& nums, int k) {
-    int                len = nums.size();
-    std::map<int, int> prenums;
-    prenums[0] = 1;
-    int ans    = 0;
-    int sum_i  = 0;
-    int sum_j  = 0;
+    int len = nums.size();
+    if (len == 0) {
+      return 0;
+    }
+    std::map<int, int> sum;  // <presum, count>
+    sum.insert(std::make_pair(0, 1));
+
+    int res = 0, presum = 0;
+
     for (int i = 0; i < len; i++) {
-      sum_i += nums[i];
-      sum_j = sum_i - k;
-      if (prenums.count(sum_j)) {
-        ans += prenums[sum_j];
+      presum += nums[i];
+      int t = presum - k;
+      if (sum.count(t) != 0) {
+        res += sum[t];
       }
-      prenums[sum_i]++;
+
+      sum[presum]++;
     }
 
-    return ans;
+    return res;
   }
 };
 // @lc code=end

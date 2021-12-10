@@ -6,10 +6,10 @@
  * https://leetcode.com/problems/palindrome-linked-list/description/
  *
  * algorithms
- * Easy (44.60%)
- * Likes:    6854
- * Dislikes: 483
- * Total Accepted:    789.6K
+ * Easy (44.94%)
+ * Likes:    7170
+ * Dislikes: 489
+ * Total Accepted:    813.9K
  * Total Submissions: 1.8M
  * Testcase Example:  '[1,2,2,1]'
  *
@@ -43,16 +43,9 @@
  * Follow up: Could you do it in O(n) time and O(1) space?
  */
 
-struct ListNode {
-  int       val;
-  ListNode *next;
-  ListNode() : val(0), next(nullptr) {
-  }
-  ListNode(int x) : val(x), next(nullptr) {
-  }
-  ListNode(int x, ListNode *next) : val(x), next(next) {
-  }
-};
+#include <stack>
+
+#include "linkNode.h"
 
 // @lc code=start
 /**
@@ -68,51 +61,40 @@ struct ListNode {
 class Solution {
 public:
   bool isPalindrome(ListNode *head) {
-    ListNode *slow = head, *fast = head;
-    // slow为后半段第一个节点
+    if (head == nullptr) {
+      return true;
+    }
+
+    ListNode *fast = head, *slow = head;
     while (fast && fast->next) {
-      slow = slow->next;
       fast = fast->next->next;
-    }
-
-    // 长度为奇数时，slow正好为中点
-    if (fast) {
       slow = slow->next;
     }
 
-    // 逆置
-    ListNode *second = reserve(slow);
+    // 奇数时slow为中点， fast->next = nullptr
+    // 偶数时slow为后半段起点，fast = nullptr;
+    std::stack<int> stack;
+    ListNode       *r = slow;
+    if (fast != nullptr) {
+      r = r->next;
+    }
 
-    // 判断是否问回文串
-    return isPalindrome(head, second);
-  }
+    while (r) {
+      stack.push(r->val);
+      r = r->next;
+    }
 
-private:
-  bool isPalindrome(ListNode *head, ListNode *second) {
-    while (second) {
-      if (head->val != second->val) {
+    r = head;
+    while (r != slow) {
+      if (r->val == stack.top()) {
+        stack.pop();
+        r = r->next;
+      } else {
         return false;
       }
-      head   = head->next;
-      second = second->next;
     }
 
     return true;
-  }
-
-  ListNode *reserve(ListNode *head) {
-    ListNode *dummy = new ListNode();
-    while (head) {
-      ListNode *p = head;
-      head        = head->next;
-      p->next     = dummy->next;
-      dummy->next = p;
-    }
-
-    head = dummy->next;
-    delete dummy;
-
-    return head;
   }
 };
 // @lc code=end

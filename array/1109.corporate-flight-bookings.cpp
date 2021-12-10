@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/corporate-flight-bookings/description/
  *
  * algorithms
- * Medium (56.04%)
- * Likes:    849
+ * Medium (56.51%)
+ * Likes:    870
  * Dislikes: 132
- * Total Accepted:    31.7K
- * Total Submissions: 56.5K
+ * Total Accepted:    32.6K
+ * Total Submissions: 57.6K
  * Testcase Example:  '[[1,2,10],[2,3,20],[2,5,25]]\n5'
  *
  * There are n flights that are labeled from 1 to n.
@@ -71,27 +71,55 @@ class Solution {
 public:
   std::vector<int> corpFlightBookings(std::vector<std::vector<int>>& bookings,
                                       int                            n) {
-    int              len = bookings.size();
-    std::vector<int> diff(n, 0);
+    std::vector<int> nums = std::vector<int>(n, 0);
+    difference       df(nums);
+    std::vector<int> res;
 
-    for (int i = 0; i < len; i++) {
-      std::vector<int> tmp   = bookings[i];
-      int              start = tmp[0] - 1;
-      int              end   = tmp[1] - 1;
-      int              book  = tmp[2];
-      diff[start] += book;
-      if (end + 1 < n) {
-        diff[end + 1] -= book;
-      }
+    for (int i = 0; i < bookings.size(); i++) {
+      int s = bookings[i][0] - 1;
+      int e = bookings[i][1] - 1;
+      int b = bookings[i][2];
+      df.increment(b, s, e);
     }
-    // 构造结果数组
-    std::vector<int> res(n, 0);
-    res[0] = diff[0];
-    for (int i = 1; i < n; i++) {
-      res[i] = res[i - 1] + diff[i];
-    }
+
+    res = df.result();
 
     return res;
   }
+
+private:
+  class difference {
+  public:
+    difference(std::vector<int> nums) {
+      int len = nums.size();
+      if (len > 0) {
+        diff    = std::vector<int>(len, 0);
+        diff[0] = nums[0];
+        for (int i = 1; i < len; i++) {
+          diff[i] = nums[i] - nums[i - 1];
+        }
+      }
+    }
+
+    void increment(int cap, int left, int right) {
+      diff[left] += cap;
+      if (right + 1 < diff.size()) {
+        diff[right + 1] -= cap;
+      }
+    }
+
+    std::vector<int> result() {
+      std::vector<int> res = std::vector<int>(diff.size(), 0);
+      res[0]               = diff[0];
+      for (int i = 1; i < diff.size(); i++) {
+        res[i] = res[i - 1] + diff[i];
+      }
+
+      return res;
+    }
+
+  private:
+    std::vector<int> diff;
+  };
 };
 // @lc code=end

@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/middle-of-the-linked-list/description/
  *
  * algorithms
- * Easy (70.66%)
- * Likes:    3558
- * Dislikes: 94
- * Total Accepted:    433.7K
- * Total Submissions: 613.9K
+ * Easy (70.94%)
+ * Likes:    3822
+ * Dislikes: 100
+ * Total Accepted:    463.5K
+ * Total Submissions: 653.3K
  * Testcase Example:  '[1,2,3,4,5]'
  *
  * Given the head of a singly linked list, return the middle node of the linked
@@ -46,16 +46,7 @@
  *
  */
 
-struct ListNode {
-  int       val;
-  ListNode* next;
-  ListNode() : val(0), next(nullptr) {
-  }
-  ListNode(int x) : val(x), next(nullptr) {
-  }
-  ListNode(int x, ListNode* next) : val(x), next(next) {
-  }
-};
+#include "linkNode.h"
 
 // @lc code=start
 /**
@@ -71,8 +62,8 @@ struct ListNode {
 class Solution {
 public:
   ListNode* middleNode(ListNode* head) {
-    ListNode* slow = head;
-    ListNode* fast = head;
+    ListNode *slow = head, *fast = head;
+
     while (fast && fast->next) {
       slow = slow->next;
       fast = fast->next->next;

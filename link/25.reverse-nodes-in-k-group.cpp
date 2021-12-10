@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/reverse-nodes-in-k-group/description/
  *
  * algorithms
- * Hard (48.74%)
- * Likes:    5354
- * Dislikes: 455
- * Total Accepted:    429.3K
- * Total Submissions: 880.2K
+ * Hard (49.18%)
+ * Likes:    5640
+ * Dislikes: 458
+ * Total Accepted:    442.1K
+ * Total Submissions: 898.6K
  * Testcase Example:  '[1,2,3,4,5]\n2'
  *
  * Given a linked list, reverse the nodes of a linked list k at a time and
@@ -65,17 +65,7 @@
  *
  * Follow-up: Can you solve the problem in O(1) extra memory space?
  */
-
-struct ListNode {
-  int       val;
-  ListNode* next;
-  ListNode() : val(0), next(nullptr) {
-  }
-  ListNode(int x) : val(x), next(nullptr) {
-  }
-  ListNode(int x, ListNode* next) : val(x), next(next) {
-  }
-};
+#include "linkNode.h"
 
 // @lc code=start
 /**
@@ -90,38 +80,60 @@ struct ListNode {
  */
 class Solution {
 public:
-  ListNode* reverseKGroup(ListNode* head, int k) {
-    if (head == nullptr || k <= 0) {
+  ListNode *reverseKGroup(ListNode *head, int k) {
+    if (head == nullptr) {
       return head;
     }
 
-    ListNode *a, *b;  // a逆置之后为每个k段的最后一个节点，b为下一个段的开始节点
-    a = b = head;
-    for (int i = 0; i < k; i++) {
-      if (b == nullptr) {
+    ListNode *curr = head;
+    int       g    = k;
+    while (g--) {
+      if (curr == nullptr) {
         return head;
       }
-      b = b->next;
+      curr = curr->next;
     }
 
-    ListNode* newHead = reverse(a, b);
-    a->next           = reverseKGroup(b, k);
+    ListNode *dummy = reserveTwoNode(head, curr);
+    head->next      = reverseKGroup(curr, k);
 
-    return newHead;
+    return dummy;
   }
 
 private:
-  // 翻转[a,b)的元素
-  ListNode* reverse(ListNode* a, ListNode* b) {
-    ListNode *pre = nullptr, *curr = a, *next;
-    while (curr != b) {
-      next       = curr->next;
-      curr->next = pre;
-      pre        = curr;
-      curr       = next;
+  ListNode *reserveTwoNode(ListNode *a, ListNode *b) {
+    ListNode *dummy = new ListNode(-1);
+    dummy->next     = a;
+    ListNode *curr  = dummy->next;
+
+    while (a->next != b) {
+      ListNode *tmp = a->next;
+      a->next       = tmp->next;
+      tmp->next     = curr;
+      dummy->next   = tmp;
+      curr          = tmp;
     }
 
-    return pre;
+    curr = dummy->next;
+
+    delete dummy;
+    return curr;
   }
 };
 // @lc code=end
+
+int main() {
+  ListNode *l1 = new ListNode(1);
+  ListNode *l2 = new ListNode(2);
+  ListNode *l3 = new ListNode(3);
+  ListNode *l4 = new ListNode(4);
+  ListNode *l5 = new ListNode(5);
+
+  l1->next = l2;
+  l2->next = l3;
+  l3->next = l4;
+  l4->next = l5;
+
+  Solution so;
+  so.reverseKGroup(l1, 2);
+}

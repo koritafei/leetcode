@@ -6,10 +6,10 @@
  * https://leetcode.com/problems/remove-duplicates-from-sorted-list/description/
  *
  * algorithms
- * Easy (47.86%)
- * Likes:    3563
- * Dislikes: 164
- * Total Accepted:    709.1K
+ * Easy (48.05%)
+ * Likes:    3726
+ * Dislikes: 172
+ * Total Accepted:    727.7K
  * Total Submissions: 1.5M
  * Testcase Example:  '[1,1,2]'
  *
@@ -42,16 +42,7 @@
  *
  */
 
-struct ListNode {
-  int       val;
-  ListNode* next;
-  ListNode() : val(0), next(nullptr) {
-  }
-  ListNode(int x) : val(x), next(nullptr) {
-  }
-  ListNode(int x, ListNode* next) : val(x), next(next) {
-  }
-};
+#include "linkNode.h"
 
 // @lc code=start
 /**
@@ -67,19 +58,19 @@ struct ListNode {
 class Solution {
 public:
   ListNode* deleteDuplicates(ListNode* head) {
-    if (nullptr == head) {
+    if (head == nullptr) {
       return head;
     }
-    ListNode *slow = head, *fast = head->next;
 
+    ListNode *slow = head, *fast = head;
     while (fast) {
       if (slow->val != fast->val) {
         slow->next = fast;
         slow       = slow->next;
       }
+
       fast = fast->next;
     }
-
     slow->next = nullptr;
     return head;
   }

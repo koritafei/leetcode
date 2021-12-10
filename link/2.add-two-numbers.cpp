@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/add-two-numbers/description/
  *
  * algorithms
- * Medium (35.54%)
- * Likes:    11089
- * Dislikes: 2659
- * Total Accepted:    1.8M
- * Total Submissions: 5.1M
+ * Medium (37.35%)
+ * Likes:    15139
+ * Dislikes: 3292
+ * Total Accepted:    2.3M
+ * Total Submissions: 6.3M
  * Testcase Example:  '[2,4,3]\n[5,6,4]'
  *
  * You are given two non-empty linked lists representing two non-negative
@@ -56,6 +56,8 @@
  *
  */
 
+#include "linkNode.h"
+
 // @lc code=start
 /**
  * Definition for singly-linked list.
@@ -70,53 +72,47 @@
 class Solution {
 public:
   ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
-    if (l1 == nullptr && l2 == nullptr) {
-      return nullptr;
-    }
     ListNode* dummy = new ListNode(0);
-    ListNode* tail  = dummy;
-    int       next  = 0;
-    while (l1 && l2) {
-      int       val = l1->val + l2->val + next;
-      ListNode* t   = new ListNode(val % 10);
-      next          = val / 10;
-      t->next       = tail->next;
-      tail->next    = t;
-      tail          = t;
-      l1            = l1->next;
-      l2            = l2->next;
+    int       k     = 0;  // 保存进位
+    ListNode* p1    = l1;
+    ListNode* p2    = l2;
+    ListNode* curr  = dummy;
+    while (p1 && p2) {
+      int sum        = p1->val + p2->val + k;
+      k              = sum / 10;
+      ListNode* node = new ListNode(sum % 10);
+      curr->next     = node;
+      curr           = node;
+      p1             = p1->next;
+      p2             = p2->next;
     }
 
-    while (l1) {
-      int       val = l1->val + next;
-      ListNode* t   = new ListNode(val % 10);
-      next          = val / 10;
-      t->next       = tail->next;
-      tail->next    = t;
-      tail          = t;
-      l1            = l1->next;
+    while (p1) {
+      int sum        = p1->val + k;
+      k              = sum / 10;
+      ListNode* node = new ListNode(sum % 10);
+      curr->next     = node;
+      curr           = node;
+      p1             = p1->next;
     }
 
-    while (l2) {
-      int       val = l2->val + next;
-      ListNode* t   = new ListNode(val % 10);
-      next          = val / 10;
-      t->next       = tail->next;
-      tail->next    = t;
-      tail          = t;
-      l2            = l2->next;
+    while (p2) {
+      int sum        = p2->val + k;
+      k              = sum / 10;
+      ListNode* node = new ListNode(sum % 10);
+      curr->next     = node;
+      curr           = node;
+      p2             = p2->next;
     }
 
-    if (next) {
-      ListNode* t = new ListNode(next);
-      t->next     = tail->next;
-      tail->next  = t;
-      tail        = t;
+    if (k) {
+      ListNode* node = new ListNode(k);
+      curr->next     = node;
     }
 
-    l1 = dummy->next;
-    delete (dummy);
-    return l1;
+    curr = dummy->next;
+    delete dummy;
+    return curr;
   }
 };
 // @lc code=end
