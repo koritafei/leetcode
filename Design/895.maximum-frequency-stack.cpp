@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/maximum-frequency-stack/description/
  *
  * algorithms
- * Hard (64.22%)
- * Likes:    2279
- * Dislikes: 39
- * Total Accepted:    82.7K
- * Total Submissions: 128.7K
+ * Hard (64.35%)
+ * Likes:    2324
+ * Dislikes: 40
+ * Total Accepted:    84.5K
+ * Total Submissions: 131.3K
  * Testcase Example:
  '["FreqStack","push","push","push","push","push","push","pop","pop","pop","pop"]\n'
  +
@@ -80,36 +80,50 @@
 // @lc code=start
 class FreqStack {
 public:
-  FreqStack() {
+  FreqStack() : maxfreq(0) {
   }
 
   void push(int val) {
-    int freq = 0;
-    if (valToFreq.count(val)) {
-      freq += valToFreq[val];
+    int freq = 1;
+    if (valToFreq.find(val) != valToFreq.end()) {
+      // val已存在
+      freq = valToFreq[val];
+      valToFreq[val]++;
+
+      freqVals[++freq].push(val);
+    } else {
+      // val 不存在
+      valToFreq[val] = freq;
+      freqVals[freq].push(val);
     }
 
-    valToFreq[val] = freq + 1;
-    freqToVals[freq + 1].push(val);
-    maxFreq = maxFreq > (freq + 1) ? maxFreq : freq + 1;
+    maxfreq = std::max(maxfreq, freq);
   }
 
   int pop() {
-    int v = freqToVals[maxFreq].top();
-    freqToVals[maxFreq].pop();
-    valToFreq[v]--;
+    if (freqVals[maxfreq].size()) {
+      int res = freqVals[maxfreq].top();
+      freqVals[maxfreq].pop();
+      if (freqVals[maxfreq].empty()) {
+        freqVals.erase(maxfreq);
+        maxfreq--;
+      }
 
-    if (freqToVals[maxFreq].empty()) {
-      maxFreq--;
+      valToFreq[res]--;
+      if (valToFreq[res] == 0) {
+        valToFreq.erase(res);
+      }
+
+      return res;
     }
 
-    return v;
+    return -1;
   }
 
 private:
-  int                                      maxFreq = 0;  // 最大频率
+  int                                      maxfreq;
   std::unordered_map<int, int>             valToFreq;
-  std::unordered_map<int, std::stack<int>> freqToVals;
+  std::unordered_map<int, std::stack<int>> freqVals;
 };
 
 /**

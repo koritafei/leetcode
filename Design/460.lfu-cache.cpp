@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/lfu-cache/description/
  *
  * algorithms
- * Hard (38.36%)
- * Likes:    2622
- * Dislikes: 180
- * Total Accepted:    131.5K
- * Total Submissions: 342.5K
+ * Hard (38.55%)
+ * Likes:    2698
+ * Dislikes: 185
+ * Total Accepted:    134.4K
+ * Total Submissions: 348.6K
  * Testcase Example:
  '["LFUCache","put","put","get","put","get","get","put","get","get","get"]\n' +
   '[[2],[1,1],[2,2],[1],[3,3],[2],[3],[4,4],[1],[3],[4]]'
@@ -93,100 +93,107 @@
  *
  */
 
-#include <iostream>
 #include <list>
 #include <unordered_map>
 
 // @lc code=start
 class LFUCache {
 public:
-  LFUCache(int capacity) {
-    _minFreq = 1;
-    _cap     = capacity;
+  typedef std::list<std::pair<int, int>>::iterator Iter;
+  typedef std::list<int>::iterator                 listIter;
+
+  LFUCache(int capacity) : capacity(capacity), size(0), minFreq(1) {
   }
 
   int get(int key) {
-    if (!kvMap.count(key) || this->_cap <= 0) {
+    // 不存在
+    if (capacity == 0 || keyIter.find(key) == keyIter.end()) {
       return -1;
     }
 
-    increaseFreq(key);
-    return kvMap[key].first;
+    // 存在更新freq
+    int val = keyIter[key]->second;
+
+    // 更新freq
+    update(key);
+
+    return val;
   }
 
   void put(int key, int value) {
-    if (this->_cap <= 0) {
+    if (capacity == 0) {
       return;
     }
 
-    // 已存在key，更新频率
-    if (kvMap.count(key)) {
-      kvMap[key].first = value;
-      increaseFreq(key);
+    // 存在
+    if (keyIter.find(key) != keyIter.end()) {
+      Iter it    = keyIter[key];
+      it->second = value;
+      update(key);
       return;
     }
 
     // 不存在
-    if (_size >= this->_cap) {
-      // _cap已满，删除一个元素
-      removeKeyFromkvMap();
-      _size--;
+    if (size >= capacity) {
+      remove();
+      size--;
     }
 
-    // 插入一个元素
-    kvMap[key] = std::make_pair(value, 1);
-    freqKeysMap[1].push_back(key);  // 每次新插入元素，都在list的最后
-    keyIter[key] = --freqKeysMap[1].end();
-    // 每次新插入元素，minFreq 都重置为1
-    this->_minFreq = 1;
-    _size++;
-  }
-
-  void print() {
-    for (auto it : kvMap) {
-      std::cout << it.first << ' ' << it.second.first << ' ' << it.second.second
-                << std::endl;
-    }
-    std::cout << std::endl;
+    // 插入新的节点
+    kv.push_front(std::make_pair(key, value));
+    keyIter[key] = kv.begin();
+    freqKeys[1].push_front(key);
+    keyFreq[key] = std::make_pair(1, freqKeys[1].begin());
+    minFreq      = 1;
+    size++;
   }
 
 private:
-  void increaseFreq(int key) {
-    int freq = kvMap[key].second;
-    kvMap[key].second++;  // 访问了一次，freq增加1
+  void remove() {
+    int key = freqKeys[minFreq].back();
 
-    std::list<int>::iterator it = keyIter[key];
-    freqKeysMap[freq].erase(it);  // 从原freq中删除当前key
+    freqKeys[minFreq].pop_back();
+    if (freqKeys[minFreq].empty()) {
+      freqKeys.erase(minFreq);
+    }
 
-    if (freqKeysMap[freq].empty()) {
-      freqKeysMap.erase(freq);
-      if (this->_minFreq == freq) {  // 原freq中只有一个key，且为最小频率
-        this->_minFreq++;
+    Iter iter = keyIter[key];
+    keyIter.erase(key);
+    kv.erase(iter);
+    keyFreq.erase(key);
+  }
+
+  void update(int key) {
+    std::pair<int, listIter> freqIter = keyFreq[key];
+
+    int      freq = freqIter.first;
+    listIter iter = freqIter.second;
+
+    // 从freqKeys删除指定key
+    freqKeys[freq].erase(iter);
+
+    if (freqKeys[freq].empty()) {
+      freqKeys.erase(freq);
+      if (minFreq == freq) {
+        minFreq++;
       }
     }
-    // 在新的freq中插入key
-    freqKeysMap[freq + 1].push_back(key);
-    keyIter[key] = --freqKeysMap[freq + 1].end();
+
+    // 插入新的freq中
+    int newfreq = ++freq;
+    freqKeys[newfreq].push_front(key);
+    keyFreq[key] = std::make_pair(newfreq, freqKeys[newfreq].begin());
   }
 
-  void removeKeyFromkvMap() {
-    int key = freqKeysMap[_minFreq].front();
-    freqKeysMap[_minFreq].pop_front();
+  int minFreq;   // 最小频率
+  int capacity;  // 容量
+  int size;      // 使用的大小
 
-    kvMap.erase(key);
-    keyIter.erase(key);
-    if (freqKeysMap[_minFreq].empty()) {
-      freqKeysMap.erase(_minFreq);
-    }
-  }
-
-  int                                          _minFreq;  // 最小的freq
-  int                                          _cap;
-  int                                          _size;
-  std::unordered_map<int, std::pair<int, int>> kvMap;  // key-<val, frep> map
-  std::unordered_map<int, std::list<int>::iterator>
-                                          keyIter;      // key-iterator map
-  std::unordered_map<int, std::list<int>> freqKeysMap;  // freq-keys map
+  std::unordered_map<int, std::pair<int, listIter>>
+      keyFreq;  // 存储key,freq,freq_iterator对应关系
+  std::list<std::pair<int, int>>          kv;        // <key, val>
+  std::unordered_map<int, Iter>           keyIter;   // <key, iterator>
+  std::unordered_map<int, std::list<int>> freqKeys;  // freq对应的key列表
 };
 
 /**
@@ -196,29 +203,3 @@ private:
  * obj->put(key,value);
  */
 // @lc code=end
-
-int main(int argc, char** argv) {
-  LFUCache* obj = new LFUCache(2);
-  obj->put(1, 1);
-  obj->print();
-  obj->put(2, 2);
-  obj->print();
-  std::cout << "key 1 " << obj->get(1) << std::endl;
-  obj->print();
-
-  obj->put(3, 3);
-  obj->print();
-
-  std::cout << "key 2 " << obj->get(2) << std::endl;
-  obj->print();
-  std::cout << "key 3 " << obj->get(3) << std::endl;
-  obj->print();
-  obj->put(4, 4);
-  obj->print();
-  std::cout << "key 1 " << obj->get(1) << std::endl;
-  obj->print();
-  std::cout << "key 3 " << obj->get(3) << std::endl;
-  obj->print();
-  std::cout << "key 4 " << obj->get(4) << std::endl;
-  obj->print();
-}

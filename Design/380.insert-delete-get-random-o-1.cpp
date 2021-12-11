@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/insert-delete-getrandom-o1/description/
  *
  * algorithms
- * Medium (50.70%)
- * Likes:    4692
- * Dislikes: 257
- * Total Accepted:    416.6K
- * Total Submissions: 821.6K
+ * Medium (50.78%)
+ * Likes:    4781
+ * Dislikes: 260
+ * Total Accepted:    424K
+ * Total Submissions: 834.9K
  * Testcase Example:
  '["RandomizedSet","insert","remove","insert","getRandom","remove","insert","getRandom"]\n'
  +
@@ -82,39 +82,38 @@ public:
   }
 
   bool insert(int val) {
-    if (map_.count(val)) {
+    if (keyIter.find(val) != keyIter.end()) {
       return false;
     }
-    val_.push_back(val);
-    map_[val] = val_.size() - 1;
+
+    data_.push_back(val);
+    keyIter[val] = data_.size() - 1;
+
     return true;
   }
 
   bool remove(int val) {
-    if (!map_.count(val)) {
+    if (keyIter.find(val) == keyIter.end()) {
       return false;
     }
 
-    int index = map_[val];
-    int key   = val_.back();
-    std::swap(val_[index], val_.back());
-    map_[key] = index;
-    map_.erase(val);
-    val_.pop_back();
+    int index             = keyIter[val];
+    keyIter[data_.back()] = index;
+
+    std::swap(data_.back(), data_[index]);
+    data_.pop_back();
+    keyIter.erase(val);
 
     return true;
   }
 
   int getRandom() {
-    if (val_.size()) {
-      return val_[rand() % val_.size()];
-    }
-    return -1;
+    return data_[rand() % data_.size()];
   }
 
 private:
-  std::vector<int>             val_;  // 存储元素
-  std::unordered_map<int, int> map_;  // 存储元素与索引
+  std::vector<int>             data_;  // 存储数据
+  std::unordered_map<int, int> keyIter;
 };
 
 /**
