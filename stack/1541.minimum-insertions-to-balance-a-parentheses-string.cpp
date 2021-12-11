@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/minimum-insertions-to-balance-a-parentheses-string/description/
  *
  * algorithms
- * Medium (47.11%)
- * Likes:    501
- * Dislikes: 101
- * Total Accepted:    20.6K
- * Total Submissions: 43.6K
+ * Medium (47.65%)
+ * Likes:    515
+ * Dislikes: 105
+ * Total Accepted:    21.7K
+ * Total Submissions: 45.6K
  * Testcase Example:  '"(()))"'
  *
  * Given a parentheses string s containing only the characters '(' and ')'. A
@@ -95,28 +95,28 @@
 class Solution {
 public:
   int minInsertions(std::string s) {
-    int need = 0;  // 右括号需求
-    int res  = 0;  // 左括号的需求
+    int len  = s.size();
+    int need = 0;
+    int res  = 0;
 
-    for (auto ch : s) {
-      if (ch == '(') {
+    for (int i = 0; i < len; i++) {
+      if (s[i] == '(') {
         need += 2;
-        if (need % 2 == 1) {
+        if (need % 2 ==
+            1) {  // 对右括号需求为偶数，当为奇数时，需要增加一个结果
           res++;
           need--;
         }
-      }
-
-      if (ch == ')') {
+      } else {
         need--;
-        if (need == -1) {  // 右括号太多了
+        if (need == -1) {
           res++;
           need = 1;
         }
       }
     }
 
-    return need + res;
+    return res + need;
   }
 };
 // @lc code=end

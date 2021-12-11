@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/minimum-add-to-make-parentheses-valid/description/
  *
  * algorithms
- * Medium (76.96%)
- * Likes:    1828
- * Dislikes: 104
- * Total Accepted:    147K
- * Total Submissions: 190.6K
+ * Medium (77.40%)
+ * Likes:    1891
+ * Dislikes: 105
+ * Total Accepted:    154.5K
+ * Total Submissions: 199.5K
  * Testcase Example:  '"())"'
  *
  * A parentheses string is valid if and only if:
@@ -77,20 +77,24 @@
 class Solution {
 public:
   int minAddToMakeValid(std::string s) {
-    int res = 0, need = 0;
-    for (auto ch : s) {
-      if (ch == '(') {
-        need++;  // 需要一个右括号
-      }
-      if (ch == ')') {
-        need--;  // 减少一个有括号需求
-        if (need == -1) {
-          need = 0;
+    int need = 0;
+    int res  = 0;
+
+    int len = s.size();
+
+    for (int i = 0; i < len; i++) {
+      if (s[i] == '(') {
+        need++;
+      } else {
+        need--;
+        if (-1 == need) {
           res++;
+          need = 0;
         }
       }
     }
-    return res + need;
+
+    return need + res;
   }
 };
 // @lc code=end

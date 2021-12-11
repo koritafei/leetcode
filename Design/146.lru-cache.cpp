@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/lru-cache/description/
  *
  * algorithms
- * Medium (38.35%)
- * Likes:    10715
- * Dislikes: 427
- * Total Accepted:    899.2K
- * Total Submissions: 2.3M
+ * Medium (38.68%)
+ * Likes:    11167
+ * Dislikes: 441
+ * Total Accepted:    928K
+ * Total Submissions: 2.4M
  * Testcase Example:
  '["LRUCache","put","put","get","put","get","put","get","get","get"]\n' +
   '[[2],[1,1],[2,2],[1],[3,3],[2],[4,4],[1],[3],[4]]'
@@ -72,55 +72,57 @@
 #include <unordered_map>
 
 // @lc code=start
-
 class LRUCache {
 public:
-  typedef std::list<std::pair<int, int>>::iterator node;
-
-  LRUCache(int capacity)
-      : capacity_(capacity), head_(new std::list<std::pair<int, int>>) {
+  LRUCache(int capacity) : capacity(capacity), size(0) {
   }
 
   int get(int key) {
-    if (map_.count(key) == 0) {
+    if (keyIter.count(key) == 0) {
       return -1;
     }
-    node val = map_[key];
-    int  res = val->second;
-    // 删除老节点
-    map_.erase(key);
-    head_->erase(val);
-    // 构造一个新节点,并插入头部
-    head_->push_front(std::make_pair(key, res));
-    map_[key] = head_->begin();
-    return res;
+
+    std::list<std::pair<int, int>>::iterator iter = keyIter[key];
+    int                                      val  = iter->second;
+
+    updateKV(key, val);
+
+    return val;
   }
 
   void put(int key, int value) {
-    // 判断是否已经存在这个key
-    if (map_.count(key)) {
-      // 已经存在
-      // 删除老节点，并插入头部
-      node old = map_[key];
-      map_.erase(key);
-      head_->erase(old);
-    } else {
-      // 不存在
-      if (map_.size() == capacity_) {
-        // 已满，移除最后一个
-        int key = head_->back().first;
-        head_->pop_back();
-        map_.erase(key);
-      }
+    if (keyIter.count(key)) {
+      updateKV(key, value);
+      return;
     }
-    head_->push_front(std::make_pair(key, value));
-    map_[key] = head_->begin();
+
+    if (size == capacity) {
+      // 移除最后一个元素
+      auto iter = cache.back();
+      cache.pop_back();
+      keyIter.erase(iter.first);
+      size--;
+    }
+
+    cache.push_front(std::make_pair(key, value));
+    keyIter[key] = cache.begin();
+    size++;
   }
 
 private:
-  std::list<std::pair<int, int>> *head_;  // 存储数据
-  std::unordered_map<int, node>   map_;   // 存储key， node*
-  const int                       capacity_;
+  void updateKV(int key, int val) {
+    std::list<std::pair<int, int>>::iterator iter = keyIter[key];
+
+    // 调整位置
+    cache.erase(iter);
+    cache.push_front(std::make_pair(key, val));
+    keyIter[key] = cache.begin();
+  }
+
+  int                            capacity;  // 容量
+  int                            size;
+  std::list<std::pair<int, int>> cache;  // cache
+  std::unordered_map<int, std::list<std::pair<int, int>>::iterator> keyIter;  //
 };
 
 /**

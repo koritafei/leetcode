@@ -6,9 +6,9 @@
  * https://leetcode.com/problems/kth-largest-element-in-an-array/description/
  *
  * algorithms
- * Medium (61.37%)
- * Likes:    7374
- * Dislikes: 418
+ * Medium (61.79%)
+ * Likes:    7554
+ * Dislikes: 426
  * Total Accepted:    1.1M
  * Total Submissions: 1.8M
  * Testcase Example:  '[3,2,1,5,6,4]\n2'
@@ -44,53 +44,51 @@ class Solution {
 public:
   int findKthLargest(std::vector<int>& nums, int k) {
     int left = 0, right = nums.size() - 1;
-    k--;
-    while (left <= right) {
-      int p = partation(nums, left, right);
-      if (k == p) {
-        return nums[p];
-      } else if (p < k) {
-        left = p + 1;
-      } else {
-        right = p - 1;
-      }
-    }
-
-    return -1;
+    return findKthLargest(nums, left, right, k);
   }
 
 private:
+  int findKthLargest(std::vector<int>& nums, int left, int right, int k) {
+    int p = partation(nums, left, right);
+    if (p == k - 1) {
+      return nums[p];
+    } else if (p > k - 1) {
+      return findKthLargest(nums, left, p - 1, k);
+    } else {
+      return findKthLargest(nums, p + 1, right, k);
+    }
+  }
+
   int partation(std::vector<int>& nums, int left, int right) {
-    if (left == right) {
+    if (left >= right) {
       return left;
     }
 
     int key = nums[left];
-    int low = left, high = right + 1;
-
-    while (true) {
+    int low = left, hight = right + 1;
+    while (low <= hight) {
       while (nums[++low] > key) {
-        if (low == right) {
+        if (low >= right) {
           break;
         }
       }
 
-      while (nums[--high] < key) {
-        if (high == left) {
+      while (nums[--hight] < key) {
+        if (hight <= left) {
           break;
         }
       }
 
-      if (low >= high) {
+      if (low >= hight) {
         break;
       }
 
-      std::swap(nums[low], nums[high]);
+      std::swap(nums[low], nums[hight]);
     }
 
-    std::swap(nums[left], nums[high]);
+    std::swap(nums[left], nums[hight]);
 
-    return high;
+    return hight;
   }
 };
 // @lc code=end
