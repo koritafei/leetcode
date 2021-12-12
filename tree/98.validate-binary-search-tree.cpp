@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/validate-binary-search-tree/description/
  *
  * algorithms
- * Medium (29.75%)
- * Likes:    7809
- * Dislikes: 781
+ * Medium (29.87%)
+ * Likes:    8089
+ * Dislikes: 796
  * Total Accepted:    1.2M
- * Total Submissions: 3.9M
+ * Total Submissions: 4M
  * Testcase Example:  '[2,1,3]'
  *
  * Given the root of a binary tree, determine if it is a valid binary search
@@ -53,18 +53,7 @@
  *
  */
 
-struct TreeNode {
-  int       val;
-  TreeNode *left;
-  TreeNode *right;
-  TreeNode() : val(0), left(nullptr), right(nullptr) {
-  }
-  TreeNode(int x) : val(x), left(nullptr), right(nullptr) {
-  }
-  TreeNode(int x, TreeNode *left, TreeNode *right)
-      : val(x), left(left), right(right) {
-  }
-};
+#include "treenode.h"
 
 // @lc code=start
 /**
@@ -91,10 +80,11 @@ private:
       return true;
     }
 
-    if (min && root->val <= min->val) {
+    if (min != nullptr && root->val <= min->val) {
       return false;
     }
-    if (max && root->val >= max->val) {
+
+    if (max != nullptr && root->val >= max->val) {
       return false;
     }
 

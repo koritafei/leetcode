@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/flatten-binary-tree-to-linked-list/description/
  *
  * algorithms
- * Medium (55.67%)
- * Likes:    5784
- * Dislikes: 433
- * Total Accepted:    524.8K
- * Total Submissions: 941.7K
+ * Medium (56.10%)
+ * Likes:    5987
+ * Dislikes: 438
+ * Total Accepted:    538.1K
+ * Total Submissions: 958.7K
  * Testcase Example:  '[1,2,5,3,4,null,6]'
  *
  * Given the root of a binary tree, flatten the tree into a "linked
@@ -58,18 +58,7 @@
  * Follow up: Can you flatten the tree in-place (with O(1) extra space)?
  */
 
-struct TreeNode {
-  int       val;
-  TreeNode *left;
-  TreeNode *right;
-  TreeNode() : val(0), left(nullptr), right(nullptr) {
-  }
-  TreeNode(int x) : val(x), left(nullptr), right(nullptr) {
-  }
-  TreeNode(int x, TreeNode *left, TreeNode *right)
-      : val(x), left(left), right(right) {
-  }
-};
+#include "treenode.h"
 
 // @lc code=start
 /**
@@ -91,18 +80,17 @@ public:
       return;
     }
 
-    // 后续遍历
     flatten(root->left);
     flatten(root->right);
 
+    // 处理当前根节点
     TreeNode *left  = root->left;
     TreeNode *right = root->right;
+    root->left      = nullptr;
 
-    // 左子树连接到右子节点
-    root->left  = nullptr;
     root->right = left;
 
-    // 原右子树，连接到原左子树的最右侧
+    // right 子树连接到left的右子树上
     TreeNode *p = root;
     while (p->right) {
       p = p->right;

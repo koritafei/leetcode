@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/all-paths-from-source-to-target/description/
  *
  * algorithms
- * Medium (79.63%)
- * Likes:    2882
- * Dislikes: 103
- * Total Accepted:    189.9K
- * Total Submissions: 238.3K
+ * Medium (80.40%)
+ * Likes:    3298
+ * Dislikes: 107
+ * Total Accepted:    218.4K
+ * Total Submissions: 271.5K
  * Testcase Example:  '[[1,2],[3],[3],[]]'
  *
  * Given a directed acyclic graph (DAG) of n nodes labeled from 0 to n - 1,
@@ -75,37 +75,34 @@
 #include <vector>
 
 // @lc code=start
+
 class Solution {
 public:
   std::vector<std::vector<int>> allPathsSourceTarget(
       std::vector<std::vector<int>>& graph) {
-    std::vector<int> path;
-    traverse(graph, 0, path);
+    int len = graph.size();
+    travese(graph, 0, len);
 
     return res;
   }
 
 private:
-  void traverse(std::vector<std::vector<int>> graph,
-                int                           index,
-                std::vector<int>&             path) {
-    path.push_back(index);
-    int len = graph.size();
-
-    if (len - 1 == index) {
+  void travese(std::vector<std::vector<int>>& graph, int s, int len) {
+    path.push_back(s);
+    if (s == len - 1) {
       res.push_back(path);
       path.pop_back();
       return;
     }
 
-    // 递归每个相邻接点
-    for (auto item : graph[index]) {
-      traverse(graph, item, path);
+    for (auto it : graph[s]) {
+      travese(graph, it, len);
     }
 
     path.pop_back();
   }
 
   std::vector<std::vector<int>> res;
+  std::vector<int>              path;
 };
 // @lc code=end

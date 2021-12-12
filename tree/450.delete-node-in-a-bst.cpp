@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/delete-node-in-a-bst/description/
  *
  * algorithms
- * Medium (46.99%)
- * Likes:    3931
- * Dislikes: 127
- * Total Accepted:    209.3K
- * Total Submissions: 445.3K
+ * Medium (48.05%)
+ * Likes:    4469
+ * Dislikes: 142
+ * Total Accepted:    235.2K
+ * Total Submissions: 489.3K
  * Testcase Example:  '[5,3,6,2,4,null,7]\n3'
  *
  * Given a root node reference of a BST and a key, delete the node with the
@@ -69,18 +69,7 @@
  *
  */
 
-struct TreeNode {
-  int       val;
-  TreeNode *left;
-  TreeNode *right;
-  TreeNode() : val(0), left(nullptr), right(nullptr) {
-  }
-  TreeNode(int x) : val(x), left(nullptr), right(nullptr) {
-  }
-  TreeNode(int x, TreeNode *left, TreeNode *right)
-      : val(x), left(left), right(right) {
-  }
-};
+#include "treenode.h"
 
 // @lc code=start
 /**
@@ -97,37 +86,42 @@ struct TreeNode {
  */
 class Solution {
 public:
-  TreeNode *deleteNode(TreeNode *root, int key) {
-    if (nullptr == root) {
+  TreeNode* deleteNode(TreeNode* root, int key) {
+    if (root == nullptr) {
       return root;
     }
 
     if (key == root->val) {
-      // 只有右子树时
+      // 不存在左孩子
       if (root->left == nullptr) {
         return root->right;
       }
 
-      // 只有左子树时
+      // 不存在右孩子
       if (root->right == nullptr) {
         return root->left;
       }
 
-      // 含左右子树时
-      TreeNode *minNode = getMin(root->right);
-      root->val         = minNode->val;
+      // 存在左右孩子
+      // 获取右子树的最小节点
+      TreeNode* minNode = getMin(root->right);
       root->right       = deleteNode(root->right, minNode->val);
-    } else if (root->val > key) {
-      root->left = deleteNode(root->left, key);
-    } else {
+
+      // 右子树最小节点替换当前节点
+      minNode->left  = root->left;
+      minNode->right = root->right;
+      root           = minNode;
+    } else if (key > root->val) {
       root->right = deleteNode(root->right, key);
+    } else if (key < root->val) {
+      root->left = deleteNode(root->left, key);
     }
 
     return root;
   }
 
 private:
-  TreeNode *getMin(TreeNode *root) {
+  TreeNode* getMin(TreeNode* root) {
     while (root->left) {
       root = root->left;
     }

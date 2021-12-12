@@ -7,9 +7,9 @@
  *
  * algorithms
  * Medium (47.27%)
- * Likes:    3381
+ * Likes:    3382
  * Dislikes: 263
- * Total Accepted:    194.3K
+ * Total Accepted:    194.4K
  * Total Submissions: 411.1K
  * Testcase Example:  '[[2,1,1],[2,3,1],[3,4,1]]\n4\n2'
  *
@@ -60,7 +60,6 @@
  */
 
 #include <climits>
-#include <list>
 #include <map>
 #include <queue>
 #include <vector>
@@ -68,79 +67,69 @@
 // @lc code=start
 class Solution {
 public:
-  int networkDelayTime(std::vector<std::vector<int>> &times, int n, int k) {
-    createGraph(times);
-    std::vector<int> res = dijkstra(k, n);
+  int networkDelayTime(std::vector<std::vector<int>>& times, int n, int k) {
+    std::vector<int> dp = std::vector<int>(n + 1, INT_MAX);
+    std::map<int, std::vector<std::pair<int, int>>> graph = buildGraph(times);
+    std::priority_queue<state, std::vector<state>, greator> hp;
+    hp.push(state(k, 0));
+    dp[k] = 0;
 
-    int t = 0;
-    for (int i = 1; i <= n; i++) {
-      if (INT_MAX == res[i]) {
-        // 存在节点不可达
-        return -1;
-      } else {
-        t = (t > res[i] ? t : res[i]);
-      }
-    }
-
-    return t;
-  }
-
-private:
-  std::vector<int> dijkstra(int start, int n) {
-    std::vector<int> res = std::vector<int>(n + 1, INT_MAX);
-    std::priority_queue<state, std::vector<state>, greator> heap;  // 小根堆
-    res[start] = 0;
-    // base case
-    heap.push(state(start, 0));
-
-    while (heap.size()) {
-      state curstate = heap.top();
-      heap.pop();
-
-      int currid   = curstate.id;
-      int currdist = curstate.distfromstart;
-
-      if (res[currid] < currdist) {
+    while (hp.size()) {
+      state curr = hp.top();
+      hp.pop();
+      int currid   = curr.id;
+      int currdist = curr.distance;
+      if (currdist > dp[currid]) {
         continue;
       }
 
-      for (auto item : adj(currid)) {
-        int dist = currdist + item.second;
-
-        if (dist < res[item.first]) {
-          res[item.first] = dist;
-          heap.push(state(item.first, dist));
+      for (auto it = graph[currid].begin(); it != graph[currid].end(); it++) {
+        int nextid   = it->first;
+        int nextdist = it->second + currdist;
+        if (nextdist < dp[nextid]) {
+          dp[nextid] = nextdist;
+          hp.push(state(nextid, nextdist));
         }
+      }
+    }
+
+    int res = INT_MIN;
+    for (int i = 1; i <= n; i++) {
+      if (dp[i] == INT_MAX) {
+        return -1;
+      } else {
+        res = res > dp[i] ? res : dp[i];
       }
     }
 
     return res;
   }
 
-  void createGraph(std::vector<std::vector<int>> &times) {
-    for (auto item : times) {
-      graph[item[0]].push_back(std::make_pair(item[1], item[2]));
-    }
-  }
-
-  std::list<std::pair<int, int>> adj(int v) {
-    return graph[v];
-  }
-
+private:
   struct state {
-    state(int id, int dis) : id(id), distfromstart(dis) {
+    int id;        // 图顶点
+    int distance;  // 从起点到当前顶点的dis
+    state(int id, int dis) : id(id), distance(dis) {
     }
-
-    int id;
-    int distfromstart;
   };
 
   struct greator {
-    bool operator()(const state &s1, const state &s2) {
-      return s1.distfromstart > s2.distfromstart;
+    bool operator()(const state& s1, const state& s2) {
+      return s1.distance > s2.distance;
     }
   };
 
-  std::map<int, std::list<std::pair<int, int>>> graph;
+  std::map<int, std::vector<std::pair<int, int>>> buildGraph(
+      std::vector<std::vector<int>>& times) {
+    std::map<int, std::vector<std::pair<int, int>>> graph;
+    for (auto iter : times) {
+      int start  = iter[0];
+      int end    = iter[1];
+      int weight = iter[2];
+      graph[start].push_back(std::make_pair(end, weight));
+    }
+
+    return graph;
+  }
 };
 // @lc code=end

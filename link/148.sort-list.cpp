@@ -6,18 +6,15 @@
  * https://leetcode.com/problems/sort-list/description/
  *
  * algorithms
- * Medium (46.40%)
- * Likes:    3960
- * Dislikes: 169
- * Total Accepted:    342.1K
- * Total Submissions: 737.1K
+ * Medium (49.24%)
+ * Likes:    5477
+ * Dislikes: 197
+ * Total Accepted:    411.7K
+ * Total Submissions: 834.9K
  * Testcase Example:  '[4,2,1,3]'
  *
  * Given the head of a linked list, return the list after sorting it in
  * ascending order.
- *
- * Follow up: Can you sort the linked list in O(n logn) time and O(1) memory
- * (i.e. constant space)?
  *
  *
  * Example 1:
@@ -49,7 +46,13 @@
  * -10^5 <= Node.val <= 10^5
  *
  *
+ *
+ * Follow up: Can you sort the linked list in O(n logn) time and O(1) memory
+ * (i.e. constant space)?
+ *
  */
+
+#include "linkNode.h"
 
 // @lc code=start
 /**
@@ -64,67 +67,65 @@
  */
 class Solution {
 public:
-  ListNode* sortList(ListNode* head) {
+  ListNode *sortList(ListNode *head) {
     if (head == nullptr || head->next == nullptr) {
       return head;
     }
 
-    ListNode* slow = head;
-    ListNode* fast = head->next;
+    ListNode *slow = head, *fast = head->next;  // 防止链表越界
     while (fast && fast->next) {
-      slow = slow->next;
       fast = fast->next->next;
+      slow = slow->next;
     }
+
+    // 分成两段
     fast       = slow->next;
     slow->next = nullptr;
 
-    return mergeTwoLists(sortList(head), sortList(fast));
+    ListNode *left  = sortList(head);
+    ListNode *right = sortList(fast);
+
+    ListNode *newhead = mergeTwoLists(left, right);
+
+    return newhead;
   }
 
 private:
-  ListNode* mergeTwoLists(ListNode* l1, ListNode* l2) {
-    if (!l1 && !l2) {
-      return l1;
+  ListNode *mergeTwoLists(ListNode *a, ListNode *b) {
+    if (!a && !b) {
+      return nullptr;
     }
-
-    ListNode* dummy = new ListNode(0);
-    ListNode* tail  = dummy;
-
-    while (l1 && l2) {
-      if (l1->val <= l2->val) {
-        ListNode* t = l1;
-        l1          = l1->next;
-        t->next     = tail->next;
-        tail->next  = t;
-        tail        = t;
+    ListNode *dummy = new ListNode(-1);
+    ListNode *curr  = dummy;
+    ListNode *next;
+    while (a && b) {
+      if (a->val < b->val) {
+        next       = a->next;
+        a->next    = curr->next;
+        curr->next = a;
+        curr       = curr->next;
+        a          = next;
       } else {
-        ListNode* t = l2;
-        l2          = l2->next;
-        t->next     = tail->next;
-        tail->next  = t;
-        tail        = t;
+        next       = b->next;
+        b->next    = curr->next;
+        curr->next = b;
+        curr       = curr->next;
+        b          = next;
       }
     }
 
-    while (l1) {
-      ListNode* t = l1;
-      l1          = l1->next;
-      t->next     = tail->next;
-      tail->next  = t;
-      tail        = t;
+    if (a) {
+      curr->next = a;
     }
 
-    while (l2) {
-      ListNode* t = l2;
-      l2          = l2->next;
-      t->next     = tail->next;
-      tail->next  = t;
-      tail        = t;
+    if (b) {
+      curr->next = b;
     }
 
-    l1 = dummy->next;
-    delete (dummy);
-    return l1;
+    curr = dummy->next;
+    delete dummy;
+
+    return curr;
   }
 };
 // @lc code=end

@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/possible-bipartition/description/
  *
  * algorithms
- * Medium (46.45%)
- * Likes:    1904
+ * Medium (46.46%)
+ * Likes:    1916
  * Dislikes: 49
- * Total Accepted:    92.5K
- * Total Submissions: 199.1K
+ * Total Accepted:    92.9K
+ * Total Submissions: 200K
  * Testcase Example:  '4\n[[1,2],[1,3],[2,4]]'
  *
  * We want to split a group of n people (labeled from 1 to n) into two groups

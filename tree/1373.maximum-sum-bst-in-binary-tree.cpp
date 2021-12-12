@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/maximum-sum-bst-in-binary-tree/description/
  *
  * algorithms
- * Hard (37.90%)
- * Likes:    750
- * Dislikes: 103
- * Total Accepted:    23.8K
- * Total Submissions: 62.7K
+ * Hard (38.14%)
+ * Likes:    807
+ * Dislikes: 106
+ * Total Accepted:    25.2K
+ * Total Submissions: 66K
  * Testcase Example:  '[1,4,3,2,4,2,5,null,null,null,null,null,null,4,6]'
  *
  * Given a binary tree root, return the maximum sum of all keys of any sub-tree
@@ -82,21 +82,9 @@
  */
 
 #include <climits>
-#include <iostream>
 #include <vector>
 
-struct TreeNode {
-  int       val;
-  TreeNode *left;
-  TreeNode *right;
-  TreeNode() : val(0), left(nullptr), right(nullptr) {
-  }
-  TreeNode(int x) : val(x), left(nullptr), right(nullptr) {
-  }
-  TreeNode(int x, TreeNode *left, TreeNode *right)
-      : val(x), left(left), right(right) {
-  }
-};
+#include "treenode.h"
 
 // @lc code=start
 /**
@@ -114,47 +102,38 @@ struct TreeNode {
 class Solution {
 public:
   int maxSumBST(TreeNode *root) {
+    maxSum = 0;
     traverse(root);
+
     return maxSum;
   }
 
 private:
-  // isBST(0,1是), min_val(最小节点值), max_val(最大节点值), sum(子树和)
+  // sum, isBIS(0-n,1-y), maxvalue, minvalue
   std::vector<int> traverse(TreeNode *root) {
-    std::vector<int> res(4, 0);
-
     if (root == nullptr) {
-      res[0] = 1;
-      res[1] = INT_MAX;
-      res[2] = INT_MIN;
-      res[3] = 0;
-
-      return res;
+      return std::vector<int>{0, 1, INT_MIN, INT_MAX};
     }
 
-    // 左右子树
     std::vector<int> left  = traverse(root->left);
     std::vector<int> right = traverse(root->right);
 
-    // BST 更新, BST 根节点值大于左子树最大值，右子树最小值
-    if (left[0] && right[0] && root->val > left[2] && root->val < right[1]) {
-      int sum = left[3] + right[3] + root->val;
-      res[0]  = 1;
-      res[1]  = std::min(root->val, left[1]);
-      res[2]  = std::max(root->val, right[2]);
-      res[3]  = sum;
+    std::vector<int> vec(4);
+    if (left[1] == 1 && right[1] == 1 && root->val < right[3] &&
+        root->val > left[2]) {
+      vec[0] = left[0] + right[0] + root->val;
+      vec[1] = 1;
+      vec[2] = std::max(right[2], root->val);
+      vec[3] = std::min(left[3], root->val);
+      maxSum = std::max(maxSum, vec[0]);
 
-      maxSum = (maxSum > sum ? maxSum : sum);
     } else {
-      res[0] = 0;
-      res[1] = INT_MAX;
-      res[2] = INT_MIN;
-      res[3] = 0;
+      return std::vector<int>{0, 0, INT_MIN, INT_MAX};
     }
 
-    return res;
+    return vec;
   }
 
-  int maxSum = 0;
+  int maxSum;
 };
 // @lc code=end

@@ -6,10 +6,10 @@
  * https://leetcode.com/problems/course-schedule/description/
  *
  * algorithms
- * Medium (44.66%)
- * Likes:    7542
- * Dislikes: 306
- * Total Accepted:    716.2K
+ * Medium (44.70%)
+ * Likes:    7790
+ * Dislikes: 311
+ * Total Accepted:    737.1K
  * Total Submissions: 1.6M
  * Testcase Example:  '2\n[[1,0]]'
  *
@@ -59,67 +59,59 @@
  */
 
 #include <list>
-#include <unordered_map>
+#include <map>
 #include <vector>
 
 // @lc code=start
 class Solution {
 public:
   bool canFinish(int numCourses, std::vector<std::vector<int>>& prerequisites) {
-    std::unordered_map<int, std::list<int>> graph =
-        buildGraph(numCourses, prerequisites);
-    std::vector<int> indegree(numCourses, 0);
+    std::vector<int> indegree = std::vector<int>(numCourses);  // 入度
+    std::list<int>   list;  // 入度为0的队列
+    std::map<int, std::vector<int>> graph = buildGraph(prerequisites);
 
+    // 统计入度数据
     for (int i = 0; i < numCourses; i++) {
-      for (auto item : graph[i]) {
-        indegree[item]++;
+      for (auto iter : graph[i]) {
+        indegree[iter]++;
       }
     }
 
-    std::list<int> list;
-    // 所有入度为0的节点放入队列
     for (int i = 0; i < numCourses; i++) {
-      if (0 == indegree[i]) {
+      if (indegree[i] == 0) {
         list.push_back(i);
       }
     }
 
     std::vector<int> order(numCourses, 0);
     int              index = 0;
-    // BFS遍历
-    while (list.size()) {
-      int curr = list.front();
-      list.pop_front();
 
-      order[index++] = curr;
-      for (auto item : graph[curr]) {
-        indegree[item]--;
-        // 入度为0加入队列
-        if (0 == indegree[item]) {
-          list.push_back(item);
+    while (list.size()) {
+      int v = list.front();
+      list.pop_front();
+      order[index++] = v;
+
+      for (auto it : graph[v]) {
+        indegree[it]--;
+        if (indegree[it] == 0) {
+          list.push_back(it);
         }
       }
     }
 
-    // 遍历完成结束之后，判断排序的数组长度是否等于课程数，相等的话，可以完成，不等的话完不成
     return index == numCourses;
   }
 
 private:
-  std::unordered_map<int, std::list<int>> buildGraph(
-      int                            numCourse,
-      std::vector<std::vector<int>>& prerequisited) {
-    std::unordered_map<int, std::list<int>> graph(numCourse + 1);
+  std::map<int, std::vector<int>> buildGraph(
+      std::vector<std::vector<int>>& prerequisites) {
+    std::map<int, std::vector<int>> graph;
 
-    for (int i = 1; i < numCourse; i++) {
-      graph[i] = std::list<int>();
-    }
+    for (auto iter : prerequisites) {
+      int s = iter[1];
+      int e = iter[0];
 
-    for (auto item : prerequisited) {
-      int from = item[0];
-      int to   = item[1];
-
-      graph[from].push_back(to);
+      graph[s].push_back(e);
     }
 
     return graph;

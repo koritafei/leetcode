@@ -6,10 +6,10 @@
  * https://leetcode.com/problems/course-schedule-ii/description/
  *
  * algorithms
- * Medium (44.88%)
- * Likes:    5096
- * Dislikes: 194
- * Total Accepted:    499.7K
+ * Medium (45.10%)
+ * Likes:    5264
+ * Dislikes: 203
+ * Total Accepted:    514.8K
  * Total Submissions: 1.1M
  * Testcase Example:  '2\n[[1,0]]'
  *
@@ -70,8 +70,8 @@
  *
  */
 
-#include <algorithm>
-#include <deque>
+#include <list>
+#include <map>
 #include <vector>
 
 // @lc code=start
@@ -79,57 +79,50 @@ class Solution {
 public:
   std::vector<int> findOrder(int                            numCourses,
                              std::vector<std::vector<int>>& prerequisites) {
-    std::vector<std::vector<int>> graph = buildGraph(numCourses, prerequisites);
-    std::vector<int>              indegree(numCourses);
-    std::deque<int>               que;
+    std::vector<int>                indegree(numCourses, 0);
+    std::map<int, std::vector<int>> graph = buildGraph(prerequisites);
+    std::list<int>                  list;
 
     for (int i = 0; i < numCourses; i++) {
-      for (auto item : graph[i]) {
-        indegree[item]++;
+      for (auto it : graph[i]) {
+        indegree[it]++;
       }
     }
 
     for (int i = 0; i < numCourses; i++) {
       if (0 == indegree[i]) {
-        que.push_back(i);
+        list.push_back(i);
       }
     }
 
     std::vector<int> order(numCourses, 0);
     int              index = 0;
 
-    while (que.size()) {
-      int v = que.front();
-      que.pop_front();
-
+    while (list.size() > 0) {
+      int v = list.front();
+      list.pop_front();
       order[index++] = v;
 
-      for (auto item : graph[v]) {
-        indegree[item]--;
-        if (0 == indegree[item]) {
-          que.push_back(item);
+      for (auto it : graph[v]) {
+        indegree[it]--;
+        if (indegree[it] == 0) {
+          list.push_back(it);
         }
       }
     }
 
-    if (index != numCourses) {
-      return std::vector<int>();
-    } else {
-      std::reverse(order.begin(), order.end());
-      return order;
-    }
+    return (index == numCourses ? order : std::vector<int>());
   }
 
 private:
-  std::vector<std::vector<int>> buildGraph(
-      int                            numCourses,
+  std::map<int, std::vector<int>> buildGraph(
       std::vector<std::vector<int>>& prerequisites) {
-    std::vector<std::vector<int>> graph(numCourses, std::vector<int>());
+    std::map<int, std::vector<int>> graph;
+    for (auto it : prerequisites) {
+      int s = it[1];
+      int e = it[0];
 
-    for (int i = 0; i < prerequisites.size(); i++) {
-      int from = prerequisites[i][0];
-      int to   = prerequisites[i][1];
-      graph[from].push_back(to);
+      graph[s].push_back(e);
     }
 
     return graph;

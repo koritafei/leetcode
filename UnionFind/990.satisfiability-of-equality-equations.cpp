@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/satisfiability-of-equality-equations/description/
  *
  * algorithms
- * Medium (48.94%)
- * Likes:    1179
+ * Medium (49.15%)
+ * Likes:    1222
  * Dislikes: 13
- * Total Accepted:    37.7K
- * Total Submissions: 77.1K
+ * Total Accepted:    39K
+ * Total Submissions: 79.3K
  * Testcase Example:  '["a==b","b!=a"]'
  *
  * You are given an array of strings equations that represent relationships
@@ -75,29 +75,36 @@
  *
  *
  */
-
-#include <iostream>
+#include <string>
 #include <vector>
-
 // @lc code=start
-
 class Solution {
 public:
   bool equationsPossible(std::vector<std::string>& equations) {
-    UF  uf(26);
-    int row = equations.size();
+    int len = equations.size();
+    if (len == 0) {
+      return true;
+    }
+    UF uf(26);
 
-    for (int i = 0; i < row; i++) {
-      char ch = equations[i][1];
-      if (ch == '=') {
-        uf.connect(equations[i][0] - 'a', equations[i][3] - 'a');
+    for (int i = 0; i < len; i++) {
+      std::string str = equations[i];
+      char        ch1 = str[0];
+      char        ch2 = str[3];
+      if (str[1] == '=') {
+        if (uf.connected(ch1 - 'a', ch2 - 'a')) {
+          continue;
+        }
+        uf.connect(ch1 - 'a', ch2 - 'a');
       }
     }
 
-    for (int i = 0; i < row; i++) {
-      char ch = equations[i][1];
-      if (ch == '!') {
-        if (uf.isConnect(equations[i][0] - 'a', equations[i][3] - 'a')) {
+    for (int i = 0; i < len; i++) {
+      std::string str = equations[i];
+      char        ch1 = str[0];
+      char        ch2 = str[3];
+      if (str[1] == '!') {
+        if (uf.connected(ch1 - 'a', ch2 - 'a')) {
           return false;
         }
       }
@@ -106,61 +113,57 @@ public:
     return true;
   }
 
-private:
   class UF {
   public:
-    UF(int n) {
-      _weight = std::vector<int>(n, 1);
-      _parent = std::vector<int>(n, 0);
-      for (int i = 0; i < n; i++) {
-        _parent[i] = i;
+    UF(int size) : count_(0) {
+      parent_ = std::vector<int>(size, 0);
+      weight_ = std::vector<int>(size, 0);
+      for (int i = 0; i < size; i++) {
+        parent_[i] = i;
+        weight_[i] = 0;
       }
-
-      _count = n;
-    }
-
-    int find(int p) {
-      while (p != _parent[p]) {
-        _parent[p] = _parent[_parent[p]];
-        p          = _parent[p];
-      }
-
-      return p;
     }
 
     void connect(int p, int q) {
-      int rootP = find(p);
-      int rootQ = find(q);
+      int rootp = find(p);
+      int rootq = find(q);
 
-      if (rootQ == rootP) {
+      if (rootp == rootq) {
         return;
       }
 
-      if (_weight[rootP] >= _weight[rootQ]) {
-        _parent[rootQ] = rootP;
-        _weight[rootP] += _weight[rootQ];
+      if (weight_[rootp] < weight_[rootq]) {
+        weight_[rootp] += weight_[rootq];
+        parent_[rootq] = rootp;
       } else {
-        _parent[rootP] = rootQ;
-        _weight[rootQ] += _weight[rootP];
+        weight_[rootq] += weight_[rootp];
+        parent_[rootp] = rootq;
       }
-      _count--;
     }
 
     int count() const {
-      return _count;
+      return count_;
     }
 
-    bool isConnect(int p, int q) {
-      int rootP = find(p);
-      int rootQ = find(q);
+    int find(int p) {
+      while (p != parent_[p]) {
+        parent_[p] = parent_[parent_[p]];
+        p          = parent_[p];
+      }
+      return p;
+    }
 
-      return rootP == rootQ;
+    bool connected(int p, int q) {
+      int rootp = find(p);
+      int rootq = find(q);
+
+      return rootp == rootq;
     }
 
   private:
-    std::vector<int> _weight;
-    std::vector<int> _parent;
-    int              _count;
+    int              count_;
+    std::vector<int> parent_;
+    std::vector<int> weight_;
   };
 };
 // @lc code=end

@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/kth-smallest-element-in-a-bst/description/
  *
  * algorithms
- * Medium (65.12%)
- * Likes:    5041
- * Dislikes: 101
- * Total Accepted:    633.7K
- * Total Submissions: 972.8K
+ * Medium (65.39%)
+ * Likes:    5240
+ * Dislikes: 103
+ * Total Accepted:    651.3K
+ * Total Submissions: 995.7K
  * Testcase Example:  '[3,1,4,null,2]\n1'
  *
  * Given the root of a binary search tree, and an integer k, return the k^th
@@ -47,18 +47,7 @@
  *
  */
 
-struct TreeNode {
-  int       val;
-  TreeNode *left;
-  TreeNode *right;
-  TreeNode() : val(0), left(nullptr), right(nullptr) {
-  }
-  TreeNode(int x) : val(x), left(nullptr), right(nullptr) {
-  }
-  TreeNode(int x, TreeNode *left, TreeNode *right)
-      : val(x), left(left), right(right) {
-  }
-};
+#include "treenode.h"
 
 // @lc code=start
 /**
@@ -75,29 +64,34 @@ struct TreeNode {
  */
 class Solution {
 public:
-  int kthSmallest(TreeNode *root, int k) {
+  int kthSmallest(TreeNode* root, int k) {
+    if (k == 0 || root == nullptr) {
+      return -1;
+    }
     rank = 0;
-    res  = 0;
+    res  = -1;
     traverse(root, k);
 
     return res;
   }
 
 private:
-  void traverse(TreeNode *root, int k) {
+  void traverse(TreeNode* root, int k) {
     if (root == nullptr) {
       return;
     }
+
     traverse(root->left, k);
     rank++;
-    if (k == rank) {
+    if (rank == k) {
       res = root->val;
       return;
     }
+
     traverse(root->right, k);
   }
 
-  int res;
   int rank;
+  int res;
 };
 // @lc code=end

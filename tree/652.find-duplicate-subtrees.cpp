@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/find-duplicate-subtrees/description/
  *
  * algorithms
- * Medium (54.71%)
- * Likes:    2615
- * Dislikes: 267
- * Total Accepted:    119.9K
- * Total Submissions: 219.1K
+ * Medium (54.94%)
+ * Likes:    2715
+ * Dislikes: 274
+ * Total Accepted:    125.1K
+ * Total Submissions: 227.5K
  * Testcase Example:  '[1,2,3,4,null,2,4,null,null,4]'
  *
  * Given the root of a binary tree, return all duplicate subtrees.
@@ -53,22 +53,11 @@
  *
  */
 
+#include <map>
 #include <string>
-#include <unordered_map>
 #include <vector>
 
-struct TreeNode {
-  int       val;
-  TreeNode *left;
-  TreeNode *right;
-  TreeNode() : val(0), left(nullptr), right(nullptr) {
-  }
-  TreeNode(int x) : val(x), left(nullptr), right(nullptr) {
-  }
-  TreeNode(int x, TreeNode *left, TreeNode *right)
-      : val(x), left(left), right(right) {
-  }
-};
+#include "treenode.h"
 
 // @lc code=start
 /**
@@ -85,31 +74,32 @@ struct TreeNode {
  */
 class Solution {
 public:
-  std::vector<TreeNode *> findDuplicateSubtrees(TreeNode *root) {
+  std::vector<TreeNode*> findDuplicateSubtrees(TreeNode* root) {
     traverse(root);
-
     return res;
   }
 
 private:
-  std::string traverse(TreeNode *root) {
-    if (root == nullptr) {
+  std::string traverse(TreeNode* root) {
+    if (nullptr == root) {
       return "#";
     }
 
     std::string left  = traverse(root->left);
     std::string right = traverse(root->right);
+    std::string t     = left + "," + right + "," + std::to_string(root->val);
 
-    std::string str = left + "," + right + "," + std::to_string(root->val);
-    if (treemap[str] == 1) {
-      res.push_back(root);
+    if (map.find(t) != map.end()) {
+      if (map[t] == 1) {
+        res.push_back(root);
+      }
     }
-    treemap[str]++;
+    map[t]++;
 
-    return str;
+    return t;
   }
 
-  std::unordered_map<std::string, int> treemap;
-  std::vector<TreeNode *>              res;
+  std::vector<TreeNode*>     res;
+  std::map<std::string, int> map;
 };
 // @lc code=end

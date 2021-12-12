@@ -72,14 +72,14 @@
  *
  */
 
-#include <cmath>
-#include <list>
+#include <climits>
 #include <map>
 #include <queue>
 #include <vector>
 
 // @lc code=start
-const double eps = 1e-5;
+
+const int eps = 1e-5;
 
 class Solution {
 public:
@@ -88,65 +88,69 @@ public:
                         std::vector<double>&           succProb,
                         int                            start,
                         int                            end) {
-    std::vector<double> res   = std::vector<double>(n, -1);
-    auto                graph = createGraph(edges, succProb);
-    std::priority_queue<state, std::vector<state>, greator> hp;
-    hp.push(state(start, 1));
-    res[start] = 1;
+    std::map<int, std::vector<std::pair<int, double>>> graph =
+        buildGraph(edges, succProb);
+    std::vector<double> dp = std::vector<double>(n, -1);
+    std::priority_queue<state, std::vector<state>, less> pq;  // 大根堆
+    pq.push(state(start, 1));
+    dp[start] = 1;
 
-    while (hp.size()) {
-      state currstate = hp.top();
-      hp.pop();
-      int    currid   = currstate.id;
-      double currdist = currstate.distfromstart;
+    while (pq.size()) {
+      state curr = pq.top();
+      pq.pop();
+      int    currid = curr.id;
+      double currp  = curr.p;
 
       if (currid == end) {
-        return currdist;
+        return currp;
       }
 
-      if (currdist + eps < res[currid]) {
+      if (currp + eps < dp[currid]) {
         continue;
       }
 
-      for (auto item : graph[currid]) {
-        double dist = item.second * currdist;
-        if (dist > eps + res[item.first]) {
-          res[item.first] = dist;
-          hp.push(state(item.first, dist));
+      for (auto it = graph[currid].begin(); it != graph[currid].end(); it++) {
+        int    nextid = it->first;
+        double nextp  = it->second * currp;
+        if (nextp > dp[nextid] + eps) {
+          dp[nextid] = nextp;
+          pq.push(state(nextid, nextp));
         }
       }
     }
 
-    return 0.0;
+    return 0;
   }
 
 private:
-  std::map<int, std::list<std::pair<int, double>>> createGraph(
+  struct state {
+    int    id;
+    double p;
+    state(int id, double p) : id(id), p(p) {
+    }
+  };
+
+  // 大根堆
+  struct less {
+    bool operator()(const state& s1, const state& s2) {
+      return s1.p + eps < s2.p;
+    }
+  };
+
+  std::map<int, std::vector<std::pair<int, double>>> buildGraph(
       std::vector<std::vector<int>>& edges,
       std::vector<double>&           succProb) {
-    std::map<int, std::list<std::pair<int, double>>> graph;
-    int                                              row = edges.size();
+    std::map<int, std::vector<std::pair<int, double>>> graph;
 
-    for (int i = 0; i < row; i++) {
-      graph[edges[i][0]].push_back(std::make_pair(edges[i][1], succProb[i]));
-      graph[edges[i][1]].push_back(std::make_pair(edges[i][0], succProb[i]));
+    for (int i = 0; i < edges.size(); ++i) {
+      int    v1 = edges[i][0];
+      int    v2 = edges[i][1];
+      double p  = succProb[i];
+      graph[v1].push_back(std::make_pair(v2, p));
+      graph[v2].push_back(std::make_pair(v1, p));
     }
 
     return graph;
   }
-
-  struct state {
-    int    id;
-    double distfromstart;
-    state(int id, double d) : id(id), distfromstart(d) {
-    }
-  };
-
-  struct greator {
-    bool operator()(const state& s1, const state& s2) {
-      return s1.distfromstart + eps < s2.distfromstart;
-    }
-  };
 };
-
 // @lc code=end

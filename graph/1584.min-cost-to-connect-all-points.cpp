@@ -7,10 +7,10 @@
  *
  * algorithms
  * Medium (60.24%)
- * Likes:    856
- * Dislikes: 35
- * Total Accepted:    35.4K
- * Total Submissions: 58.7K
+ * Likes:    868
+ * Dislikes: 36
+ * Total Accepted:    36.4K
+ * Total Submissions: 60.3K
  * Testcase Example:  '[[0,0],[2,2],[3,10],[5,2],[7,0]]'
  *
  * You are given an array points representing integer coordinates of some
@@ -78,73 +78,67 @@
 
 #include <algorithm>
 #include <cmath>
+#include <map>
 #include <vector>
 
 // @lc code=start
 class Solution {
 public:
-  int minCostConnectPoints(std::vector<std::vector<int>>& points) {
-    std::vector<std::vector<int>> graph = buildGraph(points);
-    int                           n     = points.size();
+  int minCostConnectPoints(std::vector<std::vector<int>> &points) {
+    int                           mst = 0;
+    std::vector<std::vector<int>> graph_;
+    int                           len = points.size();
+    // 构建图的边集合
+    for (int i = 0; i < points.size(); i++) {
+      for (int j = i + 1; j < points.size(); j++) {
+        graph_.push_back(
+            std::vector<int>{i, j, distance(points[i], points[j])});
+      }
+    }
 
-    int mst = 0;
-    UF  uf(n);
-
-    std::sort(graph.begin(),
-              graph.end(),
-              [](std::vector<int>& a, std::vector<int>& b) {
+    std::sort(graph_.begin(),
+              graph_.end(),
+              [](std::vector<int> &a, std::vector<int> &b) {
                 return a[2] < b[2];
               });
 
-    for (int i = 0; i < graph.size(); i++) {
-      int u = graph[i][0];
-      int v = graph[i][1];
-      int w = graph[i][2];
-      if (uf.connected(u, v)) {
+    UF uf(len);
+
+    for (int i = 0; i < graph_.size(); i++) {
+      int start  = graph_[i][0];
+      int end    = graph_[i][1];
+      int weight = graph_[i][2];
+      if (uf.connected(start, end)) {
         continue;
       }
 
-      mst += w;
-      uf.connectTwoPoints(u, v);
+      mst += weight;
+      uf.connect(start, end);
     }
 
     return mst;
   }
 
 private:
-  std::vector<std::vector<int>> buildGraph(
-      std::vector<std::vector<int>>& points) {
-    std::vector<std::vector<int>> graph;
-
-    int row = points.size();
-
-    for (int i = 0; i < row; i++) {
-      for (int j = i + 1; j < row; j++) {
-        int dis =
-            abs(points[i][0] - points[j][0]) + abs(points[i][1] - points[j][1]);
-        graph.push_back(std::vector<int>{i, j, dis});
-      }
-    }
-
-    return graph;
+  int distance(std::vector<int> &vec1, std::vector<int> &vec2) {
+    return abs(vec1[0] - vec2[0]) + abs(vec1[1] - vec2[1]);
   }
 
   class UF {
   public:
-    UF(int n)
-        : count_(n),
-          parent_(std::vector<int>(n, 0)),
-          weight_(std::vector<int>(n, 0)) {
-      for (int i = 0; i < n; i++) {
+    UF(int size) {
+      count_  = 0;
+      parent_ = std::vector<int>(size, 0);
+      weight_ = std::vector<int>(size, 0);
+      for (int i = 0; i < size; i++) {
         parent_[i] = i;
       }
     }
 
-    void connectTwoPoints(int p, int q) {
+    void connect(int p, int q) {
       int rootp = find(p);
       int rootq = find(q);
-
-      if (rootq == rootp) {
+      if (rootp == rootq) {
         return;
       }
 
@@ -152,16 +146,9 @@ private:
         weight_[rootp] += weight_[rootq];
         parent_[rootq] = rootp;
       } else {
-        weight_[rootq] += weight_[rootq];
+        weight_[rootq] += weight_[rootp];
         parent_[rootp] = rootq;
       }
-    }
-
-    bool connected(int p, int q) {
-      int rootp = find(p);
-      int rootq = find(q);
-
-      return rootp == rootq;
     }
 
     int count() const {
@@ -175,6 +162,13 @@ private:
       }
 
       return p;
+    }
+
+    bool connected(int p, int q) {
+      int rootq = find(q);
+      int rootp = find(p);
+
+      return rootp == rootq;
     }
 
   private:

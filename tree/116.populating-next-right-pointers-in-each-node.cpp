@@ -6,10 +6,10 @@
  * https://leetcode.com/problems/populating-next-right-pointers-in-each-node/description/
  *
  * algorithms
- * Medium (53.10%)
- * Likes:    4683
- * Dislikes: 201
- * Total Accepted:    587.8K
+ * Medium (53.71%)
+ * Likes:    4908
+ * Dislikes: 206
+ * Total Accepted:    608.7K
  * Total Submissions: 1.1M
  * Testcase Example:  '[1,2,3,4,5,6,7]'
  *
@@ -111,25 +111,23 @@ public:
 class Solution {
 public:
   Node* connect(Node* root) {
-    if (!root) {
-      return root;
+    if (root == nullptr) {
+      return nullptr;
     }
-    connectTwoNode(root->left, root->right);
-
+    connect(root->left, root->right);
     return root;
   }
 
 private:
-  void connectTwoNode(Node* node1, Node* node2) {
-    if (nullptr == node1 || nullptr == node2) {
+  void connect(Node* node1, Node* node2) {
+    if (!node1 || !node2) {
       return;
     }
 
     node1->next = node2;
-    connectTwoNode(node1->left, node1->right);
-    connectTwoNode(node2->left, node2->right);
-
-    connectTwoNode(node1->right, node2->left);
+    connect(node1->left, node1->right);
+    connect(node2->left, node2->right);
+    connect(node1->right, node2->left);
   }
 };
 // @lc code=end

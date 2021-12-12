@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/search-in-a-binary-search-tree/description/
  *
  * algorithms
- * Easy (74.36%)
- * Likes:    2031
+ * Easy (74.50%)
+ * Likes:    2128
  * Dislikes: 137
- * Total Accepted:    345.6K
- * Total Submissions: 464.8K
+ * Total Accepted:    358.6K
+ * Total Submissions: 481.2K
  * Testcase Example:  '[4,2,7,1,3]\n2'
  *
  * You are given the root of a binary search tree (BST) and an integer val.
@@ -46,18 +46,7 @@
  *
  */
 
-struct TreeNode {
-  int       val;
-  TreeNode *left;
-  TreeNode *right;
-  TreeNode() : val(0), left(nullptr), right(nullptr) {
-  }
-  TreeNode(int x) : val(x), left(nullptr), right(nullptr) {
-  }
-  TreeNode(int x, TreeNode *left, TreeNode *right)
-      : val(x), left(left), right(right) {
-  }
-};
+#include "treenode.h"
 
 // @lc code=start
 /**
@@ -74,24 +63,18 @@ struct TreeNode {
  */
 class Solution {
 public:
-  TreeNode *searchBST(TreeNode *root, int val) {
+  TreeNode* searchBST(TreeNode* root, int val) {
     if (root == nullptr) {
       return nullptr;
     }
 
-    if (root->val < val) {
+    if (val == root->val) {
+      return root;
+    } else if (val > root->val) {
       return searchBST(root->right, val);
-    }
-
-    if (root->val > val) {
+    } else {
       return searchBST(root->left, val);
     }
-
-    if (root->val == val) {
-      return root;
-    }
-
-    return nullptr;
   }
 };
 // @lc code=end

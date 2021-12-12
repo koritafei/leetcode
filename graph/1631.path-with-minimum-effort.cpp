@@ -7,10 +7,10 @@
  *
  * algorithms
  * Medium (51.25%)
- * Likes:    1744
- * Dislikes: 85
- * Total Accepted:    62K
- * Total Submissions: 120.9K
+ * Likes:    1759
+ * Dislikes: 86
+ * Total Accepted:    62.9K
+ * Total Submissions: 122.7K
  * Testcase Example:  '[[1,2,2],[3,8,2],[5,3,5]]'
  *
  * You are a hiker preparing for an upcoming hike. You are given heights, a 2D
@@ -71,51 +71,49 @@
  *
  */
 
+#include <algorithm>
 #include <climits>
 #include <cmath>
-#include <list>
+#include <map>
 #include <queue>
 #include <vector>
-
 // @lc code=start
 class Solution {
 public:
-  int minimumEffortPath(std::vector<std::vector<int>> &heights) {
-    int row = heights.size();
-    if (0 == row) {
-      return 0;
-    }
-    int col = heights[0].size();
+  int minimumEffortPath(std::vector<std::vector<int>>& heights) {
+    int row = heights.size(), col = heights[0].size();
 
-    std::vector<std::vector<int>> effortTo =
+    std::vector<std::vector<int>> dp =
         std::vector<std::vector<int>>(row, std::vector<int>(col, INT_MAX));
 
     std::priority_queue<state, std::vector<state>, greator> hp;
     hp.push(state(0, 0, 0));
-    effortTo[0][0] = 0;
+    dp[0][0] = 0;
 
     while (hp.size()) {
-      state cursate = hp.top();
+      state curr = hp.top();
       hp.pop();
+      int x = curr.x;
+      int y = curr.y;
+      int w = curr.w;
 
-      if (cursate.x == row - 1 && cursate.y == col - 1) {
-        // 到达末尾
-        return cursate.distfromstart;
+      if (x == row - 1 && y == col - 1) {
+        return w;
       }
 
-      if (effortTo[cursate.x][cursate.y] < cursate.distfromstart) {
+      if (w > dp[x][y]) {
         continue;
       }
 
-      for (auto item : adj(cursate.x, cursate.y, row, col)) {
-        // 计算从curstate.x,curstate.y 到 item.first, item.second的消耗
-        int dist = std::max(effortTo[cursate.x][cursate.y],
-                            abs(heights[item.first][item.second] -
-                                heights[cursate.x][cursate.y]));
-
-        if (dist < effortTo[item.first][item.second]) {
-          effortTo[item.first][item.second] = dist;
-          hp.push(state(item.first, item.second, dist));
+      std::vector<std::pair<int, int>> edge = adj(row, col, x, y);
+      for (auto iter : edge) {
+        int dx     = iter.first;
+        int dy     = iter.second;
+        int w      = heights[dx][dy];
+        int weight = std::max(dp[x][y], abs(heights[x][y] - w));
+        if (weight < dp[dx][dy]) {
+          dp[dx][dy] = weight;
+          hp.push(state(dx, dy, weight));
         }
       }
     }
@@ -124,41 +122,36 @@ public:
   }
 
 private:
-  std::list<std::pair<int, int>> adj(int x, int y, int row, int col) {
-    std::list<std::pair<int, int>> neightors;
-    for (auto item : dir) {
-      int dx = x + item[0];
-      int dy = y + item[1];
-
-      if (isInArea(dx, dy, row, col)) {
-        neightors.push_back(std::make_pair(dx, dy));
+  std::vector<std::pair<int, int>> adj(int row, int col, int x, int y) {
+    std::vector<std::pair<int, int>> result;
+    for (auto iter : dir) {
+      int dx = x + iter[0];
+      int dy = y + iter[1];
+      if (isInArea(row, col, dx, dy)) {
+        result.push_back(std::make_pair(dx, dy));
       }
     }
 
-    return neightors;
+    return result;
   }
 
-  bool isInArea(int x, int y, int row, int col) {
+  bool isInArea(int row, int col, int x, int y) {
     return x >= 0 && x < row && y >= 0 && y < col;
   }
 
   struct state {
-    int x, y;           // 二维平面中图的坐标
-    int distfromstart;  // 从起点到达当前节点的最小距离
-
-    state(int x, int y, int dis) : x(x), y(y), distfromstart(dis) {
+    int x, y;
+    int w;
+    state(int x, int y, int w) : x(x), y(y), w(w) {
     }
   };
 
   struct greator {
-    bool operator()(const state &s1, const state &s2) {
-      return s1.distfromstart > s2.distfromstart;
+    bool operator()(const state& state1, const state& state2) {
+      return state1.w > state2.w;
     }
   };
 
-  const std::vector<std::vector<int>> dir = {{-1, 0},
-                                             {1, 0},
-                                             {0, -1},
-                                             {0, 1}};  // 运动方向数组
+  const std::vector<std::vector<int>> dir = {{0, -1}, {0, 1}, {1, 0}, {-1, 0}};
 };
 // @lc code=end

@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/convert-bst-to-greater-tree/description/
  *
  * algorithms
- * Medium (61.66%)
- * Likes:    2963
- * Dislikes: 148
- * Total Accepted:    183.2K
- * Total Submissions: 297.1K
+ * Medium (61.88%)
+ * Likes:    3008
+ * Dislikes: 147
+ * Total Accepted:    185.5K
+ * Total Submissions: 299.7K
  * Testcase Example:  '[4,1,6,0,2,5,7,null,null,null,3,null,null,null,8]'
  *
  * Given the root of a Binary Search Tree (BST), convert it to a Greater Tree
@@ -73,18 +73,7 @@
  *
  */
 
-struct TreeNode {
-  int       val;
-  TreeNode *left;
-  TreeNode *right;
-  TreeNode() : val(0), left(nullptr), right(nullptr) {
-  }
-  TreeNode(int x) : val(x), left(nullptr), right(nullptr) {
-  }
-  TreeNode(int x, TreeNode *left, TreeNode *right)
-      : val(x), left(left), right(right) {
-  }
-};
+#include "treenode.h"
 
 // @lc code=start
 /**
@@ -101,19 +90,17 @@ struct TreeNode {
  */
 class Solution {
 public:
-  TreeNode *convertBST(TreeNode *root) {
+  TreeNode* convertBST(TreeNode* root) {
     sum = 0;
     traverse(root);
-
     return root;
   }
 
 private:
-  void traverse(TreeNode *root) {
+  void traverse(TreeNode* root) {
     if (root == nullptr) {
       return;
     }
-
     traverse(root->right);
     sum += root->val;
     root->val = sum;

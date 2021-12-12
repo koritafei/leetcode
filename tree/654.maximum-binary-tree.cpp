@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/maximum-binary-tree/description/
  *
  * algorithms
- * Medium (82.67%)
- * Likes:    3079
- * Dislikes: 287
- * Total Accepted:    188K
- * Total Submissions: 227.3K
+ * Medium (82.83%)
+ * Likes:    3166
+ * Dislikes: 289
+ * Total Accepted:    191.8K
+ * Total Submissions: 231.5K
  * Testcase Example:  '[3,2,1,6,0,5]'
  *
  * You are given an integer array nums with no duplicates. A maximum binary
@@ -65,26 +65,9 @@
  *
  *
  */
-
-#include <climits>
 #include <vector>
-struct TreeNode {
-  int       val;
-  TreeNode *left;
-  TreeNode *right;
-  TreeNode()
-      : val(0),
-        left(nullptr),
-        right(nullptr){} * TreeNode(int x)
-      : val(x),
-        left(nullptr),
-        right(nullptr) {
-  }
-  TreeNode(int x, TreeNode *left, TreeNode *right)
-      : val(x), left(left), right(right) {
-  }
-};
 
+#include "treenode.h"
 // @lc code=start
 /**
  * Definition for a binary tree node.
@@ -100,28 +83,27 @@ struct TreeNode {
  */
 class Solution {
 public:
-  TreeNode *constructMaximumBinaryTree(std::vector<int> &nums) {
+  TreeNode* constructMaximumBinaryTree(std::vector<int>& nums) {
     return constructMaximumBinaryTree(nums, 0, nums.size() - 1);
   }
 
 private:
-  TreeNode *constructMaximumBinaryTree(std::vector<int> &nums,
+  TreeNode* constructMaximumBinaryTree(std::vector<int>& nums,
                                        int               left,
                                        int               right) {
     if (left > right) {
       return nullptr;
     }
-    int i     = 0;
-    int index = left;
-    int max   = INT_MIN;
-    for (i = left; i <= right; i++) {
+
+    int max = nums[left], index = left;
+    for (int i = left; i <= right; i++) {
       if (max < nums[i]) {
         max   = nums[i];
         index = i;
       }
     }
 
-    TreeNode *root = new TreeNode(max);
+    TreeNode* root = new TreeNode(max);
     root->left     = constructMaximumBinaryTree(nums, left, index - 1);
     root->right    = constructMaximumBinaryTree(nums, index + 1, right);
 

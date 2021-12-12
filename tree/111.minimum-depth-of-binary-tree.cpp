@@ -6,10 +6,10 @@
  * https://leetcode.com/problems/minimum-depth-of-binary-tree/description/
  *
  * algorithms
- * Easy (41.31%)
- * Likes:    3204
- * Dislikes: 885
- * Total Accepted:    645.3K
+ * Easy (41.51%)
+ * Likes:    3358
+ * Dislikes: 903
+ * Total Accepted:    662.9K
  * Total Submissions: 1.6M
  * Testcase Example:  '[3,9,20,null,null,15,7]'
  *
@@ -46,18 +46,8 @@
  */
 
 #include <queue>
-struct TreeNode {
-  int       val;
-  TreeNode *left;
-  TreeNode *right;
-  TreeNode() : val(0), left(nullptr), right(nullptr) {
-  }
-  TreeNode(int x) : val(x), left(nullptr), right(nullptr) {
-  }
-  TreeNode(int x, TreeNode *left, TreeNode *right)
-      : val(x), left(left), right(right) {
-  }
-};
+
+#include "treenode.h"
 
 // @lc code=start
 /**
@@ -74,33 +64,37 @@ struct TreeNode {
  */
 class Solution {
 public:
-  int minDepth(TreeNode *root) {
-    if (!root) {
+  int minDepth(TreeNode* root) {
+    if (root == nullptr) {
       return 0;
     }
-    std::deque<TreeNode *> que;
-    que.push_back(root);
-    int depth = 1;
+    std::queue<TreeNode*> que;
+    que.push(root);
+    int step = 1;
+
     while (que.size()) {
-      int size = que.size();
-      for (int i = 0; i < size; ++i) {
-        TreeNode *curr = que.front();
-        que.pop_front();
-        if (curr->left == nullptr && curr->right == nullptr) {
-          return depth;
-        }
+      int sz = que.size();
+
+      for (int i = 0; i < sz; i++) {
+        TreeNode* curr = que.front();
+        que.pop();
         if (curr->left) {
-          que.push_back(curr->left);
+          que.push(curr->left);
         }
 
         if (curr->right) {
-          que.push_back(curr->right);
+          que.push(curr->right);
+        }
+
+        if (!curr->left && !curr->right) {
+          return step;
         }
       }
-      depth++;
+
+      step++;
     }
 
-    return 0;
+    return -1;
   }
 };
 // @lc code=end

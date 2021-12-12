@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/count-complete-tree-nodes/description/
  *
  * algorithms
- * Medium (53.35%)
- * Likes:    3992
- * Dislikes: 295
- * Total Accepted:    356.6K
- * Total Submissions: 667.9K
+ * Medium (53.67%)
+ * Likes:    4121
+ * Dislikes: 293
+ * Total Accepted:    363.6K
+ * Total Submissions: 677K
  * Testcase Example:  '[1,2,3,4,5,6]'
  *
  * Given the root of a complete binary tree, return the number of the nodes in
@@ -56,18 +56,9 @@
  *
  */
 
-struct TreeNode {
-  int       val;
-  TreeNode *left;
-  TreeNode *right;
-  TreeNode() : val(0), left(nullptr), right(nullptr) {
-  }
-  TreeNode(int x) : val(x), left(nullptr), right(nullptr) {
-  }
-  TreeNode(int x, TreeNode *left, TreeNode *right)
-      : val(x), left(left), right(right) {
-  }
-};
+#include <cmath>
+
+#include "treenode.h"
 
 // @lc code=start
 /**
@@ -84,9 +75,25 @@ struct TreeNode {
  */
 class Solution {
 public:
-  int countNodes(TreeNode *root) {
+  int countNodes(TreeNode* root) {
     if (root == nullptr) {
       return 0;
+    }
+    TreeNode *left = root, *right = root;
+    int       lh = 0, rh = 0;
+
+    while (left) {
+      left = left->left;
+      lh++;
+    }
+
+    while (right) {
+      right = right->right;
+      rh++;
+    }
+
+    if (lh == rh) {
+      return (int)pow(2, lh) - 1;
     }
 
     return 1 + countNodes(root->left) + countNodes(root->right);

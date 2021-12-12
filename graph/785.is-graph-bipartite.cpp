@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/is-graph-bipartite/description/
  *
  * algorithms
- * Medium (49.67%)
- * Likes:    3479
+ * Medium (49.69%)
+ * Likes:    3512
  * Dislikes: 250
- * Total Accepted:    244.1K
- * Total Submissions: 491.4K
+ * Total Accepted:    245.7K
+ * Total Submissions: 494.4K
  * Testcase Example:  '[[1,2,3],[0,2],[0,1,3],[0,2]]'
  *
  * There is an undirected graph with n nodes, where each node is numbered
@@ -65,51 +65,48 @@
  *
  */
 
-#include <iostream>
 #include <vector>
 
 // @lc code=start
 class Solution {
 public:
-  bool isBipartite(std::vector<std::vector<int>> &graph) {
-    bool              isbip = true;
-    int               n     = graph.size();
-    std::vector<bool> visited = std::vector<bool>(n, false);  // 是否被访问过
-    std::vector<bool> color = std::vector<bool>(n, false);  // 染色
+  bool isBipartite(std::vector<std::vector<int>>& graph) {
+    int len = graph.size();
+    visited = std::vector<bool>(len, false);
+    color   = std::vector<bool>(len, false);
+    isBip   = true;
 
-    for (int i = 0; i < n; i++) {
+    for (int i = 0; i < len; i++) {
       if (!visited[i]) {
-        isBipartite(graph, isbip, visited, color, i);
+        isBipartite(graph, i);
       }
     }
 
-    return isbip;
+    return isBip;
   }
 
 private:
-  void isBipartite(std::vector<std::vector<int>> &graph,
-                   bool                          &isbip,
-                   std::vector<bool>             &visited,
-                   std::vector<bool>             &color,
-                   int                            v) {
-    if (!isbip) {  // 已经确定结果，直接返回
+  void isBipartite(std::vector<std::vector<int>>& graph, int v) {
+    if (isBip == false) {
       return;
     }
-    visited[v] = true;
 
-    for (auto iter : graph[v]) {
-      if (!visited[iter]) {       // 临近节点未被访问过
-        color[iter] = !color[v];  // 标记与当前节点的不同颜色
-        isBipartite(graph, isbip, visited, color, iter);
+    visited[v] = true;
+    for (auto it : graph[v]) {
+      if (!visited[it]) {
+        color[it] = !color[v];
+        isBipartite(graph, it);
       } else {
-        // 如果已经被访问过
-        // 判断颜色是否与当前节点颜色相同，如果相同，直接返回false
-        if (color[iter] == color[v]) {
-          isbip = false;
+        if (color[v] == color[it]) {
+          isBip = false;
           return;
         }
       }
     }
   }
+
+  std::vector<bool> color;
+  std::vector<bool> visited;
+  bool              isBip;
 };
 // @lc code=end

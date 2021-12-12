@@ -6,10 +6,10 @@
  * https://leetcode.com/problems/invert-binary-tree/description/
  *
  * algorithms
- * Easy (69.86%)
- * Likes:    6827
- * Dislikes: 96
- * Total Accepted:    850.4K
+ * Easy (70.16%)
+ * Likes:    7057
+ * Dislikes: 97
+ * Total Accepted:    876.4K
  * Total Submissions: 1.2M
  * Testcase Example:  '[4,2,7,1,3,6,9]'
  *
@@ -47,18 +47,9 @@
  *
  */
 
-struct TreeNode {
-  int       val;
-  TreeNode *left;
-  TreeNode *right;
-  TreeNode() : val(0), left(nullptr), right(nullptr) {
-  }
-  TreeNode(int x) : val(x), left(nullptr), right(nullptr) {
-  }
-  TreeNode(int x, TreeNode *left, TreeNode *right)
-      : val(x), left(left), right(right) {
-  }
-};
+#include <type_traits>
+
+#include "treenode.h"
 
 // @lc code=start
 /**
@@ -75,13 +66,12 @@ struct TreeNode {
  */
 class Solution {
 public:
-  TreeNode *invertTree(TreeNode *root) {
+  TreeNode* invertTree(TreeNode* root) {
     if (root == nullptr) {
-      return root;
+      return nullptr;
     }
-    TreeNode *tmp = root->left;
-    root->left    = root->right;
-    root->right   = tmp;
+
+    std::swap(root->left, root->right);
     invertTree(root->left);
     invertTree(root->right);
 
