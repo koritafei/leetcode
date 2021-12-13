@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/open-the-lock/description/
  *
  * algorithms
- * Medium (55.00%)
- * Likes:    2318
- * Dislikes: 79
- * Total Accepted:    134.7K
- * Total Submissions: 244.9K
+ * Medium (55.06%)
+ * Likes:    2407
+ * Dislikes: 82
+ * Total Accepted:    139.2K
+ * Total Submissions: 252.6K
  * Testcase Example:  '["0201","0101","0102","1212","2002"]\n"0202"'
  *
  * You have a lock in front of you with 4 circular wheels. Each wheel has 10
@@ -83,57 +83,55 @@
  *
  */
 
-#include <queue>
+#include <list>
+#include <map>
 #include <string>
-#include <unordered_map>
+#include <unordered_set>
 #include <vector>
-
-using namespace std;
 
 // @lc code=start
 class Solution {
 public:
-  int openLock(vector<string>& deadends, string target) {
-    std::deque<std::string> que;
-    int                     step = 0;
+  int openLock(std::vector<std::string> &deadends, std::string target) {
+    std::unordered_set<std::string> dead(deadends.begin(), deadends.end());
+    std::unordered_set<std::string> visited;  // 存储已遍历过的密码
+    std::list<std::string>          que;      // 队列
+
+    int res = 0;
     que.push_back("0000");
-    std::unordered_map<std::string, int> dead;
-    for (auto item : deadends) {
-      dead[item] = 1;
-    }
-    std::unordered_map<std::string, bool> visited;
-    visited["0000"] = true;
+    visited.insert("0000");
 
     while (que.size()) {
-      int size = que.size();
+      int sz = que.size();
 
-      for (int i = 0; i < size; i++) {
-        std::string curr = que.front();
+      for (int i = 0; i < sz; i++) {
+        std::string cur = que.front();
         que.pop_front();
-        // 是否为dead
-        if (dead.count(curr)) {
+
+        if (dead.find(cur) != dead.end()) {
           continue;
         }
-        if (curr == target) {
-          return step;
+
+        if (cur == target) {
+          return res;
         }
 
         for (int i = 0; i < 4; i++) {
-          std::string up = plusOne(curr, i);
-          if (!visited.count(up)) {
+          std::string up = plusOne(cur, i);
+          if (visited.find(up) == visited.end()) {
+            visited.insert(up);
             que.push_back(up);
-            visited[up] = true;
           }
 
-          std::string down = minusOne(curr, i);
-          if (!visited.count(down)) {
+          std::string down = minusOne(cur, i);
+          if (visited.find(down) == visited.end()) {
+            visited.insert(down);
             que.push_back(down);
-            visited[down] = true;
           }
         }
       }
 
-      step++;
+      res++;
     }
 
     return -1;
@@ -146,14 +144,15 @@ private:
     } else {
       str[j] += 1;
     }
+
     return str;
   }
 
-  std::string minusOne(std::string str, int j) {
-    if (str[j] == '0') {
-      str[j] = '9';
+  std::string minusOne(std::string str, int i) {
+    if (str[i] == '0') {
+      str[i] = '9';
     } else {
-      str[j] -= 1;
+      str[i] -= 1;
     }
 
     return str;

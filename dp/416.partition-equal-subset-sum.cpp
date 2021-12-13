@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/partition-equal-subset-sum/description/
  *
  * algorithms
- * Medium (45.66%)
- * Likes:    5773
- * Dislikes: 100
- * Total Accepted:    350.6K
- * Total Submissions: 767.3K
+ * Medium (45.74%)
+ * Likes:    6342
+ * Dislikes: 104
+ * Total Accepted:    376.4K
+ * Total Submissions: 818K
  * Testcase Example:  '[1,5,11,5]'
  *
  * Given a non-empty array nums containing only positive integers, find if the
@@ -50,42 +50,36 @@
 class Solution {
 public:
   bool canPartition(std::vector<int>& nums) {
-    int sum = getSum(nums);
-    if (0 != sum % 2) {
+    int len = nums.size();
+    int sum = 0;
+    for (auto it : nums) {
+      sum += it;
+    }
+
+    if (sum % 2 != 0) {
       return false;
     }
 
     int                            target = sum / 2;
-    std::vector<std::vector<bool>> dp =
-        std::vector<std::vector<bool>>(nums.size() + 1,
-                                       std::vector<bool>(target + 1, false));
+    std::vector<std::vector<int> > dp(len + 1,
+                                      std::vector<int>(target + 1, false));
+
     // base case
-    for (int i = 0; i <= nums.size(); i++) {
+    for (int i = 0; i <= len; i++) {
       dp[i][0] = true;
     }
 
-    // dp 数组计算
-    for (int i = 1; i <= nums.size(); i++) {
+    for (int i = 1; i <= len; i++) {
       for (int j = 1; j <= target; j++) {
-        if (j - nums[i - 1] < 0) {  // 不能放下nums[i-1]
+        if (j - nums[i - 1] < 0) {
           dp[i][j] = dp[i - 1][j];
         } else {
-          dp[i][j] = dp[i - 1][j] | dp[i - 1][j - nums[i - 1]];
+          dp[i][j] = dp[i - 1][j] || dp[i - 1][j - nums[i - 1]];
         }
       }
     }
 
-    return dp[nums.size()][target];
-  }
-
-private:
-  int getSum(std::vector<int>& nums) {
-    int sum = 0;
-    for (auto item : nums) {
-      sum += item;
-    }
-
-    return sum;
+    return dp[len][target];
   }
 };
 // @lc code=end

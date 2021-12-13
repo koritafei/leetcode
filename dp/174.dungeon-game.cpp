@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/dungeon-game/description/
  *
  * algorithms
- * Hard (35.57%)
- * Likes:    3486
- * Dislikes: 67
- * Total Accepted:    155.4K
- * Total Submissions: 436K
+ * Hard (35.73%)
+ * Likes:    3552
+ * Dislikes: 70
+ * Total Accepted:    157.8K
+ * Total Submissions: 440.9K
  * Testcase Example:  '[[-2,-3,3],[-5,-10,1],[10,30,-5]]'
  *
  * The demons had captured the princess and imprisoned her in the bottom-right
@@ -64,38 +64,30 @@
  *
  */
 
-#include <iostream>
 #include <vector>
 
 // @lc code=start
 class Solution {
 public:
   int calculateMinimumHP(std::vector<std::vector<int>>& dungeon) {
-    int row = dungeon.size(), col = 0;
-    if (row != 0) {
-      col = dungeon[0].size();
-    } else {
-      return 1;
-    }
+    int row = dungeon.size(), col = dungeon[0].size();
 
-    std::vector<std::vector<int>> dp =
-        std::vector<std::vector<int>>(row + 1, std::vector<int>(col + 1, 0));
-
-    dp[row - 1][col - 1] =
-        dungeon[row - 1][col - 1] <= 0 ? -dungeon[row - 1][col - 1] + 1 : 1;
+    std::vector<std::vector<int>> dp(row + 1, std::vector<int>(col + 1, 0));
 
     // base case
-    for (int i = row - 2; i >= 0; i--) {
-      int tmp        = dp[i + 1][col - 1] - dungeon[i][col - 1];
-      dp[i][col - 1] = tmp <= 0 ? 1 : tmp;
-    }
-
+    dp[row - 1][col - 1] =
+        dungeon[row - 1][col - 1] >= 0 ? 1 : -dungeon[row - 1][col - 1] + 1;
     for (int i = col - 2; i >= 0; i--) {
       int tmp        = dp[row - 1][i + 1] - dungeon[row - 1][i];
       dp[row - 1][i] = tmp <= 0 ? 1 : tmp;
     }
 
-    // dp 数据计算
+    for (int i = row - 2; i >= 0; i--) {
+      int tmp        = dp[i + 1][col - 1] - dungeon[i][col - 1];
+      dp[i][col - 1] = tmp <= 0 ? 1 : tmp;
+    }
+
+    // 计算dp
     for (int i = row - 2; i >= 0; i--) {
       for (int j = col - 2; j >= 0; j--) {
         int tmp  = std::min(dp[i + 1][j], dp[i][j + 1]) - dungeon[i][j];

@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/best-time-to-buy-and-sell-stock-ii/description/
  *
  * algorithms
- * Medium (60.40%)
- * Likes:    5753
- * Dislikes: 2220
- * Total Accepted:    977.2K
- * Total Submissions: 1.6M
+ * Medium (60.92%)
+ * Likes:    6237
+ * Dislikes: 2265
+ * Total Accepted:    1M
+ * Total Submissions: 1.7M
  * Testcase Example:  '[7,1,5,3,6,4]'
  *
  * You are given an integer array prices where prices[i] is the price of a
@@ -70,21 +70,17 @@
 class Solution {
 public:
   int maxProfit(std::vector<int>& prices) {
-    int                           size = prices.size();
-    std::vector<std::vector<int>> dp(size + 1, std::vector<int>(2, 0));
+    int                            len = prices.size();
+    std::vector<std::vector<int> > dp(len + 1, std::vector<int>(2, 0));
 
-    for (int i = 0; i < size; i++) {
-      if (-1 == i - 1) {
-        dp[i][0] = 0;
-        dp[i][1] = -prices[i];
-        continue;
-      }
+    dp[0][1] = -prices[0];
 
+    for (int i = 1; i < len; i++) {
       dp[i][0] = std::max(dp[i - 1][0], dp[i - 1][1] + prices[i]);
       dp[i][1] = std::max(dp[i - 1][1], dp[i - 1][0] - prices[i]);
     }
 
-    return dp[size - 1][0];
+    return dp[len - 1][0];
   }
 };
 // @lc code=end

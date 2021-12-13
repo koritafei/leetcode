@@ -6,8 +6,8 @@
  * https://leetcode.com/problems/maximum-depth-of-binary-tree/description/
  *
  * algorithms
- * Easy (70.42%)
- * Likes:    5365
+ * Easy (70.38%)
+ * Likes:    5371
  * Dislikes: 112
  * Total Accepted:    1.4M
  * Total Submissions: 2M
@@ -57,8 +57,6 @@
  *
  */
 
-#include <algorithm>
-
 #include "treenode.h"
 
 // @lc code=start
@@ -81,7 +79,10 @@ public:
       return 0;
     }
 
-    return 1 + std::max(maxDepth(root->left), maxDepth(root->right));
+    int left  = maxDepth(root->left);
+    int right = maxDepth(root->right);
+
+    return 1 + std::max(left, right);
   }
 };
 // @lc code=end

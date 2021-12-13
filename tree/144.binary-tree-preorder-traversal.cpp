@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/binary-tree-preorder-traversal/description/
  *
  * algorithms
- * Medium (57.14%)
- * Likes:    2100
- * Dislikes: 86
- * Total Accepted:    605.1K
- * Total Submissions: 1.1M
+ * Easy (60.62%)
+ * Likes:    3282
+ * Dislikes: 113
+ * Total Accepted:    796.5K
+ * Total Submissions: 1.3M
  * Testcase Example:  '[1,null,2,3]'
  *
  * Given the root of a binary tree, return the preorder traversal of its nodes'
@@ -64,6 +64,10 @@
  * Follow up: Recursive solution is trivial, could you do it iteratively?
  *
  */
+#include <stack>
+#include <vector>
+
+#include "treenode.h"
 
 // @lc code=start
 /**
@@ -80,39 +84,36 @@
  */
 class Solution {
 public:
-  vector<int> preorderTraversal(TreeNode *root) {
-    vector<int> res;
+  std::vector<int> preorderTraversal(TreeNode* root) {
+    pushNode(root);
+    TreeNode* visited;
+    while (stack.size() > 0) {
+      TreeNode* node = stack.top();
 
-    preorderTraversal(root, res);
+      if ((node->left == nullptr || visited == node->left) &&
+          (node->right != visited)) {
+        pushNode(node->right);
+      }
+
+      if (node->right == nullptr || visited == node->right) {
+        visited = node;
+        stack.pop();
+      }
+    }
 
     return res;
   }
 
 private:
-  // // 递归形式
-  // void preorderTraversal(TreeNode *root, vector<int> &res) {
-  //   if (root == nullptr) {
-  //     return;
-  //   }
-  //   res.push_back(root->val);
-  //   preorderTraversal(root->left, res);
-  //   preorderTraversal(root->right, res);
-  // }
-
-  // 非递归形式
-  void preorderTraversal(TreeNode *root, vector<int> &res) {
-    stack<TreeNode *> stack;
-    while (!stack.empty() || root != nullptr) {
-      if (root != nullptr) {
-        res.push_back(root->val);
-        stack.push(root);
-        root = root->left;
-      } else {
-        root = stack.top();
-        stack.pop();
-        root = root->right;
-      }
+  void pushNode(TreeNode* root) {
+    while (root) {
+      res.push_back(root->val);
+      stack.push(root);
+      root = root->left;
     }
   }
+
+  std::stack<TreeNode*> stack;
+  std::vector<int>      res;
 };
 // @lc code=end

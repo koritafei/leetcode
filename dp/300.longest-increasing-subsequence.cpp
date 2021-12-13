@@ -6,10 +6,10 @@
  * https://leetcode.com/problems/longest-increasing-subsequence/description/
  *
  * algorithms
- * Medium (47.35%)
- * Likes:    9390
- * Dislikes: 193
- * Total Accepted:    688.5K
+ * Medium (47.67%)
+ * Likes:    9802
+ * Dislikes: 201
+ * Total Accepted:    715.3K
  * Total Submissions: 1.5M
  * Testcase Example:  '[10,9,2,5,3,7,101,18]'
  *
@@ -65,7 +65,9 @@ class Solution {
 public:
   int lengthOfLIS(std::vector<int>& nums) {
     int              len = nums.size();
-    std::vector<int> dp(len + 1, 1);
+    std::vector<int> dp  = std::vector<int>(len + 1, 1);
+    // base case
+    dp[0] = 1;
 
     for (int i = 1; i < len; i++) {
       for (int j = 0; j < i; j++) {
@@ -75,12 +77,11 @@ public:
       }
     }
 
-    int res = 0;
-    for (auto item : dp) {
-      res = res > item ? res : item;
+    int max = 0;
+    for (int i = 0; i < len; i++) {
+      max = max > dp[i] ? max : dp[i];
     }
-
-    return res;
+    return max;
   }
 };
 // @lc code=end

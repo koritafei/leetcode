@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/binary-tree-right-side-view/description/
  *
  * algorithms
- * Medium (56.38%)
- * Likes:    3605
- * Dislikes: 193
- * Total Accepted:    419.4K
- * Total Submissions: 743.7K
+ * Medium (58.43%)
+ * Likes:    5395
+ * Dislikes: 300
+ * Total Accepted:    570.8K
+ * Total Submissions: 975.8K
  * Testcase Example:  '[1,2,3,null,5,null,4]'
  *
  * Given the root of a binary tree, imagine yourself standing on the right side
@@ -49,6 +49,11 @@
  *
  */
 
+#include <queue>
+#include <vector>
+
+#include "treenode.h"
+
 // @lc code=start
 /**
  * Definition for a binary tree node.
@@ -64,30 +69,35 @@
  */
 class Solution {
 public:
-  vector<int> rightSideView(TreeNode* root) {
-    deque<pair<TreeNode*, int>> deque;
-    std::vector<int>            res;
+  std::vector<int> rightSideView(TreeNode* root) {
+    std::queue<TreeNode*> queue;
+    std::vector<int>      result;
+    if (root == nullptr) {
+      return result;
+    }
+    queue.push(root);
 
-    deque.push_back(pair<TreeNode*, int>(root, 1));
+    while (queue.size() > 0) {
+      int sz = queue.size();
+      for (int i = 0; i < sz; i++) {
+        TreeNode* curr = queue.front();
+        queue.pop();
 
-    while (root && deque.size()) {
-      auto it = deque.front();
-      root    = it.first;
-      deque.pop_front();
+        if (curr->left) {
+          queue.push(curr->left);
+        }
 
-      if (root->left) {
-        deque.push_back(pair<TreeNode*, int>(root->left, it.second + 1));
-      }
-      if (root->right) {
-        deque.push_back(pair<TreeNode*, int>(root->right, it.second + 1));
-      }
+        if (curr->right) {
+          queue.push(curr->right);
+        }
 
-      if (deque.size() == 0 || it.second < deque.front().second) {
-        res.push_back(root->val);
+        if (i == sz - 1) {
+          result.push_back(curr->val);
+        }
       }
     }
 
-    return res;
+    return result;
   }
 };
 // @lc code=end

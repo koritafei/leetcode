@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/best-time-to-buy-and-sell-stock-iii/description/
  *
  * algorithms
- * Hard (42.17%)
- * Likes:    4805
- * Dislikes: 104
- * Total Accepted:    340.6K
- * Total Submissions: 807.7K
+ * Hard (42.31%)
+ * Likes:    4980
+ * Dislikes: 110
+ * Total Accepted:    347.5K
+ * Total Submissions: 820.7K
  * Testcase Example:  '[3,3,5,0,0,3,1,4]'
  *
  * You are given an array prices where prices[i] is the price of a given stock
@@ -70,36 +70,33 @@
  *
  */
 
-#include <climits>
 #include <vector>
 
 // @lc code=start
 class Solution {
 public:
   int maxProfit(std::vector<int>& prices) {
-    int                                        size = prices.size();
-    int                                        k    = 2;
+    int len = prices.size();
+
     std::vector<std::vector<std::vector<int>>> dp(
-        size + 1,
-        std::vector<std::vector<int>>(k + 1, std::vector<int>(2, 0)));
+        len,
+        std::vector<std::vector<int>>(3, std::vector<int>(2, 0)));
 
-    for (int i = 0; i < size; i++) {
-      for (int j = 1; j <= k; j++) {
-        if (-1 == i - 1) {
-          dp[i][1][1] = -prices[i];
-          dp[i][1][0] = 0;
-          dp[i][2][0] = 0;
-          dp[i][2][1] = -prices[i];
-
+    for (int i = 0; i < len; i++) {
+      for (int k = 2; k >= 1; k--) {
+        if (i - 1 == -1) {
+          dp[i][k][0] = 0;
+          dp[i][k][1] = -prices[i];
           continue;
         }
-        dp[i][j][0] = std::max(dp[i - 1][j][0], dp[i - 1][j][1] + prices[i]);
-        dp[i][j][1] =
-            std::max(dp[i - 1][j][1], dp[i - 1][j - 1][0] - prices[i]);
+
+        dp[i][k][0] = std::max(dp[i - 1][k][0], dp[i - 1][k][1] + prices[i]);
+        dp[i][k][1] =
+            std::max(dp[i - 1][k][1], dp[i - 1][k - 1][0] - prices[i]);
       }
     }
 
-    return dp[size - 1][k][0];
+    return dp[len - 1][2][0];
   }
 };
 // @lc code=end

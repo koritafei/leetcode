@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/evaluate-reverse-polish-notation/description/
  *
  * algorithms
- * Medium (37.59%)
- * Likes:    1472
- * Dislikes: 516
- * Total Accepted:    272.8K
- * Total Submissions: 717.5K
+ * Medium (40.90%)
+ * Likes:    2358
+ * Dislikes: 575
+ * Total Accepted:    348.2K
+ * Total Submissions: 850K
  * Testcase Example:  '["2","1","+","3","*"]'
  *
  * Evaluate the value of an arithmetic expression in Reverse Polish Notation.
@@ -66,39 +66,51 @@
  *
  */
 
+#include <stack>
+#include <string>
+#include <vector>
+
 // @lc code=start
 class Solution {
 public:
-  int evalRPN(vector<string>& tokens) {
-    stack<int> stack;
-    int        a, b;
-    for (auto str : tokens) {
-      if (str == "+") {
-        stack.empty() == true ?  : a = stack.top(), stack.pop();
-        stack.empty() == true ?  : b = stack.top(), stack.pop();
-        stack.push(b + a);
-      } else if (str == "*") {
-        stack.empty() == true ?  : a = stack.top(), stack.pop();
-        stack.empty() == true ?  : b = stack.top(), stack.pop();
-        stack.push(b * a);
-      } else if (str == "-") {
-        stack.empty() == true ?  : a = stack.top(), stack.pop();
-        stack.empty() == true ?  : b = stack.top(), stack.pop();
-        stack.push(b - a);
-      } else if (str == "/") {
-        stack.empty() == true ?  : a = stack.top(), stack.pop();
-        stack.empty() == true ?  : b = stack.top(), stack.pop();
-        stack.push(b / a);
+  int evalRPN(std::vector<std::string>& tokens) {
+    std::stack<std::string> stack;
+
+    for (auto iter : tokens) {
+      if (iter == "*" || iter == "/" || iter == "+" || iter == "-") {
+        cacles(stack, iter);
       } else {
-        stack.push(atoi(str.c_str()));
+        stack.push(iter);
       }
     }
 
-    if (stack.empty()) {
-      "";
+    int result = (int)atol(stack.top().c_str());
+
+    return result;
+  }
+
+private:
+  void cacles(std::stack<std::string>& stack, std::string iter) {
+    long nums1 = atol(stack.top().c_str());
+    stack.pop();
+    long nums2 = atol(stack.top().c_str());
+    stack.pop();
+    if (iter == "*") {
+      nums2 *= nums1;
     }
 
-    return stack.top();
+    if (iter == "/") {
+      nums2 /= nums1;
+    }
+
+    if (iter == "+") {
+      nums2 += nums1;
+    }
+
+    if (iter == "-") {
+      nums2 -= nums1;
+    }
+    stack.push(std::to_string(nums2));
   }
 };
 // @lc code=end

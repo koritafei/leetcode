@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/sudoku-solver/description/
  *
  * algorithms
- * Hard (51.49%)
- * Likes:    4005
- * Dislikes: 128
- * Total Accepted:    300.2K
- * Total Submissions: 581.1K
+ * Hard (51.83%)
+ * Likes:    4133
+ * Dislikes: 130
+ * Total Accepted:    305.5K
+ * Total Submissions: 588.2K
  * Testcase Example:
  * '[["5","3",".",".","7",".",".",".","."],["6",".",".","1","9","5",".",".","."],[".","9","8",".",".",".",".","6","."],["8",".",".",".","6",".",".",".","3"],["4",".",".","8",".","3",".",".","1"],["7",".",".",".","2",".",".",".","6"],[".","6",".",".",".",".","2","8","."],[".",".",".","4","1","9",".",".","5"],[".",".",".",".","8",".",".","7","9"]]'
  *
@@ -59,17 +59,7 @@
 class Solution {
 public:
   void solveSudoku(std::vector<std::vector<char>>& board) {
-    int row = board.size(), col = 0;
-    if (0 == row) {
-      return;
-    } else {
-      col = board[0].size();
-    }
-
-    if (row != col) {
-      return;
-    }
-
+    int row = board.size(), col = board[0].size();
     backtrace(board, row, col, 0, 0);
   }
 
@@ -79,49 +69,34 @@ private:
                  int                             col,
                  int                             x,
                  int                             y) {
-    if (y == col) {
-      // 计算到最后一列，计算下一行
+    if (y == col) {  // 当前行处理完成，处理下一行
       return backtrace(board, row, col, x + 1, 0);
     }
 
-    // 计算到最后一行，得到一个结果
-    if (x == row) {
+    if (row == x) {  // 行处理完成
       return true;
     }
 
-    // 对每个位置进行穷举
-    for (int i = x; i < row; i++) {
-      for (int j = y; j < col; j++) {
-        if ('.' != board[i][j]) {
-          // 如果有预设数字，遍历下一列
-          return backtrace(board, row, col, i, j + 1);
+    if ('.' != board[x][y]) {
+      // 当前位置有数字
+      return backtrace(board, row, col, x, y + 1);
+    }
+
+    for (char ch = '1'; ch <= '9'; ch++) {
+      if (isValid(board, row, col, x, y, ch)) {
+        // 做选择
+        board[x][y] = ch;
+        if (backtrace(board, row, col, x, y + 1)) {
+          return true;
         }
-
-        // 非预设数字
-        for (char ch = '1'; ch <= '9'; ch++) {
-          // 当前选中解无效，继续
-          if (!isValid(board, row, col, i, j, ch)) {
-            continue;
-          }
-
-          // 做选择
-          board[i][j] = ch;
-          if (backtrace(board, row, col, i, j + 1)) {  // 找到可行解，返回
-            return true;
-          }
-
-          // 撤销选择
-          board[i][j] = '.';
-        }
-
-        return false;  // 穷举完所有选择，则直接放回
+        // 撤销选择
+        board[x][y] = '.';
       }
     }
 
-    return false;  // 没有可行解
+    return false;
   }
 
-  // 判断所填数字是否合法
   bool isValid(std::vector<std::vector<char>>& board,
                int                             row,
                int                             col,
@@ -129,20 +104,22 @@ private:
                int                             y,
                char                            ch) {
     for (int i = 0; i < row; i++) {
-      // 同一行是否有相同字符
-      if (ch == board[x][i]) {
-        return false;
-      }
-      // 同一列是否有相同字符
-      if (ch == board[i][y]) {
+      // 同一行没有相同数字
+      if (board[x][i] == ch) {
         return false;
       }
 
-      // 临近3*3的方格是否有相同字符
+      // 同一列没有相同数字
+      if (board[i][y] == ch) {
+        return false;
+      }
+
+      // 3 * 3 矩阵没有相同数字
       if (ch == board[(x / 3) * 3 + i / 3][(y / 3) * 3 + i % 3]) {
         return false;
       }
     }
+
     return true;
   }
 };

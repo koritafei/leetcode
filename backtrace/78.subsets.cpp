@@ -6,10 +6,10 @@
  * https://leetcode.com/problems/subsets/description/
  *
  * algorithms
- * Medium (68.47%)
- * Likes:    7530
- * Dislikes: 126
- * Total Accepted:    901.1K
+ * Medium (68.83%)
+ * Likes:    7713
+ * Dislikes: 128
+ * Total Accepted:    917.2K
  * Total Submissions: 1.3M
  * Testcase Example:  '[1,2,3]'
  *
@@ -51,25 +51,21 @@
 class Solution {
 public:
   std::vector<std::vector<int>> subsets(std::vector<int>& nums) {
-    backtrace(nums, 0);
-
+    backward(nums, nums.size(), 0);
     return res;
   }
 
 private:
-  void backtrace(std::vector<int>& nums, int index) {
-    res.push_back(subset);
-
-    for (int i = index; i < nums.size(); i++) {
-      // 做选择
-      subset.push_back(nums[i]);
-      backtrace(nums, i + 1);
-      // 撤销选择
-      subset.pop_back();
+  void backward(std::vector<int>& nums, int len, int index) {
+    res.push_back(path);
+    for (int i = index; i < len; i++) {
+      path.push_back(nums[i]);
+      backward(nums, len, i + 1);
+      path.pop_back();
     }
   }
 
-  std::vector<int>              subset;
+  std::vector<int>              path;
   std::vector<std::vector<int>> res;
 };
 // @lc code=end

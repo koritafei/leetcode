@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/binary-tree-inorder-traversal/description/
  *
  * algorithms
- * Medium (65.43%)
- * Likes:    4356
- * Dislikes: 192
- * Total Accepted:    926.9K
- * Total Submissions: 1.4M
+ * Easy (69.12%)
+ * Likes:    6321
+ * Dislikes: 268
+ * Total Accepted:    1.2M
+ * Total Submissions: 1.8M
  * Testcase Example:  '[1,null,2,3]'
  *
  * Given the root of a binary tree, return the inorder traversal of its nodes'
@@ -61,20 +61,13 @@
  *
  *
  *
- *
- * Follow up:
- *
- * Recursive solution is trivial, could you do it iteratively?
- *
- *
- *
+ * Follow up: Recursive solution is trivial, could you do it iteratively?
  */
 
-#include <iostream>
 #include <stack>
 #include <vector>
 
-using namespace std;
+#include "treenode.h"
 
 // @lc code=start
 /**
@@ -89,71 +82,43 @@ using namespace std;
  * right(right) {}
  * };
  */
-
-struct TreeNode {
-  int       val;
-  TreeNode *left;
-  TreeNode *right;
-  TreeNode() : val(0), left(nullptr), right(nullptr) {
-  }
-  TreeNode(int x) : val(x), left(nullptr), right(nullptr) {
-  }
-  TreeNode(int x, TreeNode *left, TreeNode *right)
-      : val(x),
-        left(left),
-        right(right) {
-  }
-};
-
 class Solution {
 public:
-  vector<int> inorderTraversal(TreeNode *root) {
-    vector<int> res;
-    inorderTraversal(root, res);
+  std::vector<int> inorderTraversal(TreeNode* root) {
+    TreeNode* visited;
+    pushNode(root);
+
+    while (stack.size()) {
+      TreeNode* curr = stack.top();
+      if ((curr->left == nullptr || visited == curr->left) &&
+          curr->right != visited) {
+        // 中序遍历位置
+        res.push_back(curr->val);
+        pushNode(curr->right);
+      }
+
+      if (curr->right == nullptr || visited == curr->right) {
+        // 后续遍历位置
+        // 以curr为根的子树遍历完成
+        visited = curr;
+        stack.pop();
+      }
+    }
+
     return res;
   }
 
 private:
-  // // 递归
-  // void inorderTraversal(TreeNode *root, vector<int> &res) {
-  //   if (root == nullptr) {
-  //     return;
-  //   }
+  void pushNode(TreeNode* root) {
+    while (root) {
+      // 先序遍历位置
 
-  //   inorderTraversal(root->left, res);
-  //   res.push_back(root->val);
-  //   inorderTraversal(root->right, res);
-  // }
-
-  // 非递归方式
-  void inorderTraversal(TreeNode *root, vector<int> &res) {
-    stack<TreeNode *> stack;
-    while (!stack.empty() || root != nullptr) {
-      if (root != nullptr) {
-        stack.push(root);
-        root = root->left;
-      } else {
-        root = stack.top();
-        stack.pop();
-        res.push_back(root->val);
-        root = root->right;
-      }
+      stack.push(root);
+      root = root->left;
     }
   }
+
+  std::vector<int>      res;
+  std::stack<TreeNode*> stack;
 };
 // @lc code=end
-
-int main(int argc, char **argv) {
-  Solution  solution;
-  TreeNode *root  = new TreeNode(1);
-  TreeNode *left  = new TreeNode(3);
-  TreeNode *right = new TreeNode(2);
-  root->right     = right;
-  right->left     = left;
-
-  vector<int> res = solution.inorderTraversal(root);
-  for (auto item : res) {
-    std::cout << item << " ";
-  }
-  std::cout << std::endl;
-}

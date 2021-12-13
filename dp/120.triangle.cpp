@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/triangle/description/
  *
  * algorithms
- * Medium (45.88%)
- * Likes:    2708
- * Dislikes: 299
- * Total Accepted:    289.1K
- * Total Submissions: 629.8K
+ * Medium (49.04%)
+ * Likes:    4071
+ * Dislikes: 361
+ * Total Accepted:    366.9K
+ * Total Submissions: 746.7K
  * Testcase Example:  '[[2],[3,4],[6,5,7],[4,1,8,3]]'
  *
  * Given a triangle array, return the minimum path sum from top to bottom.
@@ -56,27 +56,22 @@
  * total number of rows in the triangle?
  */
 
+#include <vector>
+
 // @lc code=start
 class Solution {
 public:
-  int minimumTotal(vector<vector<int>>& triangle) {
-    int row = triangle.size();
-    if (row == 0) {
-      return 0;
-    }
-    int col = triangle[row - 1].size();
-    if (col == 0) {
-      return 0;
-    }
-    vector<int> dp(col, -1);
-
+  int minimumTotal(std::vector<std::vector<int>>& triangle) {
+    int              row = triangle.size(), col = triangle[row - 1].size();
+    std::vector<int> dp(col, -1);
+    // base case
     for (int i = 0; i < col; i++) {
       dp[i] = triangle[row - 1][i];
     }
 
     for (int i = row - 2; i >= 0; i--) {
       for (int j = 0; j <= i; j++) {
-        dp[j] = triangle[i][j] + min(dp[j], dp[j + 1]);
+        dp[j] = triangle[i][j] + std::min(dp[j + 1], dp[j]);
       }
     }
 

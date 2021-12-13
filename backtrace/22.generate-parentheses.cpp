@@ -6,10 +6,10 @@
  * https://leetcode.com/problems/generate-parentheses/description/
  *
  * algorithms
- * Medium (68.34%)
- * Likes:    10452
- * Dislikes: 412
- * Total Accepted:    901.2K
+ * Medium (68.60%)
+ * Likes:    10729
+ * Dislikes: 420
+ * Total Accepted:    919.7K
  * Total Submissions: 1.3M
  * Testcase Example:  '3'
  *
@@ -40,42 +40,44 @@
 class Solution {
 public:
   std::vector<std::string> generateParenthesis(int n) {
-    int                      left  = n;
-    int                      right = n;
-    std::string              str;
-    std::vector<std::string> res;  // 结果集
+    std::vector<std::string> res;
+    std::string              path;
+    if (n == 0) {
+      return res;
+    }
+    backtrace(n, n, path, res);
 
-    backtrace(left, right, str, res);
     return res;
   }
 
 private:
   void backtrace(int                       left,
                  int                       right,
-                 std::string &             str,
+                 std::string              &path,
                  std::vector<std::string> &res) {
-    if (right < left) {
-      return;
-    }
-    if (right < 0 || left < 0) {
+    if (left > right) {
       return;
     }
 
-    if (right == 0 && left == 0) {
-      res.push_back(str);
+    if (left < 0 || right < 0) {
       return;
     }
 
-    // 放入左括号
-    str.push_back('(');
-    backtrace(left - 1, right, str, res);
+    if (left == 0 && right == 0) {
+      res.push_back(path);
+      return;
+    }
+
+    // 做选择
+    path.push_back('(');
+    backtrace(left - 1, right, path, res);
     // 撤销选择
-    str.pop_back();
+    path.pop_back();
 
-    // 放入右括号
-    str.push_back(')');
-    backtrace(left, right - 1, str, res);
-    str.pop_back();
+    // 做选择
+    path.push_back(')');
+    backtrace(left, right - 1, path, res);
+    path.pop_back();
   }
 };
 // @lc code=end

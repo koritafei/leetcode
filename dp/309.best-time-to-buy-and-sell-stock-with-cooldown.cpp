@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/best-time-to-buy-and-sell-stock-with-cooldown/description/
  *
  * algorithms
- * Medium (50.68%)
- * Likes:    4800
- * Dislikes: 161
- * Total Accepted:    234.6K
- * Total Submissions: 462.9K
+ * Medium (50.95%)
+ * Likes:    4956
+ * Dislikes: 170
+ * Total Accepted:    242.2K
+ * Total Submissions: 474.6K
  * Testcase Example:  '[1,2,3,0,2]'
  *
  * You are given an array prices where prices[i] is the price of a given stock
@@ -60,20 +60,22 @@
 class Solution {
 public:
   int maxProfit(std::vector<int>& prices) {
-    int                           size = prices.size();
-    std::vector<std::vector<int>> dp(size + 1, std::vector<int>(2, 0));
+    int len = prices.size();
+    if (len == 0) {
+      return 0;
+    }
+    std::vector<std::vector<int>> dp(len + 1, std::vector<int>(2, 0));
 
-    for (int i = 0; i < size; i++) {
-      if (-1 == i - 1) {
+    for (int i = 0; i < len; i++) {
+      if (i - 1 == -1) {
         dp[i][0] = 0;
         dp[i][1] = -prices[i];
-
         continue;
       }
 
-      if (0 == i - 1) {
+      if (i - 1 == 0) {
         dp[i][0] = std::max(dp[i - 1][0], dp[i - 1][1] + prices[i]);
-        dp[i][1] = std::max(-prices[0], -prices[i]);
+        dp[i][1] = std::max(dp[i - 1][1], -prices[i]);
         continue;
       }
 
@@ -81,7 +83,7 @@ public:
       dp[i][1] = std::max(dp[i - 1][1], dp[i - 2][0] - prices[i]);
     }
 
-    return dp[size - 1][0];
+    return dp[len - 1][0];
   }
 };
 // @lc code=end

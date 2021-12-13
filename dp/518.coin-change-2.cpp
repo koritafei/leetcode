@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/coin-change-2/description/
  *
  * algorithms
- * Medium (55.09%)
- * Likes:    4118
- * Dislikes: 90
- * Total Accepted:    239.6K
- * Total Submissions: 433.5K
+ * Medium (55.48%)
+ * Likes:    4257
+ * Dislikes: 91
+ * Total Accepted:    246.3K
+ * Total Submissions: 443K
  * Testcase Example:  '5\n[1,2,5]'
  *
  * You are given an integer array coins representing coins of different
@@ -70,23 +70,18 @@ class Solution {
 public:
   int change(int amount, std::vector<int>& coins) {
     int                           len = coins.size();
-    std::vector<std::vector<int>> dp =
-        std::vector<std::vector<int>>(len + 1, std::vector<int>(amount + 1, 0));
+    std::vector<std::vector<int>> dp(len + 1, std::vector<int>(amount + 1, 0));
 
-    // base case
-    // 当amount = 0时，都有一种方法
     for (int i = 0; i <= len; i++) {
       dp[i][0] = 1;
     }
 
-    // 计算dp数组
     for (int i = 1; i <= len; i++) {
       for (int j = 1; j <= amount; j++) {
-        if (j - coins[i - 1] < 0) {
-          // 不可放入
-          dp[i][j] = dp[i - 1][j];
-        } else {
+        if (j - coins[i - 1] >= 0) {
           dp[i][j] = dp[i - 1][j] + dp[i][j - coins[i - 1]];
+        } else {
+          dp[i][j] = dp[i - 1][j];
         }
       }
     }

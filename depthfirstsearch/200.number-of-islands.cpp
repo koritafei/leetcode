@@ -6,9 +6,9 @@
  * https://leetcode.com/problems/number-of-islands/description/
  *
  * algorithms
- * Medium (51.99%)
- * Likes:    11013
- * Dislikes: 274
+ * Medium (52.28%)
+ * Likes:    11339
+ * Dislikes: 288
  * Total Accepted:    1.3M
  * Total Submissions: 2.5M
  * Testcase Example:
@@ -64,45 +64,41 @@
 class Solution {
 public:
   int numIslands(std::vector<std::vector<char>>& grid) {
-    int row = grid.size(), col = 0;
-    if (row != 0) {
-      col = grid[0].size();
-    } else {
-      return 0;
-    }
-
+    int row = grid.size(), col = grid[0].size();
     int res = 0;
+
     for (int i = 0; i < row; i++) {
       for (int j = 0; j < col; j++) {
-        if (grid[i][j] == '1') {
+        if ('1' == grid[i][j]) {
+          dfs(grid, i, j, row, col);
           res++;
-          dfs(grid, row, col, i, j);
         }
       }
     }
+
     return res;
   }
 
 private:
-  bool isInArea(int row, int col, int i, int j) {
-    return i < 0 || i >= row || j < 0 || j >= col;
-  }
-
   void dfs(std::vector<std::vector<char>>& grid,
-           int                             row,
-           int                             col,
            int                             i,
-           int                             j) {
+           int                             j,
+           int                             row,
+           int                             col) {
     grid[i][j] = '0';
-    for (auto item : dir) {
-      int dx = i + item[0];
-      int dy = j + item[1];
-      if (!isInArea(row, col, dx, dy) && grid[dx][dy] == '1') {
-        dfs(grid, row, col, dx, dy);
+    for (auto it : dir) {
+      int dx = i + it[0];
+      int dy = j + it[1];
+      if (isInArea(row, col, dx, dy) && '1' == grid[dx][dy]) {
+        dfs(grid, dx, dy, row, col);
       }
     }
   }
 
-  std::vector<std::vector<int>> dir = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+  bool isInArea(int row, int col, int x, int y) {
+    return x >= 0 && x < row && y >= 0 && y < col;
+  }
+
+  const std::vector<std::vector<int>> dir = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
 };
 // @lc code=end

@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/binary-tree-postorder-traversal/description/
  *
  * algorithms
- * Medium (57.10%)
- * Likes:    2422
- * Dislikes: 112
- * Total Accepted:    463.3K
- * Total Submissions: 803.1K
+ * Easy (61.69%)
+ * Likes:    3436
+ * Dislikes: 130
+ * Total Accepted:    608.5K
+ * Total Submissions: 984.3K
  * Testcase Example:  '[1,null,2,3]'
  *
  * Given the root of a binary tree, return the postorder traversal of its
@@ -61,14 +61,13 @@
  *
  *
  *
- *
- * Follow up:
- *
- * Recursive solution is trivial, could you do it iteratively?
- *
- *
- *
+ * Follow up: Recursive solution is trivial, could you do it iteratively?
  */
+
+#include <stack>
+#include <vector>
+
+#include "treenode.h"
 
 // @lc code=start
 /**
@@ -85,48 +84,35 @@
  */
 class Solution {
 public:
-  vector<int> postorderTraversal(TreeNode *root) {
-    vector<int> res;
-    postorderTraversal(root, res);
+  std::vector<int> postorderTraversal(TreeNode* root) {
+    pushNode(root);
+    TreeNode* visited;
+    while (stack.size()) {
+      TreeNode* curr = stack.top();
+      if ((curr->left == nullptr || curr->left == visited) &&
+          (curr->right != visited)) {
+        pushNode(curr->right);
+      }
+
+      if (curr->right == nullptr || visited == curr->right) {
+        res.push_back(curr->val);
+        visited = curr;
+        stack.pop();
+      }
+    }
+
     return res;
   }
 
 private:
-  // // 递归形式
-  // void postorderTraversal(TreeNode *root, vector<int> &res) {
-  //   if (root == nullptr) {
-  //     return;
-  //   }
-
-  //   postorderTraversal(root->left, res);
-  //   postorderTraversal(root->right, res);
-  //   res.push_back(root->val);
-  // }
-
-  // 非递归形式
-  void postorderTraversal(TreeNode *root, vector<int> &res) {
-    if (root == nullptr) {
-      return;
-    }
-
-    stack<TreeNode *> stack1;
-    stack<TreeNode *> stack2;
-    stack1.push(root);
-    while (!stack1.empty()) {
-      root = stack1.top();
-      stack1.pop();
-      stack2.push(root);
-      if (root->left != nullptr) {
-        stack1.push(root->left);
-      }
-      if (root->right != nullptr) {
-        stack1.push(root->right);
-      }
-    }
-    while (!stack2.empty()) {
-      res.push_back(stack2.top()->val);
-      stack2.pop();
+  void pushNode(TreeNode* root) {
+    while (root) {
+      stack.push(root);
+      root = root->left;
     }
   }
+
+  std::stack<TreeNode*> stack;
+  std::vector<int>      res;
 };
 // @lc code=end

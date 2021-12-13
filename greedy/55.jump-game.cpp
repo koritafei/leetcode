@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/jump-game/description/
  *
  * algorithms
- * Medium (36.79%)
- * Likes:    8741
- * Dislikes: 517
- * Total Accepted:    812.6K
- * Total Submissions: 2.2M
+ * Medium (36.95%)
+ * Likes:    9037
+ * Dislikes: 532
+ * Total Accepted:    836.8K
+ * Total Submissions: 2.3M
  * Testcase Example:  '[2,3,1,1,4]'
  *
  * You are given an integer array nums. You are initially positioned at the
@@ -54,20 +54,14 @@
 class Solution {
 public:
   bool canJump(std::vector<int>& nums) {
-    int len = nums.size();
-    if (1 >= len) {
-      return true;
-    }
-
-    int fastest = 0;
-    for (int i = 0; i < len; i++) {
-      if (fastest < i) {  // 遇到0，无法向前
+    int fast = 0;
+    for (int i = 0; i < nums.size() - 1; i++) {
+      fast = std::max(fast, nums[i] + i);
+      if (fast <= i) {
         return false;
       }
-      fastest = std::max(fastest, i + nums[i]);
     }
-
-    return true;
+    return fast >= nums.size() - 1;
   }
 };
 // @lc code=end

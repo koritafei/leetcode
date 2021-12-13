@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/n-queens/description/
  *
  * algorithms
- * Hard (54.59%)
- * Likes:    4425
- * Dislikes: 134
- * Total Accepted:    314.5K
- * Total Submissions: 574.1K
+ * Hard (54.98%)
+ * Likes:    4582
+ * Dislikes: 136
+ * Total Accepted:    319.8K
+ * Total Submissions: 580.5K
  * Testcase Example:  '4'
  *
  * The n-queens puzzle is the problem of placing n queens on an n x n
@@ -56,61 +56,56 @@
 class Solution {
 public:
   std::vector<std::vector<std::string>> solveNQueens(int n) {
-    track = std::vector<std::string>(n, std::string(n, '.'));
-    backtrace(n, n, 0);
+    std::vector<std::string> board(n, std::string(n, '.'));
+    backtrace(board, n, 0);
+
     return res;
   }
 
 private:
-  void backtrace(int row, int col, int x) {
-    if (x == row) {
-      // 计算到最后一行，得到一个结果
-      res.push_back(track);
+  void backtrace(std::vector<std::string>& board, int n, int row) {
+    if (row == n) {
+      res.push_back(board);
       return;
     }
 
-    for (int i = 0; i < col; i++) {
-      if (!isValid(track, row, col, x, i)) {
+    for (int i = 0; i < n; i++) {
+      if (!isValid(board, n, row, i)) {
         continue;
       }
 
       // 做选择
-      track[x][i] = 'Q';
-      backtrace(row, col, x + 1);  // 下一行
+      board[row][i] = 'Q';
+      backtrace(board, n, row + 1);
       // 撤销选择
-      track[x][i] = '.';
+      board[row][i] = '.';
     }
   }
 
-  bool isValid(std::vector<std::string> &board,
-               int                       row,
-               int                       col,
-               int                       x,
-               int                       y) {
-    for (int i = 0; i < row; i++) {
-      // 同一列
-      if ('Q' == board[i][y]) {
+  bool isValid(std::vector<std::string>& board, int n, int row, int col) {
+    for (int i = 0; i < n; i++) {
+      if (board[i][col] == 'Q') {
         return false;
       }
     }
 
-    // 左上方
-    for (int i = x - 1, j = y - 1; i >= 0 && j >= 0; i--, j--) {
-      if ('Q' == board[i][j]) {
+    // 左上角
+    for (int i = row - 1, j = col - 1; i >= 0 && j >= 0; i--, j--) {
+      if (board[i][j] == 'Q') {
         return false;
       }
     }
 
-    // 右上方
-    for (int i = x - 1, j = y + 1; i >= 0 && j < col; i--, j++) {
-      if ('Q' == board[i][j]) {
+    // 右上角
+    for (int i = row - 1, j = col + 1; i >= 0 && j < n; i--, j++) {
+      if (board[i][j] == 'Q') {
         return false;
       }
     }
+
     return true;
   }
 
-  std::vector<std::vector<std::string>> res;    // 结果集
-  std::vector<std::string>              track;  // 当前结果集
+  std::vector<std::vector<std::string>> res;
 };
 // @lc code=end

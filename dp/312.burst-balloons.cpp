@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/burst-balloons/description/
  *
  * algorithms
- * Hard (54.79%)
- * Likes:    4428
- * Dislikes: 124
- * Total Accepted:    151.1K
- * Total Submissions: 275.6K
+ * Hard (54.89%)
+ * Likes:    4496
+ * Dislikes: 126
+ * Total Accepted:    152.6K
+ * Total Submissions: 277.9K
  * Testcase Example:  '[3,1,5,8]'
  *
  * You are given n balloons, indexed from 0 to n - 1. Each balloon is painted
@@ -57,28 +57,20 @@
 class Solution {
 public:
   int maxCoins(std::vector<int>& nums) {
-    int n = nums.size();
-    if (n == 0) {
-      return 0;
-    }
+    int              len = nums.size();
+    std::vector<int> points(len + 2, 0);
 
-    // 添加两端构造新数组
-    std::vector<int> points = std::vector<int>(n + 2, 1);
-    for (int i = 1; i < n + 1; i++) {
+    points[0] = points[len + 1] = 1;
+
+    for (int i = 1; i <= len; i++) {
       points[i] = nums[i - 1];
     }
 
-    // 构造dp
-    std::vector<std::vector<int>> dp =
-        std::vector<std::vector<int>>(n + 2, std::vector<int>(n + 2, 0));
+    std::vector<std::vector<int>> dp(len + 2, std::vector<int>(len + 2, 0));
 
-    // 开始状态转移，i 从上到下
-    for (int i = n; i >= 0; i--) {
-      // j从右向左
-      for (int j = i + 1; j < n + 2; j++) {
-        // 最后戳破的气球
+    for (int i = len; i >= 0; i--) {
+      for (int j = i + 1; j < len + 2; j++) {
         for (int k = i + 1; k < j; k++) {
-          // 择优选择
           dp[i][j] =
               std::max(dp[i][j],
                        dp[i][k] + dp[k][j] + points[i] * points[j] * points[k]);
@@ -86,7 +78,7 @@ public:
       }
     }
 
-    return dp[0][n + 1];
+    return dp[0][len + 1];
   }
 };
 // @lc code=end

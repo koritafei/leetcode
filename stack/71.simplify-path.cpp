@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/simplify-path/description/
  *
  * algorithms
- * Medium (34.75%)
- * Likes:    270
- * Dislikes: 86
- * Total Accepted:    268.5K
- * Total Submissions: 772.4K
+ * Medium (36.72%)
+ * Likes:    1037
+ * Dislikes: 262
+ * Total Accepted:    335.9K
+ * Total Submissions: 912.6K
  * Testcase Example:  '"/home/"'
  *
  * Given a string path, which is an absolute path (starting with a slash '/')
@@ -82,32 +82,66 @@
  *
  */
 
+#include <cstring>
+#include <iostream>
+#include <list>
+#include <string>
+#include <vector>
+
 // @lc code=start
 class Solution {
 public:
-  string simplifyPath(string path) {
-    vector<string> v;
-    std::string    res;
-    stringstream   ss(path);
-    std::string    tmp;
-
-    while (getline(ss, tmp, '/')) {
-      if (tmp == "." || tmp == "") {
+  std::string simplifyPath(std::string path) {
+    std::vector<std::string> str = splitString(path.c_str(), "/");
+    std::list<std::string>   que;
+    for (auto item : str) {
+      if (item == "." || item == "") {
         continue;
-      }
-
-      if (tmp == ".." && !v.empty()) {
-        v.pop_back();
-      } else if (tmp != "..") {
-        v.push_back(tmp);
+      } else if (item == "..") {
+        if (que.size()) {
+          que.pop_back();
+        }
+      } else if (item != "") {
+        que.push_back(item);
       }
     }
+    std::string res = "/";
 
-    for (auto item : v) {
-      res += "/" + item;
+    while (que.size()) {
+      res.append(que.front() + "/");
+      que.pop_front();
     }
 
-    return v.size() == 0 ? "/" : res;
+    if (res.length() > 1) {
+      res.pop_back();
+    }
+    return res;
+  }
+
+private:
+  std::vector<std::string> splitString(std::string s, std::string seq) {
+    std::vector<std::string> res;
+
+    char* str = strtok(const_cast<char*>(s.c_str()), seq.c_str());
+    if (str != nullptr) {
+      res.push_back(str);
+    }
+
+    while ((str = strtok(NULL, seq.c_str()))) {
+      res.push_back(str);
+    }
+
+    for (auto it : res) {
+      std::cout << it << std::endl;
+    }
+
+    return res;
   }
 };
 // @lc code=end
+
+int main(int argc, char** argv) {
+  std::string path = "//home/";
+  Solution    solution;
+  std::cout << solution.simplifyPath(path) << std::endl;
+}

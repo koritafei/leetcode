@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/freedom-trail/description/
  *
  * algorithms
- * Hard (45.60%)
- * Likes:    617
+ * Hard (45.63%)
+ * Likes:    629
  * Dislikes: 31
- * Total Accepted:    25K
- * Total Submissions: 54.9K
+ * Total Accepted:    25.3K
+ * Total Submissions: 55.4K
  * Testcase Example:  '"godding"\n"gd"'
  *
  * In the video game Fallout 4, the quest "Road to Freedom" requires players to
@@ -73,63 +73,49 @@
  *
  */
 
-#include <climits>
-#include <cmath>
+#include <map>
 #include <string>
-#include <unordered_map>
 #include <vector>
 
 // @lc code=start
 class Solution {
 public:
   int findRotateSteps(std::string ring, std::string key) {
-    int m = ring.size();
-    int n = key.size();
-    // 备忘录初始化为0
-    memo.resize(m + 1, std::vector<int>(n + 1, 0));
-
-    //记录圆环上字符索引位置
-    for (int i = 0; i < m; i++) {
+    int lenr = ring.length();
+    int lenk = key.length();
+    for (int i = 0; i < lenr; i++) {
       charToIndex[ring[i]].push_back(i);
     }
 
-    // 圆盘最初指向12点钟方向，从0开始
+    memo = std::vector<std::vector<int>>(lenr + 1, std::vector<int>(lenk, 0));
+
     return dp(ring, 0, key, 0);
   }
 
 private:
-  int dp(std::string s, int indexs, std::string key, int indexk) {
-    if (indexk == key.size()) {
+  int dp(std::string &ring, int index, std::string &key, int indexk) {
+    if (index == ring.size()) {
       return 0;
     }
 
-    if (memo[indexs][indexk] != 0) {
-      return memo[indexs][indexk];
+    if (memo[index][indexk] != 0) {
+      return memo[index][indexk];
     }
 
-    int n = s.size();
-    // 做选择
-    int res = INT_MAX;
-
-    for (auto k : charToIndex[key[indexk]]) {
-      // 转动指针次数
-      int delta = abs(k - indexs);
-      // 选择顺时针或逆时针
-      delta = std::min(delta, n - delta);
-      // 子问题求解
-      int subProblem = dp(s, k, key, indexk + 1);
-
-      // 整体求解
-      res = std::min(res, 1 + delta + subProblem);
+    int res  = INT_MAX;
+    int lenr = ring.size();
+    for (int k : charToIndex[key[indexk]]) {
+      int delta      = abs(k - index);
+      delta          = std::min(delta, lenr - delta);
+      int subproblem = dp(ring, k, key, indexk + 1);
+      res            = std::min(res, 1 + subproblem + delta);
     }
-
-    // 结果加入备忘录
-    memo[indexs][indexk] = res;
+    memo[index][indexk] = res;
 
     return res;
   }
 
-  std::unordered_map<char, std::vector<int>> charToIndex;
-  std::vector<std::vector<int>>              memo;
+  std::map<char, std::vector<int>> charToIndex;  // 字符索引
+  std::vector<std::vector<int>>    memo;         // 备忘录
 };
 // @lc code=end

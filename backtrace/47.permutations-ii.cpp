@@ -6,10 +6,10 @@
  * https://leetcode.com/problems/permutations-ii/description/
  *
  * algorithms
- * Medium (52.15%)
- * Likes:    3953
+ * Medium (52.47%)
+ * Likes:    4069
  * Dislikes: 87
- * Total Accepted:    529.9K
+ * Total Accepted:    538.9K
  * Total Submissions: 1M
  * Testcase Example:  '[1,1,2]'
  *
@@ -44,24 +44,25 @@
  *
  */
 
-#include <algorithm>
 #include <vector>
 
 // @lc code=start
 class Solution {
 public:
   std::vector<std::vector<int>> permuteUnique(std::vector<int>& nums) {
-    std::sort(nums.begin(), nums.end());
     int len = nums.size();
-    visited = std::vector<bool>(len + 1, false);
-    backtrace(nums, len);
+    visited = std::vector<bool>(len, false);
+    std::sort(nums.begin(), nums.end());
+
+    backtrace(nums, len, 0);
+
     return res;
   }
 
 private:
-  void backtrace(std::vector<int>& nums, int len) {
-    if (track.size() == len) {
-      res.push_back(track);
+  void backtrace(std::vector<int>& nums, int len, int index) {
+    if (index == len) {
+      res.push_back(path);
       return;
     }
 
@@ -75,18 +76,16 @@ private:
       }
 
       // 做选择
+      path.push_back(nums[i]);
       visited[i] = true;
-      track.push_back(nums[i]);
-      backtrace(nums, len);
-
-      // 撤销选择
+      backtrace(nums, len, index + 1);
       visited[i] = false;
-      track.pop_back();
+      path.pop_back();
     }
   }
 
+  std::vector<std::vector<int>> res;
+  std::vector<int>              path;
   std::vector<bool>             visited;
-  std::vector<int>              track;  // 遍历路径
-  std::vector<std::vector<int>> res;    // 结果集
 };
 // @lc code=end

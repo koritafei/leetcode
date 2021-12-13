@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/house-robber-iii/description/
  *
  * algorithms
- * Medium (52.45%)
- * Likes:    4981
- * Dislikes: 80
- * Total Accepted:    239.3K
- * Total Submissions: 456.2K
+ * Medium (52.56%)
+ * Likes:    5587
+ * Dislikes: 87
+ * Total Accepted:    262.3K
+ * Total Submissions: 494K
  * Testcase Example:  '[3,2,3,null,3,null,1]'
  *
  * The thief has found himself a new place for his thievery again. There is
@@ -51,20 +51,10 @@
  *
  */
 
-#include <unordered_map>
+#include <map>
+#include <vector>
 
-struct TreeNode {
-  int       val;
-  TreeNode *left;
-  TreeNode *right;
-  TreeNode() : val(0), left(nullptr), right(nullptr) {
-  }
-  TreeNode(int x) : val(x), left(nullptr), right(nullptr) {
-  }
-  TreeNode(int x, TreeNode *left, TreeNode *right)
-      : val(x), left(left), right(right) {
-  }
-};
+#include "../tree/treenode.h"
 
 // @lc code=start
 /**
@@ -81,30 +71,31 @@ struct TreeNode {
  */
 class Solution {
 public:
-  int rob(TreeNode *root) {
+  int rob(TreeNode* root) {
     if (root == nullptr) {
       return 0;
     }
-    if (memo.count(root)) {
+
+    if (memo.find(root) != memo.end()) {
       return memo[root];
     }
 
-    int not_rob = rob(root->left) + rob(root->right);
-
-    int robb = root->val +
-               (root->left == nullptr
-                    ? 0
-                    : rob(root->left->left) + rob(root->left->right)) +
-               (root->right == nullptr
-                    ? 0
-                    : rob(root->right->left) + rob(root->right->right));
-
-    memo[root] = std::max(robb, not_rob);
+    // 抢去下下家
+    int sum_r = root->val +
+                (root->left == nullptr
+                     ? 0
+                     : rob(root->left->left) + rob(root->left->right)) +
+                (root->right == nullptr
+                     ? 0
+                     : rob(root->right->right) + rob(root->right->left));
+    // 不抢
+    int sum    = rob(root->left) + rob(root->right);
+    memo[root] = std::max(sum_r, sum);
 
     return memo[root];
   }
 
 private:
-  std::unordered_map<TreeNode *, int> memo;
+  std::map<TreeNode*, int> memo;
 };
 // @lc code=end

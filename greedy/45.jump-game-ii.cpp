@@ -6,10 +6,10 @@
  * https://leetcode.com/problems/jump-game-ii/description/
  *
  * algorithms
- * Medium (35.11%)
- * Likes:    6288
- * Dislikes: 239
- * Total Accepted:    477.2K
+ * Medium (35.48%)
+ * Likes:    6522
+ * Dislikes: 249
+ * Total Accepted:    494.4K
  * Total Submissions: 1.4M
  * Testcase Example:  '[2,3,1,1,4]'
  *
@@ -50,21 +50,22 @@
  *
  */
 
+#include <algorithm>
 #include <vector>
 
 // @lc code=start
 class Solution {
 public:
   int jump(std::vector<int>& nums) {
-    int len = nums.size();
-    int end = 0, fastest = 0;
+    int len   = nums.size();
+    int end   = 0;
+    int fast  = 0;
     int jumps = 0;
-
     for (int i = 0; i < len - 1; i++) {
-      fastest = std::max(fastest, i + nums[i]);
+      fast = std::max(fast, nums[i] + i);
       if (end == i) {
-        end = fastest;
         jumps++;
+        end = fast;
       }
     }
 

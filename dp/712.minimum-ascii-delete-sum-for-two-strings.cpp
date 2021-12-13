@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/minimum-ascii-delete-sum-for-two-strings/description/
  *
  * algorithms
- * Medium (59.98%)
- * Likes:    1432
- * Dislikes: 57
- * Total Accepted:    48.9K
- * Total Submissions: 81.6K
+ * Medium (60.82%)
+ * Likes:    1690
+ * Dislikes: 60
+ * Total Accepted:    55.9K
+ * Total Submissions: 91.8K
  * Testcase Example:  '"sea"\n"eat"'
  *
  * Given two strings s1 and s2, return the lowest ASCII sum of deleted
@@ -53,60 +53,51 @@
  *
  */
 
-#include <iostream>
+#include <string>
 #include <vector>
 
 // @lc code=start
 class Solution {
 public:
   int minimumDeleteSum(std::string s1, std::string s2) {
-    int                            m = s1.length();
-    int                            n = s2.length();
-    std::vector<std::vector<int> > dp =
-        std::vector<std::vector<int> >(m + 1, std::vector<int>(n + 1, -1));
-    return memo(s1, s2, 0, 0, dp);
+    int len1 = s1.length(), len2 = s2.length();
+    memo =
+        std::vector<std::vector<int>>(len1 + 1, std::vector<int>(len2 + 1, -1));
+    return dp(s1, 0, s2, 0);
   }
 
 private:
-  int memo(std::string                     s1,
-           std::string                     s2,
-           int                             i,
-           int                             j,
-           std::vector<std::vector<int> >& dp) {
+  int dp(std::string s1, int index1, std::string s2, int index2) {
     int res = 0;
-    if (s1.length() == i) {
-      for (; j < s2.length(); j++) {
-        res += s2[j];
+    if (index1 == s1.length()) {
+      for (; index2 < s2.length(); index2++) {
+        res += s2[index2];
       }
       return res;
     }
 
-    if (s2.length() == j) {
-      for (; i < s1.length(); i++) {
-        res += s1[i];
+    if (index2 == s2.length()) {
+      for (; index1 < s1.length(); index1++) {
+        res += s1[index1];
       }
       return res;
     }
 
-    if (-1 != dp[i][j]) {
-      return dp[i][j];
+    if (memo[index1][index2] != -1) {
+      return memo[index1][index2];
     }
 
-    if (s1[i] == s2[j]) {
-      dp[i][j] = memo(s1, s2, i + 1, j + 1, dp);
+    if (s1[index1] == s2[index2]) {
+      memo[index1][index2] = dp(s1, index1 + 1, s2, index2 + 1);
     } else {
-      dp[i][j] = std::min(s1[i] + memo(s1, s2, i + 1, j, dp),
-                          s2[j] + memo(s1, s2, i, j + 1, dp));
+      memo[index1][index2] =
+          std::min(s2[index2] + dp(s1, index1, s2, index2 + 1),
+                   s1[index1] + dp(s1, index1 + 1, s2, index2));
     }
 
-    return dp[i][j];
+    return memo[index1][index2];
   }
+
+  std::vector<std::vector<int>> memo;
 };
 // @lc code=end
-
-int main(int argc, char** argv) {
-  std::string s1 = "delete";
-  std::string s2 = "leet";
-  Solution    solution;
-  std::cout << solution.minimumDeleteSum(s1, s2) << std::endl;
-}

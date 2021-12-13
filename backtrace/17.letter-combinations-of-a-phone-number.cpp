@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/letter-combinations-of-a-phone-number/description/
  *
  * algorithms
- * Medium (49.26%)
- * Likes:    5525
- * Dislikes: 499
- * Total Accepted:    779.5K
- * Total Submissions: 1.6M
+ * Medium (52.21%)
+ * Likes:    8142
+ * Dislikes: 604
+ * Total Accepted:    1M
+ * Total Submissions: 2M
  * Testcase Example:  '"23"'
  *
  * Given a string containing digits from 2-9 inclusive, return all possible
@@ -54,50 +54,53 @@
  *
  */
 
+#include <string>
+#include <vector>
+
 // @lc code=start
 class Solution {
 public:
-  vector<string> letterCombinations(string digits) {
-    vector<string> result;
-    if (digits.length() == 0) {
-      return result;
+  std::vector<std::string> letterCombinations(std::string digits) {
+    int len = digits.length();
+    if (len == 0) {
+      return res;
     }
 
-    string s = "";
+    backtrace(digits, len, 0);
 
-    findletterCombinations(digits, 0, s, result);
-
-    return result;
+    return res;
   }
 
 private:
-  const string letterMap[10] = {
-      " ",     // 0,
-      "",      // 1,
-      "abc",   // 2,
-      "def",   // 3,
-      "ghi",   // 4,
-      "jkl",   // 5,
-      "mno",   // 6,
-      "pqrs",  // 7,
-      "tuv",   // 8,
-      "wxyz"   // 9,
-  };
-
-  void findletterCombinations(string &digits, int index, const string &s,
-                              vector<string> &res) {
-    if (index == digits.length()) {
-      res.push_back(s);
+  void backtrace(std::string &digits, int len, int index) {
+    if (index >= len) {
+      res.push_back(path);
       return;
     }
 
-    char   ch     = digits[index];
-    string letter = letterMap[ch - '0'];
-    for (int i = 0; i < letter.size(); i++) {
-      findletterCombinations(digits, index + 1, s + letter[i], res);
+    std::string str = mapping[digits[index] - '0'];
+    for (int j = 0; j < str.length(); j++) {
+      // 做选择
+      path.push_back(str[j]);
+      // 递归
+      backtrace(digits, len, index + 1);
+      // 撤销选择
+      path.pop_back();
     }
-
-    return;
   }
+
+  std::string              path;  // 路径
+  std::vector<std::string> res;   // 结果集
+
+  const std::vector<std::string> mapping = std::vector<std::string>{"",
+                                                                    "",
+                                                                    "abc",
+                                                                    "def",
+                                                                    "ghi",
+                                                                    "jkl",
+                                                                    "mno",
+                                                                    "pqrs",
+                                                                    "tuv",
+                                                                    "wxyz"};
 };
 // @lc code=end

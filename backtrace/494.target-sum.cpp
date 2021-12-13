@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/target-sum/description/
  *
  * algorithms
- * Medium (45.24%)
- * Likes:    5509
- * Dislikes: 216
- * Total Accepted:    291.8K
- * Total Submissions: 644.4K
+ * Medium (45.31%)
+ * Likes:    5658
+ * Dislikes: 221
+ * Total Accepted:    298.3K
+ * Total Submissions: 658.3K
  * Testcase Example:  '[1,1,1,1,1]\n3'
  *
  * You are given an integer array nums and an integer target.
@@ -61,38 +61,39 @@
  *
  */
 
+#include <map>
+#include <string>
 #include <vector>
 
 // @lc code=start
 class Solution {
 public:
   int findTargetSumWays(std::vector<int>& nums, int target) {
-    int res = 0;
-    findTargetSumWays(nums, target, 0, res);
-    return res;
+    return dp(nums, target, 0, nums.size());
   }
 
 private:
-  void findTargetSumWays(std::vector<int>& nums, int target, int i, int& res) {
-    // 终止循环
-    if (i == nums.size()) {
-      if (target == 0) {  // 找到一个组合
-        res++;
+  int dp(std::vector<int>& nums, int target, int i, int len) {
+    if (i == len) {
+      if (0 == target) {
+        return 1;
       }
-      return;
+      return 0;
     }
 
-    // 做一个选择
-    target -= nums[i];
-    findTargetSumWays(nums, target, i + 1, res);
-    // 撤销选择
-    target += nums[i];
+    // 转string
+    std::string key = std::to_string(i) + "," + std::to_string(target);
+    if (map.find(key) != map.end()) {
+      return map[key];
+    }
 
-    // 做一个选择
-    target += nums[i];
-    findTargetSumWays(nums, target, i + 1, res);
-    // 撤销选择
-    target -= nums[i];
+    int res = dp(nums, target - nums[i], i + 1, len) +
+              dp(nums, target + nums[i], i + 1, len);
+    map[key] = res;
+
+    return res;
   }
+
+  std::map<std::string, int> map;
 };
 // @lc code=end

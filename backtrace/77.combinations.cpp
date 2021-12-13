@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/combinations/description/
  *
  * algorithms
- * Medium (61.08%)
- * Likes:    3203
- * Dislikes: 109
- * Total Accepted:    437.1K
- * Total Submissions: 712.9K
+ * Medium (61.54%)
+ * Likes:    3303
+ * Dislikes: 111
+ * Total Accepted:    447.1K
+ * Total Submissions: 724.9K
  * Testcase Example:  '4\n2'
  *
  * Given two integers n and k, return all possible combinations of k numbers
@@ -63,22 +63,20 @@ public:
 
 private:
   void backtrace(int n, int k, int index) {
-    if (subset.size() == k) {
-      // 满足条件加入结果集
-      res.push_back(subset);
+    if (path.size() == k) {
+      res.push_back(path);
       return;
     }
 
     for (int i = index; i <= n; i++) {
       // 做选择
-      subset.push_back(i);
+      path.push_back(i);
       backtrace(n, k, i + 1);
-      // 撤销选择
-      subset.pop_back();
+      path.pop_back();
     }
   }
 
-  std::vector<int>              subset;  // 遍历路径
-  std::vector<std::vector<int>> res;     // 结果集
+  std::vector<int>              path;
+  std::vector<std::vector<int>> res;
 };
 // @lc code=end
