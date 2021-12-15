@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/recover-binary-search-tree/description/
  *
  * algorithms
- * Medium (44.80%)
- * Likes:    3318
- * Dislikes: 128
- * Total Accepted:    245.5K
- * Total Submissions: 548K
+ * Medium (45.04%)
+ * Likes:    3507
+ * Dislikes: 133
+ * Total Accepted:    253.6K
+ * Total Submissions: 562K
  * Testcase Example:  '[1,3,null,null,2]'
  *
  * You are given the root of a binary search tree (BST), where the values of
@@ -49,18 +49,10 @@
  * devise a constant O(1) space solution?
  */
 
-struct TreeNode {
-  int       val;
-  TreeNode *left;
-  TreeNode *right;
-  TreeNode() : val(0), left(nullptr), right(nullptr) {
-  }
-  TreeNode(int x) : val(x), left(nullptr), right(nullptr) {
-  }
-  TreeNode(int x, TreeNode *left, TreeNode *right)
-      : val(x), left(left), right(right) {
-  }
-};
+#include <stack>
+#include <vector>
+
+#include "treenode.h"
 
 // @lc code=start
 /**
@@ -78,6 +70,31 @@ struct TreeNode {
 class Solution {
 public:
   void recoverTree(TreeNode *root) {
+    if (root == nullptr) {
+      return;
+    }
+    std::stack<TreeNode *>  stack;
+    std::vector<TreeNode *> error = std::vector<TreeNode *>(2, nullptr);
+    TreeNode               *prev  = nullptr;
+    TreeNode               *head  = root;
+
+    while (stack.size() || head) {
+      if (head != nullptr) {
+        stack.push(head);
+        head = head->left;
+      } else {
+        head = stack.top();
+        stack.pop();
+        if (prev && prev->val > head->val) {
+          error[0] = error[0] == nullptr ? prev : error[0];
+          error[1] = head;
+        }
+        prev = head;
+        head = head->right;
+      }
+    }
+
+    std::swap(error[0]->val, error[1]->val);
   }
 };
 // @lc code=end

@@ -6,9 +6,9 @@
  * https://leetcode.com/problems/single-number/description/
  *
  * algorithms
- * Easy (67.81%)
- * Likes:    7733
- * Dislikes: 265
+ * Easy (68.02%)
+ * Likes:    7937
+ * Dislikes: 278
  * Total Accepted:    1.4M
  * Total Submissions: 2M
  * Testcase Example:  '[2,2,1]'
@@ -41,16 +41,14 @@
  *
  *
  */
-
 #include <vector>
-
 // @lc code=start
 class Solution {
 public:
   int singleNumber(std::vector<int>& nums) {
     int res = 0;
-    for (auto item : nums) {
-      res ^= item;
+    for (int i = 0; i < nums.size(); i++) {
+      res ^= nums[i];
     }
 
     return res;

@@ -6,41 +6,42 @@
  * https://leetcode.com/problems/path-sum-iii/description/
  *
  * algorithms
- * Medium (48.18%)
- * Likes:    4881
- * Dislikes: 318
- * Total Accepted:    259.1K
- * Total Submissions: 537.8K
+ * Medium (49.74%)
+ * Likes:    6707
+ * Dislikes: 348
+ * Total Accepted:    329.8K
+ * Total Submissions: 662.7K
  * Testcase Example:  '[10,5,-3,3,2,null,11,3,-2,null,1]\n8'
  *
- * You are given a binary tree in which each node contains an integer value.
- *
- * Find the number of paths that sum to a given value.
+ * Given the root of a binary tree and an integer targetSum, return the number
+ * of paths where the sum of the values along the path equals targetSum.
  *
  * The path does not need to start or end at the root or a leaf, but it must go
- * downwards
- * (traveling only from parent nodes to child nodes).
+ * downwards (i.e., traveling only from parent nodes to child nodes).
  *
- * The tree has no more than 1,000 nodes and the values are in the range
- * -1,000,000 to 1,000,000.
  *
- * Example:
+ * Example 1:
  *
- * root = [10,5,-3,3,2,null,11,3,-2,null,1], sum = 8
  *
- * ⁠     10
- * ⁠    /  \
- * ⁠   5   -3
- * ⁠  / \    \
- * ⁠ 3   2   11
- * ⁠/ \   \
- * 3  -2   1
+ * Input: root = [10,5,-3,3,2,null,11,3,-2,null,1], targetSum = 8
+ * Output: 3
+ * Explanation: The paths that sum to 8 are shown.
  *
- * Return 3. The paths that sum to 8 are:
  *
- * 1.  5 -> 3
- * 2.  5 -> 2 -> 1
- * 3. -3 -> 11
+ * Example 2:
+ *
+ *
+ * Input: root = [5,4,8,11,null,13,4,7,2,null,null,5,1], targetSum = 22
+ * Output: 3
+ *
+ *
+ *
+ * Constraints:
+ *
+ *
+ * The number of nodes in the tree is in the range [0, 1000].
+ * -10^9 <= Node.val <= 10^9
+ * -1000 <= targetSum <= 1000
  *
  *
  */
@@ -60,33 +61,32 @@
  */
 class Solution {
 public:
-  int pathSum(TreeNode* root, int sum) {
+  int pathSum(TreeNode* root, int targetSum) {
     if (root == nullptr) {
       return 0;
     }
 
-    int res = findPath(root, sum );
+    int res = _pathSum(root, targetSum);
 
-    res += pathSum(root->left, sum);
-    res += pathSum(root->right, sum);
+    res += pathSum(root->left, targetSum);
+    res += pathSum(root->right, targetSum);
 
     return res;
   }
 
 private:
-  int findPath(TreeNode* root, int sum) {
+  int _pathSum(TreeNode* root, int targetSum) {
     if (root == nullptr) {
       return 0;
     }
 
     int res = 0;
-    if (root->val == sum) {
+    if (root->val == targetSum) {
       res += 1;
     }
 
-    res += findPath(root->left, sum - root->val);
-    res += findPath(root->right, sum - root->val);
-
+    res += _pathSum(root->left, targetSum - root->val);
+    res += _pathSum(root->right, targetSum - root->val);
     return res;
   }
 };

@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/factorial-trailing-zeroes/description/
  *
  * algorithms
- * Medium (40.06%)
- * Likes:    1731
- * Dislikes: 1582
- * Total Accepted:    296.8K
- * Total Submissions: 740.9K
+ * Medium (40.03%)
+ * Likes:    1735
+ * Dislikes: 1583
+ * Total Accepted:    297.2K
+ * Total Submissions: 741.5K
  * Testcase Example:  '3'
  *
  * Given an integer n, return the number of trailing zeroes in n!.
@@ -58,12 +58,13 @@
 class Solution {
 public:
   int trailingZeroes(int n) {
-    int count = 0;
-    for (int d = n; d / 5 > 0; d /= 5) {
-      count += d / 5;
+    int res = 0;
+    while (n) {
+      res += n / 5;
+      n /= 5;
     }
 
-    return count;
+    return res;
   }
 };
 // @lc code=end

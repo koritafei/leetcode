@@ -6,10 +6,10 @@
  * https://leetcode.com/problems/number-of-1-bits/description/
  *
  * algorithms
- * Easy (57.02%)
- * Likes:    2083
- * Dislikes: 709
- * Total Accepted:    577.1K
+ * Easy (57.51%)
+ * Likes:    2213
+ * Dislikes: 721
+ * Total Accepted:    592.3K
  * Total Submissions: 1M
  * Testcase Example:  '00000000000000000000000000001011'
  *
@@ -72,7 +72,7 @@ class Solution {
 public:
   int hammingWeight(uint32_t n) {
     int res = 0;
-    while (n != 0) {
+    while (n) {
       n = n & (n - 1);
       res++;
     }

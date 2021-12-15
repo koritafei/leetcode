@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/path-sum/description/
  *
  * algorithms
- * Easy (42.49%)
- * Likes:    2908
- * Dislikes: 591
- * Total Accepted:    589.2K
- * Total Submissions: 1.4M
+ * Easy (44.31%)
+ * Likes:    4453
+ * Dislikes: 721
+ * Total Accepted:    757.7K
+ * Total Submissions: 1.7M
  * Testcase Example:  '[5,4,8,11,null,13,4,7,2,null,null,null,1]\n22'
  *
  * Given the root of a binary tree and an integer targetSum, return true if the
@@ -25,6 +25,7 @@
  *
  * Input: root = [5,4,8,11,null,13,4,7,2,null,null,null,1], targetSum = 22
  * Output: true
+ * Explanation: The root-to-leaf path with the target sum is shown.
  *
  *
  * Example 2:
@@ -32,13 +33,18 @@
  *
  * Input: root = [1,2,3], targetSum = 5
  * Output: false
+ * Explanation: There two root-to-leaf paths in the tree:
+ * (1 --> 2): The sum is 3.
+ * (1 --> 3): The sum is 4.
+ * There is no root-to-leaf path with sum = 5.
  *
  *
  * Example 3:
  *
  *
- * Input: root = [1,2], targetSum = 0
+ * Input: root = [], targetSum = 0
  * Output: false
+ * Explanation: Since the tree is empty, there are no root-to-leaf paths.
  *
  *
  *
@@ -51,6 +57,8 @@
  *
  *
  */
+
+#include "treenode.h"
 
 // @lc code=start
 /**
@@ -71,8 +79,7 @@ public:
     if (root == nullptr) {
       return false;
     }
-
-    if (root->left == nullptr && root->right == nullptr) {
+    if (!root->left && !root->right) {
       return targetSum == root->val;
     }
 

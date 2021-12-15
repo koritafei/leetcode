@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/gas-station/description/
  *
  * algorithms
- * Medium (43.21%)
- * Likes:    4077
- * Dislikes: 498
- * Total Accepted:    330.1K
- * Total Submissions: 763.3K
+ * Medium (43.31%)
+ * Likes:    4186
+ * Dislikes: 501
+ * Total Accepted:    335.3K
+ * Total Submissions: 773.5K
  * Testcase Example:  '[1,2,3,4,5]\n[3,4,5,1,2]'
  *
  * There are n gas stations along a circular route, where the amount of gas at
@@ -79,29 +79,22 @@
 class Solution {
 public:
   int canCompleteCircuit(std::vector<int>& gas, std::vector<int>& cost) {
-    int sum = 0;
-    int len = gas.size();
-    for (int i = 0; i < len; i++) {
+    int n   = gas.size();
+    int sum = 0, minsum = 0;
+    int start = 0;
+    for (int i = 0; i < n; i++) {
       sum += gas[i] - cost[i];
-    }
-
-    if (sum < 0) {
-      return -1;  // 必不能完成
-    }
-
-    int tank  = 0;
-    int start = 0;  // 尝试从0开始
-    for (int i = 0; i < len; i++) {
-      tank += gas[i] - cost[i];
-
-      if (tank < 0) {
-        // 表示不能从当前节点出发
-        tank  = 0;
-        start = i + 1;
+      if (sum < minsum) {
+        // 达到新低
+        start  = i + 1;
+        minsum = sum;
       }
     }
+    if (sum < 0) {
+      return -1;
+    }
 
-    return start % len;
+    return start == n ? 0 : start;
   }
 };
 // @lc code=end
