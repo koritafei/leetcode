@@ -64,25 +64,27 @@
  *
  */
 
+#include <stack>
 #include <vector>
 
 // @lc code=start
 class Solution {
 public:
   int maxArea(std::vector<int>& height) {
-    int left = 0, right = height.size() - 1;
-    int res = 0;
+    int maxArea = 0;
+    int len     = height.size();
+    int left = 0, right = len - 1;
     while (left < right) {
-      res =
-          std::max(res, std::min(height[left], height[right]) * (right - left));
-      if (height[left] < height[right]) {
+      if (height[left] <= height[right]) {
+        maxArea = std::max(maxArea, height[left] * (right - left));
         left++;
       } else {
+        maxArea = std::max(maxArea, height[right] * (right - left));
         right--;
       }
     }
 
-    return res;
+    return maxArea;
   }
 };
 // @lc code=end

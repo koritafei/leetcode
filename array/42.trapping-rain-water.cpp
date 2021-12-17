@@ -45,7 +45,6 @@
  *
  */
 
-#include <climits>
 #include <vector>
 
 // @lc code=start
@@ -53,27 +52,26 @@ class Solution {
 public:
   int trap(std::vector<int>& height) {
     int              len = height.size();
-    std::vector<int> leftMax;
-    leftMax.resize(len);
-    std::vector<int> rightMax;
-    rightMax.resize(len);
-    int res           = 0;
-    leftMax[0]        = height[0];
-    rightMax[len - 1] = height[len - 1];
+    std::vector<int> leftmax(len, 0);
+    std::vector<int> rightmax(len, 0);
+    int              ans = 0;
+
+    leftmax[0]        = height[0];
+    rightmax[len - 1] = height[len - 1];
 
     for (int i = 1; i < len; i++) {
-      leftMax[i] = std::max(leftMax[i - 1], height[i]);
+      leftmax[i] = std::max(height[i], leftmax[i - 1]);
     }
 
     for (int i = len - 2; i >= 0; i--) {
-      rightMax[i] = std::max(rightMax[i + 1], height[i]);
+      rightmax[i] = std::max(height[i], rightmax[i + 1]);
     }
 
     for (int i = 0; i < len; i++) {
-      res += std::min(leftMax[i], rightMax[i]) - height[i];
+      ans += std::min(leftmax[i], rightmax[i]) - height[i];
     }
 
-    return res;
+    return ans;
   }
 };
 // @lc code=end
