@@ -66,41 +66,55 @@ class Solution {
 public:
   std::vector<std::vector<int>> merge(
       std::vector<std::vector<int>> &intervals) {
-    int                           len = intervals.size();
     std::vector<std::vector<int>> res;
+
+    int len = intervals.size();
+
     if (0 == len) {
       return res;
     }
 
-    // 排序，起点升序，起点相同终点降序
+    // std::sort(intervals.begin(),
+    //           intervals.end(),
+    //           [](const std::vector<int> &v1, const std::vector<int> &v2) {
+    //             return v1[0] < v2[0];
+    //           });
+
+    // int i = 1;
+    // res.push_back(intervals[0]);
+    // while (i < len) {
+    //   auto &end = res.back().back();
+    //   if (intervals[i][0] <= end) {
+    //     end = std::max(end, intervals[i][1]);
+    //   } else {
+    //     res.push_back(std::vector<int>{intervals[i][0], intervals[i][1]});
+    //   }
+    //   i++;
+    // }
+
     std::sort(intervals.begin(),
               intervals.end(),
-              [](std::vector<int> &a, std::vector<int> &b) {
-                if (a[0] == b[0]) {
-                  return a[1] > b[1];
+              [](const std::vector<int> &v1, const std::vector<int> &v2) {
+                if (v1[0] == v2[0]) {
+                  return v1[1] > v2[1];
                 }
-                return a[0] < b[0];
+                return v1[0] < v2[0];
               });
 
-    // print(intervals);
-
-    int left  = intervals[0][0];  // 起点
-    int right = intervals[0][1];  // 终点
-
+    int left = intervals[0][0], right = intervals[0][1];
     for (int i = 1; i < len; i++) {
-      // 覆盖
+      // 覆盖，直接跳过
       if (left <= intervals[i][0] && right >= intervals[i][1]) {
         continue;
       }
 
-      // 相交，合并
+      // 交叉，将right后移
       if (right >= intervals[i][0] && right <= intervals[i][1]) {
-        // std::cout << left << ' ' << right << std::endl;
-
         right = intervals[i][1];
+        continue;
       }
 
-      // 不相交，加入结果集
+      // 不相交
       if (right < intervals[i][0]) {
         res.push_back(std::vector<int>{left, right});
         left  = intervals[i][0];
@@ -108,7 +122,7 @@ public:
       }
     }
 
-    res.push_back(std::vector<int>{left, right});
+    res.push_back(std::vector<int>{left, right});  // 最后一组加入结果集
 
     return res;
   }

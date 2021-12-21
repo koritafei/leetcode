@@ -77,45 +77,44 @@
 // @lc code=start
 class Solution {
 public:
-  int removeCoveredIntervals(std::vector<std::vector<int>>& intervals) {
+  int removeCoveredIntervals(std::vector<std::vector<int>> &intervals) {
     int len = intervals.size();
     if (len == 0) {
       return 0;
     }
 
-    // 按起点升序，起点相同按终点降序
     std::sort(intervals.begin(),
               intervals.end(),
-              [](const std::vector<int> a, const std::vector<int> b) {
-                if (a[0] == b[0]) {
-                  return a[1] > b[1];
+              [](const std::vector<int> &v1, const std::vector<int> &v2) {
+                if (v1[0] == v2[0]) {
+                  return v1[1] > v2[1];
                 }
-                return a[0] < b[0];
-              });
 
-    int res   = 0;                // 重叠区间数
-    int left  = intervals[0][0];  // 合并区间左端点
-    int right = intervals[0][1];  // 合并区间右端点
+                return v1[0] < v2[0];
+              });
+    int count = 0;
+    int left = intervals[0][0], right = intervals[0][1];
 
     for (int i = 1; i < len; i++) {
-      // 情况一，区间被覆盖
+      // 覆盖
       if (left <= intervals[i][0] && right >= intervals[i][1]) {
-        res++;
+        count++;
+        continue;
       }
-
-      // 情况二，合并区间
-      if (right >= intervals[i][0] && right <= intervals[i][1]) {
+      // 交叉
+      if (right <= intervals[i][1]) {
         right = intervals[i][1];
+        continue;
       }
 
-      // 情况三区间不相交
+      // 不相交
       if (right < intervals[i][0]) {
         left  = intervals[i][0];
         right = intervals[i][1];
       }
     }
 
-    return len - res;
+    return len - count;
   }
 };
 // @lc code=end

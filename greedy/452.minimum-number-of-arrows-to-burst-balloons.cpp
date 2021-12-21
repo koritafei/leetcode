@@ -69,30 +69,33 @@
  *
  */
 
+#include <algorithm>
 #include <vector>
 
 // @lc code=start
 class Solution {
 public:
-  int findMinArrowShots(std::vector<std::vector<int>>& points) {
+  int findMinArrowShots(std::vector<std::vector<int>> &points) {
     int len = points.size();
-    if (len <= 0) {
+    if (0 == len) {
       return 0;
     }
 
     std::sort(points.begin(),
               points.end(),
-              [](const std::vector<int> a, std::vector<int> b) {
-                return a[1] < b[1];
+              [](const std::vector<int> &v1, const std::vector<int> &v2) {
+                return v1[1] < v2[1];
               });
-
-    int endy  = points[0][1];
     int count = 1;
-    for (int i = 1; i < len; i++) {
-      if (points[i][0] > endy) {
+
+    int end = points[0][1];
+    int i   = 1;
+    while (i < len) {
+      if (points[i][0] > end) {
+        end = points[i][1];
         count++;
-        endy = points[i][1];
       }
+      i++;
     }
 
     return count;

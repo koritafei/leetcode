@@ -88,38 +88,34 @@
 // @lc code=start
 class Solution {
 public:
-  int videoStitching(std::vector<std::vector<int>>& clips, int time) {
-    if (time == 0) {
+  int videoStitching(std::vector<std::vector<int>> &clips, int time) {
+    if (0 == time) {
       return 0;
     }
 
-    // 起点升序，起点相同，终点降序
     std::sort(clips.begin(),
               clips.end(),
-              [](std::vector<int> a, std::vector<int> b) {
-                if (a[0] == b[0]) {
-                  return a[1] > b[1];
+              [](const std::vector<int> &v1, const std::vector<int> &v2) {
+                if (v1[0] == v2[0]) {
+                  return v1[1] > v2[1];
                 }
-
-                return a[0] < b[0];
+                return v1[0] < v2[0];
               });
-    int res     = 0;  // 选择的视频数
-    int currend = 0, nextend = 0;
-    int i = 0, len = clips.size();
 
+    int count   = 0;
+    int nextend = 0, currend = 0;
+    int len = clips.size();
+    int i   = 0;
     while (i < len && clips[i][0] <= currend) {
-      // 在第res个视频区间内贪心选择下一个视频
-      // 起点一定小于等于当前的终点
-      // 一直到找到一个区间的起点大于大于当前的终点结束
       while (i < len && clips[i][0] <= currend) {
         nextend = std::max(nextend, clips[i][1]);
         i++;
       }
 
-      res++;  // 选中一个视频
       currend = nextend;
+      count++;
       if (currend >= time) {
-        return res;
+        return count;
       }
     }
 
