@@ -42,32 +42,40 @@
  *
  */
 
+#include <climits>
+#include <cmath>
 #include <vector>
 
 // @lc code=start
 class Solution {
 public:
   std::vector<int> findErrorNums(std::vector<int>& nums) {
-    int n   = nums.size();
-    int dup = -1;
-    for (int i = 0; i < n; i++) {
+    std::vector<int> res;
+    int              dup     = INT_MIN;
+    int              missing = INT_MIN;
+    int              len     = nums.size();
+    for (int i = 0; i < len; i++) {
       int index = abs(nums[i]) - 1;
       if (nums[index] < 0) {
-        // 重复
         dup = abs(nums[i]);
       } else {
         nums[index] *= -1;
       }
     }
 
-    int missing = -1;
-    for (int i = 0; i < n; i++) {
+    for (int i = 0; i < len; i++) {
       if (nums[i] > 0) {
         missing = i + 1;
       }
     }
 
-    return std::vector<int>{dup, missing};
+    if (dup == INT_MIN) {
+      return res;
+    } else {
+      res.push_back(dup), res.push_back(missing);
+      return res;
+    }
+    return res;
   }
 };
 // @lc code=end

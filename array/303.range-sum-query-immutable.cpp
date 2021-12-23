@@ -68,10 +68,8 @@ public:
   NumArray(std::vector<int>& nums) {
     int len = nums.size();
     preSum  = std::vector<int>(len + 1, 0);
-    if (len > 0) {
-      for (int i = 1; i <= len; i++) {
-        preSum[i] = preSum[i - 1] + nums[i - 1];
-      }
+    for (int i = 1; i <= len; i++) {
+      preSum[i] = preSum[i - 1] + nums[i - 1];
     }
   }
 

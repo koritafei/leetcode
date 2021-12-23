@@ -71,55 +71,59 @@ class Solution {
 public:
   std::vector<int> corpFlightBookings(std::vector<std::vector<int>>& bookings,
                                       int                            n) {
-    std::vector<int> nums = std::vector<int>(n, 0);
-    difference       df(nums);
-    std::vector<int> res;
-
-    for (int i = 0; i < bookings.size(); i++) {
-      int s = bookings[i][0] - 1;
-      int e = bookings[i][1] - 1;
-      int b = bookings[i][2];
-      df.increment(b, s, e);
+    std::vector<int> nums(n, 0);
+    difference       d(nums);
+    for (std::size_t i = 0; i < bookings.size(); i++) {
+      d.increment(bookings[i][0] - 1, bookings[i][1] - 1, bookings[i][2]);
     }
 
-    res = df.result();
-
-    return res;
+    return d.result();
   }
 
 private:
   class difference {
   public:
-    difference(std::vector<int> nums) {
-      int len = nums.size();
-      if (len > 0) {
-        diff    = std::vector<int>(len, 0);
-        diff[0] = nums[0];
-        for (int i = 1; i < len; i++) {
-          diff[i] = nums[i] - nums[i - 1];
-        }
+    difference(std::vector<int>& nums) {
+      std::size_t len = nums.size();
+      if (0 == len) {
+        return;
+      }
+      diff_    = std::vector<int>(len, 0);
+      diff_[0] = nums[0];
+
+      for (std::size_t i = 1; i < len; i++) {
+        diff_[i] = nums[i] - nums[i - 1];
       }
     }
 
-    void increment(int cap, int left, int right) {
-      diff[left] += cap;
-      if (right + 1 < diff.size()) {
-        diff[right + 1] -= cap;
+    void increment(std::size_t i, std::size_t j, int val) {
+      // 从i到j增加val
+      diff_[i] += val;
+      if (j + 1 < diff_.size()) {
+        diff_[j + 1] -= val;
       }
     }
 
+    // 还原数组
     std::vector<int> result() {
-      std::vector<int> res = std::vector<int>(diff.size(), 0);
-      res[0]               = diff[0];
-      for (int i = 1; i < diff.size(); i++) {
-        res[i] = res[i - 1] + diff[i];
+      std::vector<int> res;
+      std::size_t      len = diff_.size();
+      if (0 >= len) {
+        return res;
+      }
+
+      res = std::vector<int>(len, 0);
+
+      res[0] = diff_[0];
+      for (std::size_t i = 1; i < len; i++) {
+        res[i] = res[i - 1] + diff_[i];
       }
 
       return res;
     }
 
   private:
-    std::vector<int> diff;
+    std::vector<int> diff_;
   };
 };
 // @lc code=end

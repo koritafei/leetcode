@@ -73,28 +73,25 @@
 class Solution {
 public:
   bool isRectangleCover(std::vector<std::vector<int>>& rectangles) {
-    int leftdownx = INT_MAX, leftdowny = INT_MAX;  // 组成大矩形的左下角顶点
-    int rightupx = INT_MIN, rightupy = INT_MIN;  // 组成大矩形的右上角顶点
+    int                           len = rectangles.size();
+    std::set<std::pair<int, int>> set;
+    long long                     sumArea = 0;
+    int rx = INT_MIN, ry = INT_MIN, lx = INT_MAX, ly = INT_MAX;
+    for (int i = 0; i < len; i++) {
+      int leftx = rectangles[i][0], lefty = rectangles[i][1];
+      int rightx = rectangles[i][2], righty = rectangles[i][3];
+      sumArea += (long long)((rightx - leftx)) * (long long)((righty - lefty));
+      std::vector<std::pair<int, int>> tmp{std::make_pair(leftx, righty),
+                                           std::make_pair(leftx, lefty),
+                                           std::make_pair(rightx, righty),
+                                           std::make_pair(rightx, lefty)};
+      lx = std::min(lx, leftx);
+      ly = std::min(ly, lefty);
+      rx = std::max(rx, rightx);
+      ry = std::max(ry, righty);
 
-    std::set<std::pair<int, int>> set;          // 顶点集合
-    int                           sumArea = 0;  // 小矩形面积和
-
-    for (auto item : rectangles) {
-      leftdownx = std::min(leftdownx, item[0]);
-      leftdowny = std::min(leftdowny, item[1]);
-      rightupx  = std::max(rightupx, item[2]);
-      rightupy  = std::max(rightupy, item[3]);
-
-      sumArea += (item[2] - item[0]) * (item[3] - item[1]);
-
-      std::vector<std::pair<int, int>> points = {
-          std::make_pair(item[0], item[1]),
-          std::make_pair(item[0], item[3]),
-          std::make_pair(item[2], item[1]),
-          std::make_pair(item[2], item[3])};
-
-      for (auto it : points) {
-        if (set.count(it)) {
+      for (auto& it : tmp) {
+        if (set.find(it) != set.end()) {
           set.erase(it);
         } else {
           set.insert(it);
@@ -102,28 +99,27 @@ public:
       }
     }
 
-    int area = (rightupx - leftdownx) * (rightupy - leftdowny);
-    if (area != sumArea) {
-      return false;
-    }
-
     if (set.size() != 4) {
       return false;
     }
 
-    if (!set.count(std::make_pair(leftdownx, leftdowny))) {
+    std::vector<std::pair<int, int>> tmp{std::make_pair(lx, ly),
+                                         std::make_pair(lx, ry),
+                                         std::make_pair(rx, ly),
+                                         std::make_pair(rx, ry)};
+    for (auto& it : tmp) {
+      if (set.find(it) == set.end()) {
+        return false;
+      }
+    }
+
+    if (rx == INT_MIN || ry == INT_MIN || lx == INT_MAX || ly == INT_MAX) {
       return false;
     }
 
-    if (!set.count(std::make_pair(rightupx, rightupy))) {
-      return false;
-    }
+    long long bArea = (long long)((rx - lx)) * (long long)((ry - ly));
 
-    if (!set.count(std::make_pair(leftdownx, rightupy))) {
-      return false;
-    }
-
-    if (!set.count(std::make_pair(rightupx, leftdowny))) {
+    if (bArea != sumArea) {
       return false;
     }
 

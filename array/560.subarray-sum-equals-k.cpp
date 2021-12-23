@@ -43,25 +43,23 @@ class Solution {
 public:
   int subarraySum(std::vector<int>& nums, int k) {
     int len = nums.size();
-    if (len == 0) {
+    if (0 == len) {
       return 0;
     }
-    std::map<int, int> sum;  // <presum, count>
-    sum.insert(std::make_pair(0, 1));
 
-    int res = 0, presum = 0;
-
+    std::map<int, int> map;
+    map[0]  = 1;
+    int sum = 0;
+    int ans = 0;
     for (int i = 0; i < len; i++) {
-      presum += nums[i];
-      int t = presum - k;
-      if (sum.count(t) != 0) {
-        res += sum[t];
+      sum += nums[i];
+      if (map.find(sum - k) != map.end()) {
+        ans += map[sum - k];
       }
-
-      sum[presum]++;
+      map[sum]++;
     }
 
-    return res;
+    return ans;
   }
 };
 // @lc code=end

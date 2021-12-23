@@ -85,42 +85,31 @@ public:
   }
 
   void addNum(int num) {
-    // 添加元素
-    if (small.size() >= big.size()) {
-      small.push(num);
-      int top = small.top();
-      small.pop();
-      big.push(top);
+    if (maxHeap.size() > minHeap.size()) {
+      maxHeap.push(num);
+      minHeap.push(maxHeap.top());
+      maxHeap.pop();
     } else {
-      big.push(num);
-      int top = big.top();
-      big.pop();
-      small.push(top);
+      minHeap.push(num);
+      maxHeap.push(minHeap.top());
+      minHeap.pop();
     }
   }
 
   double findMedian() {
-    // 如果大根堆元素多，返回大根堆的栈顶
-    if (big.size() > small.size()) {
-      return big.top() * 1.0;
-    } else if (big.size() < small.size()) {
-      // 如果小根堆元素多，返回小根堆的栈顶
-      return small.top() * 1.0;
+    if (maxHeap.size() == minHeap.size()) {
+      return (maxHeap.top() * 1.0 + minHeap.top()) / 2;
+    } else if (maxHeap.size() > minHeap.size()) {
+      return maxHeap.top() * 1.0;
     } else {
-      // 如果元素一样多，返回两者栈顶之和的一半
-      return (small.top() + big.top()) / 2.0;
+      return minHeap.top() * 1.0;
     }
   }
 
 private:
-  struct greator {
-    bool operator()(const int &a, const int &b) const {
-      return a > b;
-    }
-  };
-
-  std::priority_queue<int, std::vector<int>>          big;    // 默认大根堆
-  std::priority_queue<int, std::vector<int>, greator> small;  // 小根堆
+  std::priority_queue<int, std::vector<int>, std::less<int>> maxHeap;  // 大根堆
+  std::priority_queue<int, std::vector<int>, std::greater<int>>
+      minHeap;  // 小根堆
 };
 
 /**
