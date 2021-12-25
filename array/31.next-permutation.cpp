@@ -6,34 +6,42 @@
  * https://leetcode.com/problems/next-permutation/description/
  *
  * algorithms
- * Medium (33.82%)
- * Likes:    5150
- * Dislikes: 1767
- * Total Accepted:    490K
- * Total Submissions: 1.4M
+ * Medium (34.89%)
+ * Likes:    8045
+ * Dislikes: 2716
+ * Total Accepted:    655.8K
+ * Total Submissions: 1.9M
  * Testcase Example:  '[1,2,3]'
  *
  * Implement next permutation, which rearranges numbers into the
  * lexicographically next greater permutation of numbers.
  *
- * If such an arrangement is not possible, it must rearrange it as the lowest
+ * If such an arrangement is impossible, it must rearrange it to the lowest
  * possible order (i.e., sorted in ascending order).
  *
- * The replacement must be in place and use only constant extra memory.
+ * The replacement must be in place and use only constant extra memory.
  *
  *
  * Example 1:
+ *
+ *
  * Input: nums = [1,2,3]
  * Output: [1,3,2]
+ *
+ *
  * Example 2:
+ *
+ *
  * Input: nums = [3,2,1]
  * Output: [1,2,3]
+ *
+ *
  * Example 3:
+ *
+ *
  * Input: nums = [1,1,5]
  * Output: [1,5,1]
- * Example 4:
- * Input: nums = [1]
- * Output: [1]
+ *
  *
  *
  * Constraints:
@@ -45,41 +53,29 @@
  *
  */
 
+#include <algorithm>
+#include <iostream>
+#include <vector>
+
 // @lc code=start
 class Solution {
 public:
   void nextPermutation(std::vector<int>& nums) {
-    nextPermutation(nums.begin(), nums.end());
-  }
-
-private:
-  void nextPermutation(std::vector<int>::iterator begin,
-                       std::vector<int>::iterator end) {
-    if (begin == end) {
-      return;
+    int i = nums.size() - 2;
+    while (i >= 0 && nums[i] >= nums[i + 1]) {
+      i--;
     }
 
-    std::vector<int>::iterator it = end;
-    if (begin == --it) {
-      return;
-    }
+    if (i >= 0) {
+      int j = nums.size() - 1;
 
-    while (true) {
-      std::vector<int>::iterator it1, it2;
-      it1 = it;
-      if (*--it < *it1) {
-        it2 = end;
-        while (*it >= *--it2)
-          ; // 查找第一个比当前小元素小的位置
-        std::iter_swap(it, it2);
-        std::reverse(it1, end);
-        return;
+      while (j >= 0 && nums[j] <= nums[i]) {
+        j--;
       }
-      if (it == begin) {
-        std::reverse(begin, end);
-        return;
-      }
+      std::swap(nums[j], nums[i]);
     }
+    std::reverse(nums.begin() + i + 1, nums.end());
   }
 };
+
 // @lc code=end

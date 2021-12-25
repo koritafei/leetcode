@@ -71,42 +71,43 @@
 class Solution {
 public:
   std::string minWindow(std::string s, std::string t) {
-    int                 len = s.length();
-    std::map<char, int> freq, need;
-    int                 valid = 0;
-    int                 start = 0, minlen = INT_MAX;
+    int                lens = s.size();
+    std::map<int, int> map, need;
+    int                left = 0, right = 0, valid = 0;
 
-    for (char ch : t) {
-      freq[ch]++;
+    int start = 0, len = INT_MAX;  // 子串起点与长度
+
+    for (auto &it : t) {
+      map[it]++;
     }
 
-    int left = 0, right = 0;
-    while (right < len) {
+    while (right < lens) {
       char ch = s[right++];
-      if (freq.count(ch)) {
+      if (map.find(ch) != map.end()) {
         need[ch]++;
-        if (freq[ch] == need[ch]) {
+        if (need[ch] == map[ch]) {
           valid++;
         }
       }
 
-      while (valid == freq.size()) {
-        if (minlen > right - left) {
-          minlen = right - left;
-          start  = left;
+      // 缩小窗口
+      while (valid == map.size()) {
+        if (len > right - left) {
+          len   = right - left;
+          start = left;
         }
-        char ch = s[left++];
-        if (need.count(ch)) {
-          if (need[ch] == freq[ch]) {
+
+        char d = s[left++];
+        if (need.find(d) != need.end()) {
+          if (need[d] == map[d]) {
             valid--;
           }
-
-          need[ch]--;
+          need[d]--;
         }
       }
     }
-    minlen = minlen == INT_MAX ? 0 : minlen;
-    return s.substr(start, minlen);
+
+    return len == INT_MAX ? "" : s.substr(start, len);
   }
 };
 // @lc code=end

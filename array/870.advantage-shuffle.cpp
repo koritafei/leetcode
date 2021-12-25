@@ -48,39 +48,39 @@ class Solution {
 public:
   std::vector<int> advantageCount(std::vector<int>& nums1,
                                   std::vector<int>& nums2) {
+    int              len1 = nums1.size(), len2 = nums2.size();
     std::vector<int> res;
-    res.resize(nums1.size());
-    std::sort(nums1.begin(), nums1.end());
-
-    std::priority_queue<std::pair<int, int>,
-                        std::vector<std::pair<int, int>>,
-                        less>
-        hp;
-
-    for (int i = 0; i < nums2.size(); i++) {
-      hp.push(std::make_pair(nums2[i], i));
+    if (len1 == 0 || len2 == 0 || len1 != len2) {
+      return res;
     }
 
-    int left = 0, right = nums1.size() - 1;
-    while (hp.size()) {
-      std::pair<int, int> p = hp.top();
-      hp.pop();
-      if (nums1[right] > p.first) {
-        res[p.second] = nums1[right--];
+    res = std::vector<int>(len1, 0);
+
+    std::vector<std::pair<int, int>> tmp;
+
+    for (int i = 0; i < len1; i++) {
+      tmp.push_back(std::make_pair(i, nums2[i]));
+    }
+
+    std::sort(nums1.begin(), nums1.end());
+
+    std::sort(tmp.begin(),
+              tmp.end(),
+              [](const std::pair<int, int>& p1, const std::pair<int, int>& p2) {
+                return p1.second < p2.second;
+              });
+
+    int left = 0, right = len1 - 1;
+
+    for (int i = len2 - 1; i >= 0; i--) {
+      if (tmp[i].second >= nums1[right]) {
+        res[tmp[i].first] = nums1[left++];
       } else {
-        res[p.second] = nums1[left++];
+        res[tmp[i].first] = nums1[right--];
       }
     }
 
     return res;
   }
-
-private:
-  struct less {
-    bool operator()(const std::pair<int, int>& v1,
-                    const std::pair<int, int>& v2) {
-      return v1.first < v2.first;
-    }
-  };
 };
 // @lc code=end

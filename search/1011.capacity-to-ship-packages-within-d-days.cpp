@@ -82,12 +82,12 @@
 // @lc code=start
 class Solution {
 public:
-  int shipWithinDays(std::vector<int>& weights, int days) {
-    int left = getMax(weights), right = sum(weights);
+  int shipWithinDays(std::vector<int> &weights, int days) {
+    int left = getMax(weights), right = getSum(weights);
+
     while (left <= right) {
       int mid = left + (right - left) / 2;
-      int day = cday(weights, mid);
-      if (day <= days) {
+      if (canCarry(weights, mid, days)) {
         right = mid - 1;
       } else {
         left = mid + 1;
@@ -98,39 +98,36 @@ public:
   }
 
 private:
-  int cday(std::vector<int>& weights, int weight) {
-    int day = 0;
-    for (int i = 0; i < weights.size();) {
-      int cap = weight;
-      while (i < weights.size()) {
-        if (cap < weights[i]) {
-          break;
-        } else {
-          cap -= weights[i];
+  bool canCarry(std::vector<int> &weights, int weight, int days) {
+    int j = 0;
+    for (int i = 0; i < days; i++) {
+      int maxcap = weight;
+      while ((maxcap -= weights[j]) >= 0) {
+        j++;
+        if (j == weights.size()) {
+          return true;
         }
-        i++;
       }
-      day++;
     }
 
-    return day;
+    return false;
   }
 
-  int getMax(std::vector<int>& weights) {
-    int max = INT_MIN;
-    for (auto it : weights) {
-      max = max > it ? max : it;
+  int getMax(std::vector<int> &weights) {
+    int res = INT_MIN;
+    for (auto &it : weights) {
+      res = std::max(it, res);
     }
-    return max;
+
+    return res == INT_MIN ? 0 : res;
   }
 
-  int sum(std::vector<int>& weights) {
-    int t = 0;
-    for (auto it : weights) {
-      t += it;
+  int getSum(std::vector<int> &weights) {
+    int sum = 0;
+    for (auto &it : weights) {
+      sum += it;
     }
-
-    return t;
+    return sum;
   }
 };
 // @lc code=end

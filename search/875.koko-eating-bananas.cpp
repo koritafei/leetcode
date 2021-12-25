@@ -70,7 +70,7 @@ public:
     int left = 1, right = getMax(piles);
     while (left <= right) {
       int mid = left + (right - left) / 2;
-      if (eatTime(piles, mid, h)) {
+      if (canEatAll(piles, mid, h)) {
         right = mid - 1;
       } else {
         left = mid + 1;
@@ -81,21 +81,22 @@ public:
   }
 
 private:
-  bool eatTime(std::vector<int>& piles, int t, int h) {
+  bool canEatAll(std::vector<int>& piles, int p, int h) {
     int count = 0;
-    for (auto it : piles) {
-      count += it > t ? it / t + (it % t > 0 ? 1 : 0) : 1;
+    for (auto& it : piles) {
+      count += (it / p) + (it % p == 0 ? 0 : 1);
     }
+
     return count <= h;
   }
 
   int getMax(std::vector<int>& piles) {
-    int max = INT_MIN;
-    for (auto it : piles) {
-      max = max > it ? max : it;
+    int res = INT_MIN;
+    for (auto& it : piles) {
+      res = std::max(res, it);
     }
 
-    return max;
+    return res == INT_MIN ? 0 : res;
   }
 };
 // @lc code=end

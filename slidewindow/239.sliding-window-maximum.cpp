@@ -83,23 +83,23 @@
 class Solution {
 public:
   std::vector<int> maxSlidingWindow(std::vector<int>& nums, int k) {
-    std::list<int>   que;
-    int              len = nums.size();
+    std::list<int>   stack;
     std::vector<int> res;
 
+    int len = nums.size();
     for (int i = 0; i < len; i++) {
-      while (que.size() && nums[i] >= nums[que.back()]) {
-        que.pop_back();
+      while (stack.size() && nums[stack.back()] < nums[i]) {
+        stack.pop_back();
       }
 
-      que.push_back(i);
+      stack.push_back(i);
 
-      if (i - que.front() >= k) {
-        que.pop_front();
+      if (i - stack.front() >= k) {
+        stack.pop_front();
       }
 
       if (i >= k - 1) {
-        res.push_back(nums[que.front()]);
+        res.push_back(nums[stack.front()]);
       }
     }
 

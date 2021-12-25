@@ -60,37 +60,36 @@
 class Solution {
 public:
   std::vector<int> findAnagrams(std::string s, std::string p) {
-    std::map<char, int> freq, need;
     std::vector<int>    res;
+    std::map<char, int> need, window;
+    std::size_t         lens = s.size(), lenp = p.size();
+    std::size_t         left = 0, right = 0, valid = 0;
 
-    int len  = s.size();
-    int left = 0, right = 0;
-    int valid = 0;
-
-    for (char ch : p) {
-      freq[ch]++;
+    for (auto &iter : p) {
+      need[iter]++;
     }
 
-    while (right < len) {
+    while (right < lens) {
       char ch = s[right++];
-      if (freq.count(ch) != 0) {
-        need[ch]++;
-        if (need[ch] == freq[ch]) {
+      if (need.find(ch) != need.end()) {
+        window[ch]++;
+        if (window[ch] == need[ch]) {
           valid++;
         }
       }
 
-      while (right - left >= p.size()) {
-        if (valid == freq.size()) {
+      while (right - left >= lenp) {
+        if (valid == need.size()) {
           res.push_back(left);
         }
 
         char ch = s[left++];
-        if (need.count(ch)) {
-          if (need[ch] == freq[ch]) {
+        if (window.find(ch) != window.end()) {
+          if (window[ch] == need[ch]) {
             valid--;
           }
-          need[ch]--;
+
+          window[ch]--;
         }
       }
     }
