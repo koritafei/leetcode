@@ -68,10 +68,11 @@ class Solution {
 public:
   TreeNode* invertTree(TreeNode* root) {
     if (root == nullptr) {
-      return nullptr;
+      return root;
     }
 
     std::swap(root->left, root->right);
+
     invertTree(root->left);
     invertTree(root->right);
 

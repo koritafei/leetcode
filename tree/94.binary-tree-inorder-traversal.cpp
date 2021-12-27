@@ -6,10 +6,10 @@
  * https://leetcode.com/problems/binary-tree-inorder-traversal/description/
  *
  * algorithms
- * Easy (69.12%)
- * Likes:    6321
- * Dislikes: 268
- * Total Accepted:    1.2M
+ * Easy (69.31%)
+ * Likes:    6417
+ * Dislikes: 273
+ * Total Accepted:    1.3M
  * Total Submissions: 1.8M
  * Testcase Example:  '[1,null,2,3]'
  *
@@ -36,20 +36,6 @@
  *
  * Input: root = [1]
  * Output: [1]
- *
- *
- * Example 4:
- *
- *
- * Input: root = [1,2]
- * Output: [2,1]
- *
- *
- * Example 5:
- *
- *
- * Input: root = [1,null,2]
- * Output: [1,2]
  *
  *
  *
@@ -84,23 +70,22 @@
  */
 class Solution {
 public:
-  std::vector<int> inorderTraversal(TreeNode* root) {
-    TreeNode* visited;
+  std::vector<int> inorderTraversal(TreeNode *root) {
+    TreeNode *visited;
     pushNode(root);
 
     while (stack.size()) {
-      TreeNode* curr = stack.top();
-      if ((curr->left == nullptr || visited == curr->left) &&
-          curr->right != visited) {
+      TreeNode *curr = stack.top();
+
+      if ((curr->left == nullptr || curr->left == visited) &&
+          (curr->right != visited)) {
         // 中序遍历位置
         res.push_back(curr->val);
         pushNode(curr->right);
       }
 
-      if (curr->right == nullptr || visited == curr->right) {
-        // 后续遍历位置
-        // 以curr为根的子树遍历完成
-        visited = curr;
+      if (curr->right == nullptr || curr->right == visited) {
+        visited = stack.top();
         stack.pop();
       }
     }
@@ -109,16 +94,15 @@ public:
   }
 
 private:
-  void pushNode(TreeNode* root) {
+  void pushNode(TreeNode *root) {
     while (root) {
-      // 先序遍历位置
-
+      // 前序遍历位置
       stack.push(root);
       root = root->left;
     }
   }
 
-  std::vector<int>      res;
-  std::stack<TreeNode*> stack;
+  std::stack<TreeNode *> stack;
+  std::vector<int>       res;
 };
 // @lc code=end

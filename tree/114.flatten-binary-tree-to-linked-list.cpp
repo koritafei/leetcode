@@ -82,19 +82,17 @@ public:
 
     flatten(root->left);
     flatten(root->right);
-
-    // 处理当前根节点
     TreeNode *left  = root->left;
     TreeNode *right = root->right;
-    root->left      = nullptr;
 
     root->right = left;
+    root->left  = nullptr;
 
-    // right 子树连接到left的右子树上
     TreeNode *p = root;
     while (p->right) {
       p = p->right;
     }
+
     p->right = right;
   }
 };

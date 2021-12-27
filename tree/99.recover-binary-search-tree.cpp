@@ -73,28 +73,29 @@ public:
     if (root == nullptr) {
       return;
     }
+    std::vector<TreeNode *> err = std::vector<TreeNode *>(2, nullptr);
     std::stack<TreeNode *>  stack;
-    std::vector<TreeNode *> error = std::vector<TreeNode *>(2, nullptr);
-    TreeNode               *prev  = nullptr;
-    TreeNode               *head  = root;
+
+    TreeNode *prev = nullptr;
+    TreeNode *head = root;
 
     while (stack.size() || head) {
-      if (head != nullptr) {
+      if (head) {
         stack.push(head);
         head = head->left;
       } else {
         head = stack.top();
         stack.pop();
         if (prev && prev->val > head->val) {
-          error[0] = error[0] == nullptr ? prev : error[0];
-          error[1] = head;
+          err[0] = err[0] == nullptr ? prev : err[0];
+          err[1] = head;
         }
         prev = head;
         head = head->right;
       }
     }
 
-    std::swap(error[0]->val, error[1]->val);
+    std::swap(err[0]->val, err[1]->val);
   }
 };
 // @lc code=end

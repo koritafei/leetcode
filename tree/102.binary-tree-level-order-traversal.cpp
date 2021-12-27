@@ -48,7 +48,7 @@
  *
  */
 
-#include <queue>
+#include <list>
 #include <vector>
 
 #include "treenode.h"
@@ -69,30 +69,28 @@
 class Solution {
 public:
   std::vector<std::vector<int>> levelOrder(TreeNode* root) {
-    std::queue<TreeNode*>         que;
     std::vector<std::vector<int>> res;
-
+    std::list<TreeNode*>          que;
     if (root == nullptr) {
       return res;
     }
-
-    que.push(root);
+    que.push_back(root);
 
     while (que.size()) {
       int              sz = que.size();
       std::vector<int> tmp;
       for (int i = 0; i < sz; i++) {
         TreeNode* curr = que.front();
-        que.pop();
+        que.pop_front();
 
         tmp.push_back(curr->val);
 
         if (curr->left) {
-          que.push(curr->left);
+          que.push_back(curr->left);
         }
 
         if (curr->right) {
-          que.push(curr->right);
+          que.push_back(curr->right);
         }
       }
 

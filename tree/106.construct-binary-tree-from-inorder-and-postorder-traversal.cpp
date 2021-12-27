@@ -77,34 +77,30 @@ public:
 
 private:
   TreeNode* buildTree(std::vector<int>& inorder,
-                      int               start1,
-                      int               end1,
+                      int               is,
+                      int               ie,
                       std::vector<int>& postorder,
-                      int               start2,
-                      int               end2) {
-    if (start1 > end1) {
+                      int               ps,
+                      int               pe) {
+    if (ps > pe) {
       return nullptr;
     }
-    int rootVal = postorder[end2];
-    int i       = start1;
-    for (; i <= end1; i++) {
-      if (rootVal == inorder[i]) {
+
+    int       val  = postorder[pe];
+    TreeNode* root = new TreeNode(val);
+
+    int index = is;
+    for (; index <= ie; index++) {
+      if (inorder[index] == val) {
         break;
       }
     }
 
-    int       leftlen = i - start1;
-    TreeNode* root    = new TreeNode(rootVal);
-
-    root->left = buildTree(inorder,
-                           start1,
-                           i - 1,
-                           postorder,
-                           start2,
-                           start2 + leftlen - 1);
-
+    int leftlen = index - is;
+    root->left =
+        buildTree(inorder, is, index - 1, postorder, ps, ps + leftlen - 1);
     root->right =
-        buildTree(inorder, i + 1, end1, postorder, start2 + leftlen, end2 - 1);
+        buildTree(inorder, index + 1, ie, postorder, ps + leftlen, pe - 1);
 
     return root;
   }

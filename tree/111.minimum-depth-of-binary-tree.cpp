@@ -69,15 +69,17 @@ public:
       return 0;
     }
     std::queue<TreeNode*> que;
+    int                   step = 1;
     que.push(root);
-    int step = 1;
-
     while (que.size()) {
       int sz = que.size();
-
       for (int i = 0; i < sz; i++) {
         TreeNode* curr = que.front();
         que.pop();
+        if (!curr->left && !curr->right) {
+          return step;
+        }
+
         if (curr->left) {
           que.push(curr->left);
         }
@@ -85,16 +87,12 @@ public:
         if (curr->right) {
           que.push(curr->right);
         }
-
-        if (!curr->left && !curr->right) {
-          return step;
-        }
       }
 
       step++;
     }
 
-    return -1;
+    return step;
   }
 };
 // @lc code=end

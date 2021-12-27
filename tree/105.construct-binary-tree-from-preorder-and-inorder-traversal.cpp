@@ -77,33 +77,31 @@ public:
 
 private:
   TreeNode* buildTree(std::vector<int>& preorder,
-                      int               start1,
-                      int               end1,
+                      int               ps,
+                      int               pe,
                       std::vector<int>& inorder,
-                      int               start2,
-                      int               end2) {
-    if (start1 > end1) {
+                      int               is,
+                      int               ie) {
+    if (ps > pe) {
       return nullptr;
     }
 
-    int rootVal = preorder[start1];
-    int i       = start2;
-    for (; i <= end2; i++) {
-      if (inorder[i] == rootVal) {
+    int       val  = preorder[ps];
+    TreeNode* root = new TreeNode(val);
+
+    int index = is;
+    for (; index <= ie; index++) {
+      if (inorder[index] == val) {
         break;
       }
     }
 
-    int       leftlen = i - start2;
-    TreeNode* root    = new TreeNode(rootVal);
-    root->left        = buildTree(preorder,
-                           start1 + 1,
-                           start1 + leftlen,
-                           inorder,
-                           start2,
-                           i - 1);
+    int leftlen = index - is;
+
+    root->left =
+        buildTree(preorder, ps + 1, ps + leftlen, inorder, is, index - 1);
     root->right =
-        buildTree(preorder, start1 + leftlen + 1, end1, inorder, i + 1, end2);
+        buildTree(preorder, ps + leftlen + 1, pe, inorder, index + 1, ie);
 
     return root;
   }

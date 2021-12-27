@@ -75,21 +75,20 @@ public:
   }
 
 private:
-  bool isValidBST(TreeNode *root, TreeNode *min, TreeNode *max) {
-    if (root == nullptr) {
+  bool isValidBST(TreeNode *root, TreeNode *lmax, TreeNode *rmin) {
+    if (!root) {
       return true;
     }
-
-    if (min != nullptr && root->val <= min->val) {
+    if (lmax && root->val <= lmax->val) {
       return false;
     }
 
-    if (max != nullptr && root->val >= max->val) {
+    if (rmin && root->val >= rmin->val) {
       return false;
     }
 
-    return isValidBST(root->left, min, root) &&
-           isValidBST(root->right, root, max);
+    return isValidBST(root->left, lmax, root) &&
+           isValidBST(root->right, root, rmin);
   }
 };
 // @lc code=end

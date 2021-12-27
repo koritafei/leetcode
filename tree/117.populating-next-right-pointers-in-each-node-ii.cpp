@@ -1,21 +1,19 @@
 /*
- * @lc app=leetcode id=116 lang=cpp
+ * @lc app=leetcode id=117 lang=cpp
  *
- * [116] Populating Next Right Pointers in Each Node
+ * [117] Populating Next Right Pointers in Each Node II
  *
- * https://leetcode.com/problems/populating-next-right-pointers-in-each-node/description/
+ * https://leetcode.com/problems/populating-next-right-pointers-in-each-node-ii/description/
  *
  * algorithms
- * Medium (53.71%)
- * Likes:    4908
- * Dislikes: 206
- * Total Accepted:    608.7K
- * Total Submissions: 1.1M
- * Testcase Example:  '[1,2,3,4,5,6,7]'
+ * Medium (45.08%)
+ * Likes:    3173
+ * Dislikes: 226
+ * Total Accepted:    391.8K
+ * Total Submissions: 869.1K
+ * Testcase Example:  '[1,2,3,4,5,null,7]'
  *
- * You are given a perfect binary tree where all leaves are on the same level,
- * and every parent has two children. The binary tree has the following
- * definition:
+ * Given a binary tree
  *
  *
  * struct Node {
@@ -35,12 +33,12 @@
  * Example 1:
  *
  *
- * Input: root = [1,2,3,4,5,6,7]
- * Output: [1,#,2,3,#,4,5,6,7,#]
- * Explanation: Given the above perfect binary tree (Figure A), your function
- * should populate each next pointer to point to its next right node, just like
- * in Figure B. The serialized output is in level order as connected by the
- * next pointers, with '#' signifying the end of each level.
+ * Input: root = [1,2,3,4,5,null,7]
+ * Output: [1,#,2,3,#,4,5,7,#]
+ * Explanation: Given the above binary tree (Figure A), your function should
+ * populate each next pointer to point to its next right node, just like in
+ * Figure B. The serialized output is in level order as connected by the next
+ * pointers, with '#' signifying the end of each level.
  *
  *
  * Example 2:
@@ -54,8 +52,8 @@
  * Constraints:
  *
  *
- * The number of nodes in the tree is in the range [0, 2^12 - 1].
- * -1000 <= Node.val <= 1000
+ * The number of nodes in the tree is in the range [0, 6000].
+ * -100 <= Node.val <= 100
  *
  *
  *
@@ -70,6 +68,7 @@
  */
 
 #include <iostream>
+#include <list>
 
 class Node {
 public:
@@ -114,20 +113,30 @@ public:
     if (root == nullptr) {
       return root;
     }
-    connect(root->left, root->right);
-    return root;
-  }
+    std::list<Node*> que;  // 层序遍历
+    que.push_back(root);
+    while (que.size()) {
+      int sz = que.size();
+      for (int i = 0; i < sz; i++) {
+        Node* curr = que.front();
+        que.pop_front();
 
-private:
-  void connect(Node* node1, Node* node2) {
-    if (!node1 || !node2) {
-      return;
+        // 最后一个节点不做处理
+        if (i != sz - 1) {
+          curr->next = que.front();
+        }
+
+        if (curr->left) {
+          que.push_back(curr->left);
+        }
+
+        if (curr->right) {
+          que.push_back(curr->right);
+        }
+      }
     }
 
-    node1->next = node2;
-    connect(node1->left, node1->right);
-    connect(node2->left, node2->right);
-    connect(node1->right, node2->left);
+    return root;
   }
 };
 // @lc code=end

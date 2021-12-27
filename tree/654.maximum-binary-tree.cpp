@@ -95,7 +95,8 @@ private:
       return nullptr;
     }
 
-    int max = nums[left], index = left;
+    int index = left;
+    int max   = nums[left];
     for (int i = left; i <= right; i++) {
       if (max < nums[i]) {
         max   = nums[i];

@@ -51,6 +51,8 @@
  *
  */
 
+#include "treenode.h"
+
 // @lc code=start
 /**
  * Definition for a binary tree node.
@@ -67,18 +69,17 @@
 class Solution {
 public:
   bool isSameTree(TreeNode* p, TreeNode* q) {
-    if (p == nullptr && q == nullptr) {
-      return true;
-    } else if ((p == nullptr && q != nullptr) ||
-               (p != nullptr && q == nullptr)) {
+    if (p && q && p->val != q->val) {
+      return false;
+    }
+    if ((!p && q) || (p && !q)) {
       return false;
     }
 
-    if (p->val == q->val) {
-      return isSameTree(p->left, q->left) && isSameTree(p->right, q->right);
+    if (!p && !q) {
+      return true;
     }
-
-    return false;
+    return isSameTree(p->left, q->left) && isSameTree(p->right, q->right);
   }
 };
 // @lc code=end

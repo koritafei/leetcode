@@ -59,35 +59,37 @@
  * right(right) {}
  * };
  */
+
 class Solution {
 public:
   std::vector<TreeNode *> generateTrees(int n) {
-    if (n <= 0) {
+    if (n == 0) {
       return std::vector<TreeNode *>();
     }
+
     return buildTree(1, n);
   }
 
 private:
-  std::vector<TreeNode *> buildTree(int low, int high) {
+  std::vector<TreeNode *> buildTree(int start, int end) {
     std::vector<TreeNode *> res;
 
-    if (low > high) {
+    if (start > end) {
       res.push_back(nullptr);
       return res;
     }
 
-    // root节点可能选项
-    for (int i = low; i <= high; i++) {
-      std::vector<TreeNode *> left  = buildTree(low, i - 1);
-      std::vector<TreeNode *> right = buildTree(i + 1, high);
+    for (int i = start; i <= end; i++) {
+      std::vector<TreeNode *> left  = buildTree(start, i - 1);
+      std::vector<TreeNode *> right = buildTree(i + 1, end);
 
-      for (auto iter : left) {
-        for (auto it : right) {
+      for (auto &it : left) {
+        for (auto &iter : right) {
           TreeNode *root = new TreeNode(i);
-          root->left     = iter;
-          root->right    = it;
-          res.push_back(root);
+
+          root->left  = it;
+          root->right = iter;
+          res.emplace_back(root);
         }
       }
     }

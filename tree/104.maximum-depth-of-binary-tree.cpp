@@ -57,6 +57,8 @@
  *
  */
 
+#include <algorithm>
+
 #include "treenode.h"
 
 // @lc code=start
@@ -82,7 +84,7 @@ public:
     int left  = maxDepth(root->left);
     int right = maxDepth(root->right);
 
-    return 1 + std::max(left, right);
+    return std::max(left, right) + 1;
   }
 };
 // @lc code=end

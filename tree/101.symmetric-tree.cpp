@@ -43,26 +43,7 @@
  * Follow up: Could you solve it both recursively and iteratively?
  */
 
-// #include <iostream>
-// #include <list>
-// #include <vector>
-
-// using namespace std;
-
-// struct TreeNode {
-//   int       val;
-//   TreeNode *left;
-//   TreeNode *right;
-//   TreeNode() : val(0), left(nullptr), right(nullptr) {
-//   }
-//   TreeNode(int x) : val(x), left(nullptr), right(nullptr) {
-//   }
-//   TreeNode(int x, TreeNode *left, TreeNode *right)
-//       : val(x),
-//         left(left),
-//         right(right) {
-//   }
-// };
+#include "treenode.h"
 
 // @lc code=start
 /**
@@ -89,30 +70,21 @@ public:
 
 private:
   bool isSymmetric(TreeNode *left, TreeNode *right) {
-    if (left == nullptr && right == nullptr) {
+    if (!left && !right) {
       return true;
     }
 
-    if ((left != nullptr && right == nullptr) ||
-        (left == nullptr && right != nullptr)) {
+    if ((!left && right) || (left && !right) ||
+        (!left && !right && left->val != right->val)) {
       return false;
     }
 
-    if (left->val == right->val) {
-      return isSymmetric(left->left, right->right) &&
-             isSymmetric(left->right, right->left);
+    if (left->val != right->val) {
+      return false;
     }
-    return false;
+
+    return isSymmetric(left->left, right->right) &&
+           isSymmetric(left->right, right->left);
   }
 };
 // @lc code=end
-
-// int main(int argc, char **argv) {
-//   Solution  solution;
-//   TreeNode *root  = new TreeNode(1);
-//   TreeNode *left  = new TreeNode(3);
-//   TreeNode *right = new TreeNode(2);
-//   root->right     = right;
-//   right->left     = left;
-//   std::cout << solution.isSymmetric(root) << std::endl;
-// }

@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/unique-binary-search-trees/description/
  *
  * algorithms
- * Medium (57.36%)
- * Likes:    6317
- * Dislikes: 247
- * Total Accepted:    438.7K
- * Total Submissions: 764.5K
+ * Medium (57.45%)
+ * Likes:    6394
+ * Dislikes: 253
+ * Total Accepted:    442K
+ * Total Submissions: 769.2K
  * Testcase Example:  '3'
  *
  * Given an integer n, return the number of structurally unique BST's (binary
@@ -45,38 +45,30 @@
 class Solution {
 public:
   int numTrees(int n) {
-    if (n == 0) {
-      return 0;
-    }
+    std::vector<std::vector<int>> memo(n + 1, std::vector<int>(n + 1, -1));
 
-    memo = std::vector<std::vector<int>>(n + 1, std::vector<int>(n + 1, 0));
-
-    return buildTree(1, n);
+    return numTrees(1, n, memo);
   }
 
 private:
-  int buildTree(int left, int right) {
-    if (left > right) {
+  int numTrees(int start, int end, std::vector<std::vector<int>> &memo) {
+    if (start >= end) {
       return 1;
     }
-
-    if (memo[left][right] != 0) {
-      return memo[left][right];
+    if (memo[start][end] != -1) {
+      return memo[start][end];
     }
 
     int res = 0;
-    for (int i = left; i <= right; i++) {
-      int leftc  = buildTree(left, i - 1);
-      int rightc = buildTree(i + 1, right);
-      res += leftc * rightc;
+    for (int i = start; i <= end; i++) {
+      int left  = numTrees(start, i - 1, memo);
+      int right = numTrees(i + 1, end, memo);
+      res += left * right;
     }
 
-    memo[left][right] = res;
+    memo[start][end] = res;
 
-    return memo[left][right];
+    return res;
   }
-
-private:
-  std::vector<std::vector<int>> memo;
 };
 // @lc code=end
