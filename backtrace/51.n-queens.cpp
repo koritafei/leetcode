@@ -63,42 +63,46 @@ public:
   }
 
 private:
-  void backtrace(std::vector<std::string>& board, int n, int row) {
-    if (row == n) {
+  void backtrace(std::vector<std::string> &board, int row, int x) {
+    if (x == row) {
       res.push_back(board);
       return;
     }
 
-    for (int i = 0; i < n; i++) {
-      if (!isValid(board, n, row, i)) {
+    for (int i = 0; i < row; i++) {
+      if (!isValid(board, row, x, i)) {
         continue;
       }
 
-      // 做选择
-      board[row][i] = 'Q';
-      backtrace(board, n, row + 1);
-      // 撤销选择
-      board[row][i] = '.';
+      board[x][i] = 'Q';
+      backtrace(board, row, x + 1);
+      board[x][i] = '.';
     }
   }
 
-  bool isValid(std::vector<std::string>& board, int n, int row, int col) {
-    for (int i = 0; i < n; i++) {
-      if (board[i][col] == 'Q') {
+  bool isValid(std::vector<std::string> &board, int row, int x, int y) {
+    for (int i = 0; i < row; i++) {
+      // 同一行
+      if ('Q' == board[x][i]) {
+        return false;
+      }
+
+      // 同一列
+      if ('Q' == board[i][y]) {
         return false;
       }
     }
 
     // 左上角
-    for (int i = row - 1, j = col - 1; i >= 0 && j >= 0; i--, j--) {
-      if (board[i][j] == 'Q') {
+    for (int i = x - 1, j = y - 1; i >= 0 && j >= 0; i--, j--) {
+      if ('Q' == board[i][j]) {
         return false;
       }
     }
 
     // 右上角
-    for (int i = row - 1, j = col + 1; i >= 0 && j < n; i--, j++) {
-      if (board[i][j] == 'Q') {
+    for (int i = x - 1, j = y + 1; i >= 0 && j < row; i--, j++) {
+      if ('Q' == board[i][j]) {
         return false;
       }
     }

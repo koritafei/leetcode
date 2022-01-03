@@ -66,6 +66,7 @@
  *
  */
 
+#include <set>
 #include <stack>
 #include <string>
 #include <vector>
@@ -74,43 +75,44 @@
 class Solution {
 public:
   int evalRPN(std::vector<std::string>& tokens) {
-    std::stack<std::string> stack;
-
-    for (auto iter : tokens) {
-      if (iter == "*" || iter == "/" || iter == "+" || iter == "-") {
-        cacles(stack, iter);
+    std::stack<std::string> nums;
+    for (auto& iter : tokens) {
+      if (ops.find(iter) != ops.end()) {
+        calcsRes(nums, iter);
       } else {
-        stack.push(iter);
+        nums.push(iter);
       }
     }
 
-    int result = (int)atol(stack.top().c_str());
-
-    return result;
+    return atol(nums.top().c_str());
   }
 
 private:
-  void cacles(std::stack<std::string>& stack, std::string iter) {
-    long nums1 = atol(stack.top().c_str());
-    stack.pop();
-    long nums2 = atol(stack.top().c_str());
-    stack.pop();
-    if (iter == "*") {
-      nums2 *= nums1;
+  void calcsRes(std::stack<std::string>& nums, std::string& op) {
+    int nums2 = atol(nums.top().c_str());
+    nums.pop();
+    int nums1 = atol(nums.top().c_str());
+    nums.pop();
+
+    if (op == "+") {
+      nums1 += nums2;
     }
 
-    if (iter == "/") {
-      nums2 /= nums1;
+    if (op == "-") {
+      nums1 -= nums2;
     }
 
-    if (iter == "+") {
-      nums2 += nums1;
+    if (op == "*") {
+      nums1 *= nums2;
     }
 
-    if (iter == "-") {
-      nums2 -= nums1;
+    if (op == "/") {
+      nums1 /= nums2;
     }
-    stack.push(std::to_string(nums2));
+
+    nums.push(std::to_string(nums1));
   }
+
+  const std::set<std::string> ops = {"+", "-", "*", "/"};
 };
 // @lc code=end

@@ -6,10 +6,10 @@
  * https://leetcode.com/problems/count-primes/description/
  *
  * algorithms
- * Medium (32.85%)
- * Likes:    4116
+ * Medium (32.87%)
+ * Likes:    4156
  * Dislikes: 931
- * Total Accepted:    562.9K
+ * Total Accepted:    565.1K
  * Total Submissions: 1.7M
  * Testcase Example:  '10'
  *
@@ -48,10 +48,28 @@
  *
  */
 
+#include <cmath>
+#include <vector>
+
 // @lc code=start
 class Solution {
 public:
   int countPrimes(int n) {
+    primesvec = std::vector<bool>(n, true);
+    int count = 0;
+    for (int i = 2; i < n; i++) {
+      if (primesvec[i]) {
+        count++;
+        for (int j = i * 2; j < n; j += i) {
+          primesvec[j] = false;
+        }
+      }
+    }
+
+    return count;
   }
+
+private:
+  std::vector<bool> primesvec;
 };
 // @lc code=end

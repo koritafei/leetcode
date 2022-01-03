@@ -65,13 +65,7 @@
 class Solution {
 public:
   int kthSmallest(TreeNode* root, int k) {
-    if (k == 0 || root == nullptr) {
-      return -1;
-    }
-    rank = 0;
-    res  = -1;
     traverse(root, k);
-
     return res;
   }
 
@@ -80,10 +74,9 @@ private:
     if (root == nullptr) {
       return;
     }
-
     traverse(root->left, k);
     rank++;
-    if (rank == k) {
+    if (k == rank) {
       res = root->val;
       return;
     }
@@ -91,7 +84,7 @@ private:
     traverse(root->right, k);
   }
 
-  int rank;
-  int res;
+  int rank = 0;
+  int res  = 0;
 };
 // @lc code=end

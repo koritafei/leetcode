@@ -54,18 +54,7 @@
 #include <algorithm>
 #include <climits>
 
-struct TreeNode {
-  int       val;
-  TreeNode *left;
-  TreeNode *right;
-  TreeNode() : val(0), left(nullptr), right(nullptr) {
-  }
-  TreeNode(int x) : val(x), left(nullptr), right(nullptr) {
-  }
-  TreeNode(int x, TreeNode *left, TreeNode *right)
-      : val(x), left(left), right(right) {
-  }
-};
+#include "treenode.h"
 
 // @lc code=start
 /**
@@ -89,13 +78,14 @@ public:
 
 private:
   int _maxPathSum(TreeNode *root) {
-    if (!root) {
+    if (root == nullptr) {
       return 0;
     }
 
     int left  = std::max(0, _maxPathSum(root->left));
     int right = std::max(0, _maxPathSum(root->right));
-    ans       = std::max(ans, left + right + root->val);
+
+    ans = std::max(ans, left + right + root->val);
 
     return std::max(left, right) + root->val;
   }

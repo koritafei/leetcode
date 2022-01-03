@@ -80,29 +80,29 @@ class Solution {
 public:
   std::vector<std::vector<int>> allPathsSourceTarget(
       std::vector<std::vector<int>>& graph) {
-    int len = graph.size();
-    travese(graph, 0, len);
+    traverse(graph, 0);
 
     return res;
   }
 
 private:
-  void travese(std::vector<std::vector<int>>& graph, int s, int len) {
-    path.push_back(s);
-    if (s == len - 1) {
+  void traverse(std::vector<std::vector<int>>& graph, int v) {
+    path.push_back(v);
+
+    if (v == graph.size() - 1) {
       res.push_back(path);
       path.pop_back();
       return;
     }
 
-    for (auto it : graph[s]) {
-      travese(graph, it, len);
+    for (auto& it : graph[v]) {
+      traverse(graph, it);
     }
 
     path.pop_back();
   }
 
-  std::vector<std::vector<int>> res;
   std::vector<int>              path;
+  std::vector<std::vector<int>> res;
 };
 // @lc code=end

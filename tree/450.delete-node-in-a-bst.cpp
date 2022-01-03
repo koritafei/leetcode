@@ -88,33 +88,31 @@ class Solution {
 public:
   TreeNode* deleteNode(TreeNode* root, int key) {
     if (root == nullptr) {
-      return root;
+      return nullptr;
     }
 
-    if (key == root->val) {
-      // 不存在左孩子
-      if (root->left == nullptr) {
+    if (root->val < key) {
+      root->right = deleteNode(root->right, key);
+    }
+
+    if (root->val > key) {
+      root->left = deleteNode(root->left, key);
+    }
+
+    if (root->val == key) {
+      if (nullptr == root->left) {
         return root->right;
       }
 
-      // 不存在右孩子
-      if (root->right == nullptr) {
+      if (nullptr == root->right) {
         return root->left;
       }
 
-      // 存在左右孩子
-      // 获取右子树的最小节点
       TreeNode* minNode = getMin(root->right);
       root->right       = deleteNode(root->right, minNode->val);
-
-      // 右子树最小节点替换当前节点
-      minNode->left  = root->left;
-      minNode->right = root->right;
-      root           = minNode;
-    } else if (key > root->val) {
-      root->right = deleteNode(root->right, key);
-    } else if (key < root->val) {
-      root->left = deleteNode(root->left, key);
+      minNode->left     = root->left;
+      minNode->right    = root->right;
+      root              = minNode;
     }
 
     return root;

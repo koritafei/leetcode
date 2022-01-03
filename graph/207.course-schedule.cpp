@@ -58,48 +58,49 @@
  *
  */
 
-#include <list>
 #include <map>
+#include <queue>
 #include <vector>
 
 // @lc code=start
 class Solution {
 public:
   bool canFinish(int numCourses, std::vector<std::vector<int>>& prerequisites) {
-    std::vector<int> indegree = std::vector<int>(numCourses);  // 入度
-    std::list<int>   list;  // 入度为0的队列
     std::map<int, std::vector<int>> graph = buildGraph(prerequisites);
 
-    // 统计入度数据
-    for (int i = 0; i < numCourses; i++) {
-      for (auto iter : graph[i]) {
-        indegree[iter]++;
+    std::vector<int> indegrees(numCourses, 0);
+    std::queue<int>  que;
+
+    for (auto& iter : graph) {  // 入度统计
+      for (auto& it : iter.second) {
+        indegrees[it]++;
       }
     }
 
     for (int i = 0; i < numCourses; i++) {
-      if (indegree[i] == 0) {
-        list.push_back(i);
+      if (indegrees[i] == 0) {
+        que.push(i);
       }
     }
 
-    std::vector<int> order(numCourses, 0);
     int              index = 0;
+    std::vector<int> order(numCourses, 0);
 
-    while (list.size()) {
-      int v = list.front();
-      list.pop_front();
-      order[index++] = v;
-
-      for (auto it : graph[v]) {
-        indegree[it]--;
-        if (indegree[it] == 0) {
-          list.push_back(it);
+    while (que.size()) {
+      int curr = que.front();
+      que.pop();
+      order[index++] = curr;
+      if (graph.find(curr) != graph.end()) {
+        for (auto& iter : graph[curr]) {
+          indegrees[iter]--;
+          if (indegrees[iter] == 0) {
+            que.push(iter);
+          }
         }
       }
     }
 
-    return index == numCourses;
+    return index == numCourses ? true : false;
   }
 
 private:
@@ -107,11 +108,8 @@ private:
       std::vector<std::vector<int>>& prerequisites) {
     std::map<int, std::vector<int>> graph;
 
-    for (auto iter : prerequisites) {
-      int s = iter[1];
-      int e = iter[0];
-
-      graph[s].push_back(e);
+    for (auto& iter : prerequisites) {
+      graph[iter[1]].push_back(iter[0]);
     }
 
     return graph;

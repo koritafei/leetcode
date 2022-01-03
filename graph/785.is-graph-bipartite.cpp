@@ -76,9 +76,9 @@ public:
     color   = std::vector<bool>(len, false);
     isBip   = true;
 
-    for (int i = 0; i < len; i++) {
+    for (int i = 0; i < graph.size(); i++) {
       if (!visited[i]) {
-        isBipartite(graph, i);
+        traveser(graph, i);
       }
     }
 
@@ -86,18 +86,18 @@ public:
   }
 
 private:
-  void isBipartite(std::vector<std::vector<int>>& graph, int v) {
+  void traveser(std::vector<std::vector<int>>& graph, int v) {
     if (isBip == false) {
       return;
     }
 
     visited[v] = true;
-    for (auto it : graph[v]) {
+    for (auto& it : graph[v]) {
       if (!visited[it]) {
         color[it] = !color[v];
-        isBipartite(graph, it);
+        traveser(graph, it);
       } else {
-        if (color[v] == color[it]) {
+        if (color[it] == color[v]) {
           isBip = false;
           return;
         }
@@ -105,8 +105,8 @@ private:
     }
   }
 
+  bool              isBip;
   std::vector<bool> color;
   std::vector<bool> visited;
-  bool              isBip;
 };
 // @lc code=end

@@ -92,19 +92,21 @@ class Solution {
 public:
   TreeNode* convertBST(TreeNode* root) {
     sum = 0;
-    traverse(root);
+    traveser(root);
     return root;
   }
 
 private:
-  void traverse(TreeNode* root) {
+  void traveser(TreeNode* root) {
     if (root == nullptr) {
       return;
     }
-    traverse(root->right);
+
+    traveser(root->right);
     sum += root->val;
     root->val = sum;
-    traverse(root->left);
+
+    traveser(root->left);
   }
 
   int sum;

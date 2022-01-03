@@ -75,28 +75,31 @@
 class Solution {
 public:
   std::vector<TreeNode*> findDuplicateSubtrees(TreeNode* root) {
-    traverse(root);
+    traveser(root);
     return res;
   }
 
 private:
-  std::string traverse(TreeNode* root) {
-    if (nullptr == root) {
+  std::string traveser(TreeNode* root) {
+    if (root == nullptr) {
       return "#";
     }
 
-    std::string left  = traverse(root->left);
-    std::string right = traverse(root->right);
-    std::string t     = left + "," + right + "," + std::to_string(root->val);
+    std::string left  = traveser(root->left);
+    std::string right = traveser(root->right);
 
-    if (map.find(t) != map.end()) {
-      if (map[t] == 1) {
+    std::string str = left + "," + right + "," + std::to_string(root->val);
+
+    if (map.find(str) != map.end()) {
+      int freq = map[str];
+      if (freq == 1) {
         res.push_back(root);
       }
     }
-    map[t]++;
 
-    return t;
+    map[str]++;
+
+    return str;
   }
 
   std::vector<TreeNode*>     res;

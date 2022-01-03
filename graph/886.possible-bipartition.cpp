@@ -60,61 +60,61 @@
  */
 
 #include <list>
+#include <map>
 #include <vector>
 
 // @lc code=start
 class Solution {
 public:
   bool possibleBipartition(int n, std::vector<std::vector<int>> &dislikes) {
-    std::vector<bool>           visited = std::vector<bool>(n + 1, false);
-    std::vector<bool>           color   = std::vector<bool>(n + 1, false);
-    std::vector<std::list<int>> graph   = buildGraph(n, dislikes);
+    visited                               = std::vector<bool>(n + 1, false);
+    color                                 = std::vector<bool>(n + 1, false);
+    isBip                                 = true;
+    std::map<int, std::vector<int>> graph = buildGraph(dislikes);
 
-    for (int i = 1; i <= n; i++) {
-      if (!visited[i]) {
-        if (!traver(graph, i, visited, color)) {
-          return false;
-        }
+    for (auto &it : graph) {
+      if (visited[it.first] == false) {
+        isBipartition(graph, it.first);
       }
     }
 
-    return true;
+    return isBip;
   }
 
 private:
-  bool traver(std::vector<std::list<int>> &graph,
-              int                          v,
-              std::vector<bool>           &visited,
-              std::vector<bool>           &color) {
+  std::map<int, std::vector<int>> buildGraph(
+      std::vector<std::vector<int>> &dislikes) {
+    std::map<int, std::vector<int>> graph;
+
+    for (auto &iter : dislikes) {
+      graph[iter[0]].push_back(iter[1]);
+      graph[iter[1]].push_back(iter[0]);
+    }
+    return graph;
+  }
+
+  void isBipartition(std::map<int, std::vector<int>> &graph, int v) {
+    if (isBip == false) {
+      return;
+    }
+
     visited[v] = true;
-    for (auto iter : graph[v]) {
-      if (!visited[iter]) {
-        color[iter] = !color[v];
-        traver(graph, iter, visited, color);
+
+    for (auto &it : graph[v]) {
+      if (visited[it] == false) {
+        color[it] = !color[v];
+        isBipartition(graph, it);
       } else {
-        if (color[iter] == color[v]) {
-          return false;
+        if (color[v] == color[it]) {
+          isBip = false;
+          return;
         }
       }
     }
-    return true;
   }
 
-  std::vector<std::list<int>> buildGraph(
-      int                            n,
-      std::vector<std::vector<int>> &dislike) {
-    std::vector<std::list<int>> graph =
-        std::vector<std::list<int>>(n + 1, std::list<int>());
-
-    int row = dislike.size();
-    for (int i = 0; i < row; i++) {
-      int v1 = dislike[i][0];
-      int v2 = dislike[i][1];
-      graph[v1].push_back(v2);
-      graph[v2].push_back(v1);
-    }
-
-    return graph;
-  }
+  std::vector<bool> visited;
+  std::vector<bool> color;
+  bool              isBip;
 };
 // @lc code=end

@@ -70,8 +70,8 @@
  *
  */
 
-#include <list>
 #include <map>
+#include <queue>
 #include <vector>
 
 // @lc code=start
@@ -79,50 +79,50 @@ class Solution {
 public:
   std::vector<int> findOrder(int                            numCourses,
                              std::vector<std::vector<int>>& prerequisites) {
-    std::vector<int>                indegree(numCourses, 0);
     std::map<int, std::vector<int>> graph = buildGraph(prerequisites);
-    std::list<int>                  list;
 
-    for (int i = 0; i < numCourses; i++) {
-      for (auto it : graph[i]) {
-        indegree[it]++;
+    std::vector<int> indegress(numCourses, 0);
+    std::queue<int>  que;
+
+    for (auto& iter : graph) {
+      for (auto& it : iter.second) {
+        indegress[it]++;
       }
     }
 
     for (int i = 0; i < numCourses; i++) {
-      if (0 == indegree[i]) {
-        list.push_back(i);
+      if (indegress[i] == 0) {
+        que.push(i);
       }
     }
 
-    std::vector<int> order(numCourses, 0);
     int              index = 0;
+    std::vector<int> order(numCourses, 0);
 
-    while (list.size() > 0) {
-      int v = list.front();
-      list.pop_front();
-      order[index++] = v;
-
-      for (auto it : graph[v]) {
-        indegree[it]--;
-        if (indegree[it] == 0) {
-          list.push_back(it);
+    while (que.size()) {
+      int curr = que.front();
+      que.pop();
+      order[index++] = curr;
+      if (graph.find(curr) != graph.end()) {
+        for (auto& it : graph[curr]) {
+          indegress[it]--;
+          if (indegress[it] == 0) {
+            que.push(it);
+          }
         }
       }
     }
 
-    return (index == numCourses ? order : std::vector<int>());
+    return index == numCourses ? order : std::vector<int>();
   }
 
 private:
   std::map<int, std::vector<int>> buildGraph(
-      std::vector<std::vector<int>>& prerequisites) {
+      std::vector<std::vector<int>>& prerequirites) {
     std::map<int, std::vector<int>> graph;
-    for (auto it : prerequisites) {
-      int s = it[1];
-      int e = it[0];
 
-      graph[s].push_back(e);
+    for (auto& iter : prerequirites) {
+      graph[iter[1]].push_back(iter[0]);
     }
 
     return graph;

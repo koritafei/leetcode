@@ -65,25 +65,25 @@
 class Solution {
 public:
   int minDepth(TreeNode* root) {
-    if (root == nullptr) {
+    if (nullptr == root) {
       return 0;
     }
+
     std::queue<TreeNode*> que;
     int                   step = 1;
     que.push(root);
     while (que.size()) {
       int sz = que.size();
-      for (int i = 0; i < sz; i++) {
+      while (sz--) {
         TreeNode* curr = que.front();
         que.pop();
+
         if (!curr->left && !curr->right) {
           return step;
         }
-
         if (curr->left) {
           que.push(curr->left);
         }
-
         if (curr->right) {
           que.push(curr->right);
         }

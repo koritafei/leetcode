@@ -51,25 +51,24 @@
 class Solution {
 public:
   void nextPermutation(std::vector<int>& nums) {
-    int n = nums.size(), i, j;
-    for (i = n - 2; i >= 0; i--) {
+    int len = nums.size(), i, j;
+    for (i = len - 2; i >= 0; i--) {
       if (nums[i] < nums[i + 1]) {
         break;
       }
     }
-    if (i < 0) {
-      std::reverse(nums.begin(), nums.end());
-      return;
-    } else {
-      for (j = n - 1; j > i; j--) {
+
+    if (i >= 0) {
+      for (j = len - 1; j >= 0; j--) {
         if (nums[j] > nums[i]) {
           break;
         }
       }
-      std::swap(nums[i], nums[j]);
-      std::reverse(nums.begin() + i + 1, nums.end());
-      return;
+
+      std::swap(nums[j], nums[i]);
     }
+
+    std::reverse(nums.begin() + i + 1, nums.end());
   }
 };
 // @lc code=end

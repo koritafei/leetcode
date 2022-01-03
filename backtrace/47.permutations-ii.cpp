@@ -54,13 +54,13 @@ public:
     visited = std::vector<bool>(len, false);
     std::sort(nums.begin(), nums.end());
 
-    backtrace(nums, len, 0);
+    backtrace(nums, 0, len);
 
     return res;
   }
 
 private:
-  void backtrace(std::vector<int>& nums, int len, int index) {
+  void backtrace(std::vector<int>& nums, int index, int len) {
     if (index == len) {
       res.push_back(path);
       return;
@@ -75,17 +75,16 @@ private:
         continue;
       }
 
-      // 做选择
-      path.push_back(nums[i]);
       visited[i] = true;
-      backtrace(nums, len, index + 1);
+      path.push_back(nums[i]);
+      backtrace(nums, index + 1, len);
       visited[i] = false;
       path.pop_back();
     }
   }
 
-  std::vector<std::vector<int>> res;
-  std::vector<int>              path;
   std::vector<bool>             visited;
+  std::vector<int>              path;
+  std::vector<std::vector<int>> res;
 };
 // @lc code=end

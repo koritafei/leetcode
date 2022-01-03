@@ -46,32 +46,33 @@ public:
   std::vector<std::vector<int>> permute(std::vector<int>& nums) {
     int len = nums.size();
     visited = std::vector<bool>(len, false);
-
-    backtrace(nums, len, 0);
+    backtrace(nums, 0, len);
 
     return res;
   }
 
 private:
-  void backtrace(std::vector<int>& nums, int len, int index) {
-    if (len == index) {
+  void backtrace(std::vector<int>& nums, int index, int len) {
+    if (index == len) {
       res.push_back(path);
       return;
     }
 
     for (int i = 0; i < len; i++) {
-      if (!visited[i]) {
-        visited[i] = true;
-        path.push_back(nums[i]);
-        backtrace(nums, len, index + 1);
-        path.pop_back();
-        visited[i] = false;
+      if (visited[i]) {
+        continue;
       }
+
+      visited[i] = true;
+      path.push_back(nums[i]);
+      backtrace(nums, index + 1, len);
+      visited[i] = false;
+      path.pop_back();
     }
   }
 
+  std::vector<int>              path;  // 记录路径
   std::vector<std::vector<int>> res;
-  std::vector<int>              path;
   std::vector<bool>             visited;
 };
 // @lc code=end

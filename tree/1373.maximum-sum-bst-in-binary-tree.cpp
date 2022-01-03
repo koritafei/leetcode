@@ -102,38 +102,36 @@
 class Solution {
 public:
   int maxSumBST(TreeNode *root) {
-    maxSum = 0;
-    traverse(root);
-
-    return maxSum;
+    maxsum = 0;
+    traveser(root);
+    return maxsum;
   }
 
 private:
-  // sum, isBIS(0-n,1-y), maxvalue, minvalue
-  std::vector<int> traverse(TreeNode *root) {
+  // vec[0] --
+  // 是否为BST(1,是；0，不是)，vec[1]--当前子树最大节点值，vec[2]--当前子树最小值，vec[3]--当前子树BST的和
+  std::vector<int> traveser(TreeNode *root) {
     if (root == nullptr) {
-      return std::vector<int>{0, 1, INT_MIN, INT_MAX};
+      return std::vector<int>{1, INT_MIN, INT_MAX, 0};
     }
-
-    std::vector<int> left  = traverse(root->left);
-    std::vector<int> right = traverse(root->right);
-
     std::vector<int> vec(4);
-    if (left[1] == 1 && right[1] == 1 && root->val < right[3] &&
-        root->val > left[2]) {
-      vec[0] = left[0] + right[0] + root->val;
-      vec[1] = 1;
-      vec[2] = std::max(right[2], root->val);
-      vec[3] = std::min(left[3], root->val);
-      maxSum = std::max(maxSum, vec[0]);
+    std::vector<int> lvec = traveser(root->left);
+    std::vector<int> rvec = traveser(root->right);
+    if (lvec[0] == 1 && rvec[0] == 1 && (root->val > lvec[1]) &&
+        (root->val < rvec[2])) {
+      // 当前节点为BST
+      vec[0] = 1;
+      vec[1] = std::max(root->val, rvec[1]);
+      vec[2] = std::min(root->val, lvec[2]);
+      vec[3] = root->val + lvec[3] + rvec[3];
 
+      maxsum = std::max(maxsum, vec[3]);
     } else {
-      return std::vector<int>{0, 0, INT_MIN, INT_MAX};
+      vec = {0, INT_MAX, INT_MIN, 0};
     }
-
     return vec;
   }
 
-  int maxSum;
+  int maxsum;
 };
 // @lc code=end
