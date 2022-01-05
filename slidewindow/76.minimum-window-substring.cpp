@@ -71,43 +71,43 @@
 class Solution {
 public:
   std::string minWindow(std::string s, std::string t) {
-    int                lens = s.size();
-    std::map<int, int> map, need;
-    int                left = 0, right = 0, valid = 0;
+    std::map<char, int> need, window;
 
-    int start = 0, len = INT_MAX;  // 子串起点与长度
-
-    for (auto &it : t) {
-      map[it]++;
+    int left = 0, right = 0, valid = 0;
+    int len = INT_MAX, start = 0;
+    for (auto &ch : t) {
+      need[ch]++;
     }
 
-    while (right < lens) {
+    while (right < s.size()) {
       char ch = s[right++];
-      if (map.find(ch) != map.end()) {
-        need[ch]++;
-        if (need[ch] == map[ch]) {
+      if (need.find(ch) != need.end()) {
+        window[ch]++;
+        if (window[ch] == need[ch]) {
           valid++;
         }
       }
 
-      // 缩小窗口
-      while (valid == map.size()) {
+      // 已经找到t中全部元素
+      while (valid == need.size()) {
         if (len > right - left) {
           len   = right - left;
           start = left;
         }
 
-        char d = s[left++];
-        if (need.find(d) != need.end()) {
-          if (need[d] == map[d]) {
+        char ch = s[left++];
+        if (window.find(ch) != window.end()) {
+          if (need[ch] == window[ch]) {
             valid--;
           }
-          need[d]--;
+          window[ch]--;
         }
       }
     }
 
-    return len == INT_MAX ? "" : s.substr(start, len);
+    len = len == INT_MAX ? 0 : len;
+
+    return s.substr(start, len);
   }
 };
 // @lc code=end
