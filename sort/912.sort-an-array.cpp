@@ -40,37 +40,38 @@
 class Solution {
 public:
   std::vector<int> sortArray(std::vector<int>& nums) {
-    rand(nums, 0, nums.size() - 1);
-    quickSort(nums, 0, nums.size() - 1);
+    int len = nums.size();
+    rand(nums, len);
+    quicksort(nums, 0, len - 1);
     return nums;
   }
 
 private:
-  void quickSort(std::vector<int>& nums, int left, int right) {
-    if (left >= right) {
-      return;
+  // 将数组乱序， 保证快排的效率
+  void rand(std::vector<int>& nums, int len) {
+    for (int i = 0; i < len; i++) {
+      int index = ::rand() % len;
+      if (index > i) {
+        std::swap(nums[i], nums[index]);
+      }
     }
-
-    int pos = partation(nums, left, right);
-    quickSort(nums, left, pos - 1);
-    quickSort(nums, pos + 1, right);
   }
 
-  int partation(std::vector<int>& nums, int left, int right) {
+  int partation(std::vector<int>& vec, int left, int right) {
     if (left >= right) {
       return left;
     }
 
-    int key = nums[left];
+    int key = vec[left];
     int low = left, high = right + 1;
-    while (low < high) {
-      while (nums[++low] < key) {
+    while (low <= high) {
+      while (key > vec[++low]) {
         if (low >= right) {
           break;
         }
       }
 
-      while (nums[--high] > key) {
+      while (key < vec[--high]) {
         if (high <= left) {
           break;
         }
@@ -80,22 +81,21 @@ private:
         break;
       }
 
-      std::swap(nums[low], nums[high]);
+      std::swap(vec[low], vec[high]);
     }
 
-    std::swap(nums[left], nums[high]);
-
+    std::swap(vec[left], vec[high]);
     return high;
   }
 
-  void rand(std::vector<int>& nums, int left, int right) {
-    int count = right - left;
-    while (count--) {
-      int index = ::rand() % nums.size();
-      if (index >= left && index <= right) {
-        std::swap(nums[left], nums[index]);
-      }
+  void quicksort(std::vector<int>& nums, int left, int right) {
+    if (left >= right) {
+      return;
     }
+
+    int index = partation(nums, left, right);
+    quicksort(nums, left, index - 1);
+    quicksort(nums, index + 1, right);
   }
 };
 // @lc code=end

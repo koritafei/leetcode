@@ -83,8 +83,9 @@
  *
  */
 
+#include <algorithm>
 #include <iostream>
-#include <queue>
+#include <list>
 #include <string>
 #include <unordered_set>
 #include <vector>
@@ -93,77 +94,86 @@
 class Solution {
 public:
   int openLock(std::vector<std::string> &deadends, std::string target) {
-    std::unordered_set<std::string> que;
-    std::unordered_set<std::string> que2;  // 双向BFS
-    std::unordered_set<std::string> set;
-    std::unordered_set<std::string> visited;  // 剪枝使用
-    for (auto &str : deadends) {
-      set.insert(str);
-    }
-
-    if (target == "0000") {  // 处理target与start相同的情况
+    if (target == "0000") {
       return 0;
     }
 
-    que.insert("0000");
+    std::unordered_multiset<std::string> dead;    // dead string
+    std::list<std::string>               first;   //  起点队列
+    std::list<std::string>               second;  // 终点队列
+    std::list<std::string> tmp;  // 临时数组，处理时队列不可改变
+    std::unordered_set<std::string> visited;  // 访问过的数组
+
+    for (auto &iter : deadends) {
+      dead.insert(iter);
+    }
+
+    int step = 1;  // 开始
+    first.push_back("0000");
+    second.push_back(target);
     visited.insert("0000");
     visited.insert(target);
-    que2.insert(target);
-    int step = 1;  // 因为target也加入了队列，所以从1开始
 
-    while (que.size() && que2.size()) {
-      std::unordered_set<std::string> tmp;
-
-      if (que.size() > que2.size()) {
-        que.swap(que2);
+    while (first.size() && second.size()) {
+      // 每次从最小的集合开始
+      if (first.size() > second.size()) {
+        first.swap(second);
       }
 
-      for (auto iter = que.begin(); iter != que.end(); iter++) {
-        std::string item = *iter;
+      int sz = first.size();
+      for (int i = 0; i < sz; i++) {
+        std::string curr = first.front();
+        first.pop_front();
 
-        if (set.find(item) != set.end()) {
-          continue;
-        }
-
-        if (que2.find(item) != que2.end()) {
+        // 判断first与second是否存在交集，存在则表示路径已满足
+        if (std::find(second.begin(), second.end(), curr) != second.end()) {
           return step;
         }
 
-        for (int i = 0; i < 4; i++) {
-          std::string astr = addOne(item, i);
-          if (visited.find(astr) == visited.end() &&
-              set.find(astr) == set.end() && que2.find(astr) == que2.end()) {
-            tmp.insert(astr);
-            visited.insert(astr);
+        if (dead.find(curr) != dead.end()) {  // 死锁字符串即系
+          continue;
+        }
+
+        for (int j = 0; j < curr.size(); j++) {
+          std::string plus = plusOne(curr, j);
+          if (visited.find(plus) == visited.end() &&
+              std::find(second.begin(), second.end(), plus) == second.end() &&
+              dead.find(plus) == dead.end()) {
+            tmp.push_back(plus);
+            visited.insert(plus);
           }
 
-          if (que2.find(astr) != que2.end()) {
+          if (std::find(second.begin(), second.end(), plus) != second.end()) {
             return step;
           }
 
-          std::string mstr = minusOne(item, i);
-          if (visited.find(mstr) == visited.end() &&
-              set.find(mstr) == set.end() && que2.find(mstr) == que2.end()) {
-            tmp.insert(mstr);
-            visited.insert(mstr);
+          std::string minus = minusOne(curr, j);
+          if (visited.find(minus) == visited.end() &&
+              std::find(second.begin(), second.end(), minus) == second.end() &&
+              dead.find(minus) == dead.end()) {
+            tmp.push_back(minus);
+            visited.insert(minus);
           }
 
-          if (que2.find(mstr) != que2.end()) {
+          if (std::find(second.begin(), second.end(), minus) != second.end()) {
             return step;
           }
         }
       }
 
+      // first 遍历完成，
+      first.swap(second);
+      second.swap(tmp);
+      tmp.clear();
+
       step++;
-      que.swap(que2);
-      que2.swap(tmp);
     }
 
     return -1;
   }
 
 private:
-  std::string addOne(std::string str, int i) {
+  std::string plusOne(std::string str, int i) {
     if (str[i] == '9') {
       str[i] = '0';
     } else {

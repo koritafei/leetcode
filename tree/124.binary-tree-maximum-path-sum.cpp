@@ -6,10 +6,10 @@
  * https://leetcode.com/problems/binary-tree-maximum-path-sum/description/
  *
  * algorithms
- * Hard (36.78%)
- * Likes:    7467
- * Dislikes: 460
- * Total Accepted:    607.8K
+ * Hard (37.05%)
+ * Likes:    7968
+ * Dislikes: 485
+ * Total Accepted:    641.5K
  * Total Submissions: 1.7M
  * Testcase Example:  '[1,2,3]'
  *
@@ -20,7 +20,8 @@
  *
  * The path sum of a path is the sum of the node's values in the path.
  *
- * Given the root of a binary tree, return the maximum path sum of any path.
+ * Given the root of a binary tree, return the maximum path sum of any
+ * non-empty path.
  *
  *
  * Example 1:
@@ -71,25 +72,26 @@
  */
 class Solution {
 public:
-  int maxPathSum(TreeNode *root) {
-    _maxPathSum(root);
-    return ans;
+  int maxPathSum(TreeNode* root) {
+    res = INT_MIN;
+    maxChildSum(root);
+
+    return res;
   }
 
 private:
-  int _maxPathSum(TreeNode *root) {
+  int maxChildSum(TreeNode* root) {
     if (root == nullptr) {
       return 0;
     }
 
-    int left  = std::max(0, _maxPathSum(root->left));
-    int right = std::max(0, _maxPathSum(root->right));
+    int left  = std::max(0, maxChildSum(root->left));
+    int right = std::max(0, maxChildSum(root->right));
 
-    ans = std::max(ans, left + right + root->val);
+    res = std::max(res, left + right + root->val);
 
     return std::max(left, right) + root->val;
   }
-
-  int ans = INT_MIN;
+  int res;
 };
 // @lc code=end

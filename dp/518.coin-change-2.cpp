@@ -71,26 +71,26 @@ public:
   int change(int amount, std::vector<int>& coins) {
     int len = coins.size();
 
-    std::vector<std::vector<int>> memo(len + 1,
-                                       std::vector<int>(amount + 1, 0));
+    std::vector<std::vector<int>> dp(len + 1, std::vector<int>(amount + 1, 0));
 
     // base case
+    // 当amount = 0 表示只有一种方式
     for (int i = 0; i <= len; i++) {
-      memo[i][0] = 1;
+      dp[i][0] = 1;
     }
 
-    // dp
+    // 计算dp
     for (int i = 1; i <= len; i++) {
       for (int j = 1; j <= amount; j++) {
         if (j - coins[i - 1] >= 0) {
-          memo[i][j] = memo[i - 1][j] + memo[i][j - coins[i - 1]];
+          dp[i][j] = dp[i - 1][j] + dp[i][j - coins[i - 1]];
         } else {
-          memo[i][j] = memo[i - 1][j];
+          dp[i][j] = dp[i - 1][j];
         }
       }
     }
 
-    return memo[len][amount];
+    return dp[len][amount];
   }
 };
 // @lc code=end

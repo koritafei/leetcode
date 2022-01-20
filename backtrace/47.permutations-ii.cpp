@@ -44,47 +44,48 @@
  *
  */
 
+#include <algorithm>
 #include <vector>
 
 // @lc code=start
 class Solution {
 public:
   std::vector<std::vector<int>> permuteUnique(std::vector<int>& nums) {
+    std::sort(nums.begin(), nums.end());
     int len = nums.size();
     visited = std::vector<bool>(len, false);
-    std::sort(nums.begin(), nums.end());
 
-    backtrace(nums, 0, len);
+    backtrace(nums, len);
 
     return res;
   }
 
 private:
-  void backtrace(std::vector<int>& nums, int index, int len) {
-    if (index == len) {
+  void backtrace(std::vector<int>& nums, int len) {
+    if (path.size() == len) {
       res.push_back(path);
       return;
     }
 
     for (int i = 0; i < len; i++) {
-      if (visited[i]) {
+      // 去重
+      if ((i > 0 && visited[i - 1] == false && nums[i - 1] == nums[i]) ||
+          (visited[i])) {
         continue;
       }
 
-      if (i > 0 && !visited[i - 1] && nums[i] == nums[i - 1]) {
-        continue;
-      }
-
-      visited[i] = true;
+      // 做选择
       path.push_back(nums[i]);
-      backtrace(nums, index + 1, len);
-      visited[i] = false;
+      visited[i] = true;
+      backtrace(nums, len);
+      // 撤销选择
       path.pop_back();
+      visited[i] = false;
     }
   }
 
-  std::vector<bool>             visited;
   std::vector<int>              path;
   std::vector<std::vector<int>> res;
+  std::vector<bool>             visited;
 };
 // @lc code=end

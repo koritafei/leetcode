@@ -38,41 +38,42 @@
  *
  */
 
+#include <algorithm>
 #include <vector>
 
 // @lc code=start
 class Solution {
 public:
   std::vector<std::vector<int>> permute(std::vector<int>& nums) {
-    int len = nums.size();
-    visited = std::vector<bool>(len, false);
-    backtrace(nums, 0, len);
-
+    backtrace(nums, nums.size());
     return res;
   }
 
 private:
-  void backtrace(std::vector<int>& nums, int index, int len) {
-    if (index == len) {
+  void backtrace(std::vector<int>& nums, int len) {
+    // 满足终止条件
+    if (path.size() == len) {
       res.push_back(path);
       return;
     }
 
     for (int i = 0; i < len; i++) {
-      if (visited[i]) {
+      // 排除已经加入的元素
+      if (std::find(path.begin(), path.end(), nums[i]) != path.end()) {
         continue;
       }
 
-      visited[i] = true;
+      // 做选择
       path.push_back(nums[i]);
-      backtrace(nums, index + 1, len);
-      visited[i] = false;
+      // 递归
+      backtrace(nums, len);
+
+      // 撤销选择
       path.pop_back();
     }
   }
 
-  std::vector<int>              path;  // 记录路径
+  std::vector<int>              path;
   std::vector<std::vector<int>> res;
-  std::vector<bool>             visited;
 };
 // @lc code=end

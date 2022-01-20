@@ -57,31 +57,37 @@ class Solution {
 public:
   std::vector<std::vector<std::string>> solveNQueens(int n) {
     std::vector<std::string> board(n, std::string(n, '.'));
+
     backtrace(board, n, 0);
 
     return res;
   }
 
 private:
-  void backtrace(std::vector<std::string> &board, int row, int x) {
-    if (x == row) {
+  void backtrace(std::vector<std::string> &board, int n, int row) {
+    if (row == n) {
+      // 已经处理完成
       res.push_back(board);
       return;
     }
 
-    for (int i = 0; i < row; i++) {
-      if (!isValid(board, row, x, i)) {
-        continue;
-      }
+    for (int i = 0; i < n; i++) {
+      if (isValid(board, n, row, i)) {
+        // 做选择
+        board[row][i] = 'Q';
+        // 递归
+        backtrace(board, n, row + 1);
 
-      board[x][i] = 'Q';
-      backtrace(board, row, x + 1);
-      board[x][i] = '.';
+        // 撤销选择
+        board[row][i] = '.';
+      }
     }
   }
 
-  bool isValid(std::vector<std::string> &board, int row, int x, int y) {
-    for (int i = 0; i < row; i++) {
+  bool isValid(std::vector<std::string> &board, int n, int x, int y) {
+    // 判断是否可以标记为Q
+
+    for (int i = 0; i < n; i++) {
       // 同一行
       if ('Q' == board[x][i]) {
         return false;
@@ -101,7 +107,7 @@ private:
     }
 
     // 右上角
-    for (int i = x - 1, j = y + 1; i >= 0 && j < row; i--, j++) {
+    for (int i = x - 1, j = y + 1; i >= 0 && j < n; i--, j++) {
       if ('Q' == board[i][j]) {
         return false;
       }
