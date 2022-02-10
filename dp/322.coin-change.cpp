@@ -77,27 +77,90 @@
 // @lc code=start
 class Solution {
 public:
+  // 递归方法, 大数据量超时
+  int coinChange1(std::vector<int>& coins, int amount) {
+    if (0 == amount) {
+      return 0;
+    }
+
+    if (0 > amount) {
+      return -1;
+    }
+
+    int res = INT_MAX;
+
+    for (auto& coin : coins) {
+      int subproblem = coinChange(coins, amount - coin);
+      if (-1 == subproblem) {
+        continue;
+      }
+
+      res = std::min(res, 1 + subproblem);
+    }
+
+    return res == INT_MAX ? -1 : res;
+  }
+
+  // 备忘录方法, 大数据量超时
+  int coinChange2(std::vector<int>& coins, int amount) {
+    if (0 > amount) {
+      return -1;
+    }
+    std::vector<int> memo(amount + 1, -1);
+    return helper(coins, amount, memo);
+  }
+
+  // 动态规划
   int coinChange(std::vector<int>& coins, int amount) {
     if (amount < 0) {
       return -1;
     }
 
-    if (amount == 0) {
-      return 0;
-    }
-
     std::vector<int> dp(amount + 1, amount + 1);
+
+    // base case
     dp[0] = 0;
 
-    for (int i = 0; i <= amount; i++) {
-      for (auto coin : coins) {
-        if (i - coin >= 0) {
-          dp[i] = std::min(dp[i], 1 + dp[i - coin]);
+    // 计算dp
+    for (int i = 1; i <= amount; i++) {
+      for (auto& coin : coins) {
+        if (i - coin < 0) {
+          continue;
         }
+
+        dp[i] = std::min(dp[i], 1 + dp[i - coin]);
       }
     }
 
     return dp[amount] == amount + 1 ? -1 : dp[amount];
+  }
+
+private:
+  // 备忘录方法辅助函数
+  int helper(std::vector<int>& coins, int amount, std::vector<int>& memo) {
+    if (0 == amount) {
+      return 0;
+    }
+
+    if (0 > amount) {
+      return -1;
+    }
+
+    if (-1 != memo[amount]) {
+      return memo[amount];
+    }
+
+    int ans = INT_MAX;
+    for (auto& coin : coins) {
+      int subproblem = helper(coins, amount - coin, memo);
+      if (-1 == subproblem) {
+        continue;
+      }
+
+      ans = std::min(ans, 1 + subproblem);
+    }
+
+    return (memo[amount] = (ans == INT_MAX ? -1 : ans));
   }
 };
 // @lc code=end

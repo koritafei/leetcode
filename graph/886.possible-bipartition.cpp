@@ -67,14 +67,16 @@
 class Solution {
 public:
   bool possibleBipartition(int n, std::vector<std::vector<int>> &dislikes) {
-    visited                               = std::vector<bool>(n + 1, false);
-    color                                 = std::vector<bool>(n + 1, false);
-    isBip                                 = true;
-    std::map<int, std::vector<int>> graph = buildGraph(dislikes);
+    isBip      = true;
+    visited    = std::vector<bool>(n + 1, false);
+    color      = std::vector<bool>(n + 1, false);
+    auto graph = buildGraph(n, dislikes);
 
-    for (auto &it : graph) {
-      if (visited[it.first] == false) {
-        isBipartition(graph, it.first);
+    for (int i = 0; i < n; i++) {
+      if (!visited[i]) {
+        if (!isBippartition(graph, i)) {
+          return false;
+        }
       }
     }
 
@@ -82,35 +84,44 @@ public:
   }
 
 private:
-  std::map<int, std::vector<int>> buildGraph(
-      std::vector<std::vector<int>> &dislikes) {
-    std::map<int, std::vector<int>> graph;
-
-    for (auto &iter : dislikes) {
-      graph[iter[0]].push_back(iter[1]);
-      graph[iter[1]].push_back(iter[0]);
-    }
-    return graph;
-  }
-
-  void isBipartition(std::map<int, std::vector<int>> &graph, int v) {
-    if (isBip == false) {
-      return;
+  bool isBippartition(std::map<int, std::vector<int>> &graph, int v) {
+    if (!isBip) {
+      return false;
     }
 
     visited[v] = true;
-
-    for (auto &it : graph[v]) {
-      if (visited[it] == false) {
-        color[it] = !color[v];
-        isBipartition(graph, it);
-      } else {
-        if (color[v] == color[it]) {
+    for (auto &adv : graph[v]) {
+      if (!visited[adv]) {
+        // 未访问过
+        color[adv] = !color[v];
+        if (!isBippartition(graph, adv)) {
           isBip = false;
-          return;
+          return false;
+        }
+      } else {
+        // 已访问过
+        if (color[adv] == color[v]) {
+          isBip = false;
+          return false;
         }
       }
     }
+
+    return true;
+  }
+
+  std::map<int, std::vector<int>> buildGraph(
+      int                            n,
+      std::vector<std::vector<int>> &dislikes) {
+    std::map<int, std::vector<int>> graph;
+    for (int i = 0; i < dislikes.size(); i++) {
+      int s1 = dislikes[i][0];
+      int s2 = dislikes[i][1];
+      graph[s1].push_back(s2);
+      graph[s2].push_back(s1);
+    }
+
+    return graph;
   }
 
   std::vector<bool> visited;

@@ -68,21 +68,20 @@
 class Solution {
 public:
   int lengthOfLongestSubstring(std::string s) {
-    int                 len  = s.size();
-    int                 left = 0, right = 0;
     std::map<char, int> window;
-    int                 res = INT_MIN;
-
-    while (right < len) {
+    int                 res = 0, left = 0, right = 0;
+    while (right < s.size()) {
       char ch = s[right++];
       window[ch]++;
       while (window[ch] > 1) {
-        window[s[left++]]--;
+        char c = s[left++];
+        window[c]--;
       }
+
       res = std::max(res, right - left);
     }
 
-    return res == INT_MIN ? 0 : res;
+    return res;
   }
 };
 // @lc code=end

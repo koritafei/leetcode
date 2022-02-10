@@ -8,67 +8,49 @@
 class graph {
 public:
   // 输入一幅图graph,和一个起点start,计算start到其他节点的距离
-  std::vector<int> dijkstra(int start) {
-    // 途中节点个数
-    int v = graph.size();
-    // 记录最短路径的权重数组
-    std::vector<int> dis = std::vector<int>(v, INT_MAX);
+  std::vector<int> dijkstra(int start, int n) {
+    std::priority_queue<state, std::vector<state>, greator> minHeap;
 
-    // base case
-    dis[0] = 0;
+    std::vector<int> res(n, INT_MAX);
+    res[start] = 0;
+    minHeap.push(state(start, 0));
 
-    // 按照distFromStart排序的小跟堆
-    std::priority_queue<state, std::vector<state>, less> heap;
+    while (minHeap.size()) {
+      state curr = minHeap.top();
+      minHeap.pop();
 
-    // 从起点开始进行BFS
-    heap.push(state(start, 0));
-    while (heap.size()) {
-      state curstate = heap.top();
-      heap.pop();
-      int currid            = curstate.id;
-      int currdistfromstart = curstate.distFromStart;
-
-      if (currdistfromstart > dis[currid]) {
-        // 已经有一条最短路径到达当前节点
-        continue;
+      if (res[curr.id] < curr.dist) {
+        continue;  // 已存在最小距离，跳过
       }
 
-      for (auto iter : adj(currid)) {
-        int distCurr = dis[currid] + weight(iter, currid);
-        if (dis[iter] > distCurr) {
-          // 更新结果
-          dis[iter] = distCurr;
-          // 将节点和距离加入到堆中
-          heap.push(state(iter, distCurr));
+      for (auto &item : graph[curr.id]) {
+        int dist = curr.dist + item.second;
+        if (res[item.first] > dist) {
+          res[item.first] = dist;
+          minHeap.push(state(item.first, dist));
         }
       }
     }
 
-    return dis;
+    return res;
   }
 
 private:
-  std::list<int> adj(int i) {
-    return graph[i];
-  }
-
-  // 获取权重
-  int weight(int from, int to);
-
   struct state {
-    state(int id, int dis) : id(id), distFromStart(dis) {
-    }
+    int id;    // 当前图顶点
+    int dist;  // 到达当前顶点的距离
 
-    int id;             // 图的节点
-    int distFromStart;  // 从start节点到当前节点的距离
+    state(int id, int dist) : id(id), dist(dist) {
+    }
   };
 
-  struct less {
+  // 仿函数，构建小跟堆
+  struct greator {
     bool operator()(const state &s1, const state &s2) {
-      return s1.distFromStart < s2.distFromStart;
+      return s1.dist > s2.dist;
     }
   };
 
-  // 邻接表表示的图，key为图的当前节点，value为<临边节点，权重>
-  std::map<int, std::list<int>> graph;
+  std::map<int, std::vector<std::pair<int, int>>>
+      graph;  // 图，起点，终点，weight
 };

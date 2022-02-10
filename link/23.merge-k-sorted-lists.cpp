@@ -81,36 +81,35 @@
 class Solution {
 public:
   ListNode* mergeKLists(std::vector<ListNode*>& lists) {
-    std::priority_queue<ListNode*, std::vector<ListNode*>, greator> heap;
-    for (auto it : lists) {
-      if (it != nullptr) {
-        heap.push(it);
+    std::priority_queue<ListNode*, std::vector<ListNode*>, greator> minHeap;
+    for (auto& listNode : lists) {
+      if (listNode != nullptr) {
+        minHeap.push(listNode);
       }
     }
 
-    ListNode* dummy = new ListNode(-1);
-    ListNode* curr  = dummy;
+    ListNode *dummy = new ListNode, *curr;
+    curr            = dummy;
 
-    while (heap.size()) {
-      ListNode* tmp = heap.top();
-      heap.pop();
-      if (tmp->next) {
-        heap.push(tmp->next);
+    while (minHeap.size()) {
+      ListNode* node = minHeap.top();
+      minHeap.pop();
+      if (node->next != nullptr) {
+        minHeap.push(node->next);
       }
-      curr->next = tmp;
-      curr       = tmp;
+      curr->next = node;
+      curr       = curr->next;
     }
 
     curr = dummy->next;
     delete dummy;
-
     return curr;
   }
 
 private:
   struct greator {
-    bool operator()(ListNode* l1, ListNode* l2) {
-      return l1->val > l2->val;
+    bool operator()(const ListNode* l1, const ListNode* l2) {
+      return l1->val >= l2->val;
     }
   };
 };

@@ -45,35 +45,36 @@
 class Solution {
 public:
   std::vector<std::vector<int>> permute(std::vector<int>& nums) {
-    backtrace(nums, nums.size());
+    int len = nums.size();
+    visited = std::vector<bool>(len, false);
+    backtrace(nums, len, 0);
+
     return res;
   }
 
 private:
-  void backtrace(std::vector<int>& nums, int len) {
-    // 满足终止条件
-    if (path.size() == len) {
+  void backtrace(std::vector<int>& nums, int len, int index) {
+    if (index == len) {
       res.push_back(path);
       return;
     }
 
     for (int i = 0; i < len; i++) {
-      // 排除已经加入的元素
-      if (std::find(path.begin(), path.end(), nums[i]) != path.end()) {
+      if (visited[i]) {
         continue;
       }
 
       // 做选择
       path.push_back(nums[i]);
-      // 递归
-      backtrace(nums, len);
-
-      // 撤销选择
+      visited[i] = true;
+      backtrace(nums, len, index + 1);
       path.pop_back();
+      visited[i] = false;
     }
   }
 
   std::vector<int>              path;
+  std::vector<bool>             visited;
   std::vector<std::vector<int>> res;
 };
 // @lc code=end

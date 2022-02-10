@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/fibonacci-number/description/
  *
  * algorithms
- * Easy (67.84%)
- * Likes:    2466
- * Dislikes: 246
- * Total Accepted:    583.2K
- * Total Submissions: 859.9K
+ * Easy (68.05%)
+ * Likes:    2844
+ * Dislikes: 253
+ * Total Accepted:    647.5K
+ * Total Submissions: 951.6K
  * Testcase Example:  '2'
  *
  * The Fibonacci numbers, commonly denoted F(n) form a sequence, called the
@@ -58,20 +58,66 @@
  *
  */
 
-// @lc code=start
 #include <vector>
+
+// @lc code=start
 class Solution {
 public:
-  int fib(int n) {
-    std::vector<int> memo(n + 1, -1);
-    memo[0] = 0;
-    if (n >= 1) {
-      memo[1] = 1;
+  // 递归方式
+  int fib1(int n) {
+    if (n == 0) {
+      return 0;
+    }
+    if (n == 1) {
+      return 1;
     }
 
-    for (int i = 2; i <= n; i++) {
-      memo[i] = memo[i - 1] + memo[i - 2];
+    return fib1(n - 1) + fib1(n - 2);
+  }
+
+  // 备忘录方式
+  int fib2(int n) {
+    std::vector<int> memo(std::vector<int>(n + 1, -1));
+    return fib2(n, memo);
+  }
+
+  // dp 方式
+  int fib(int n) {
+    if (0 == n) {
+      return 0;
     }
+
+    if (1 == n) {
+      return 1;
+    }
+    std::vector<int> dp(n + 1, 0);
+
+    // base case
+    dp[1] = 1;
+
+    // dp数组计算
+    for (int i = 2; i <= n; i++) {
+      dp[i] = dp[i - 1] + dp[i - 2];
+    }
+
+    return dp[n];
+  }
+
+private:
+  int fib2(int n, std::vector<int> &memo) {
+    if (n == 0) {
+      return 0;
+    }
+
+    if (n == 1) {
+      return 1;
+    }
+
+    if (memo[n] != -1) {
+      return memo[n];
+    }
+
+    memo[n] = fib2(n - 1, memo) + fib2(n - 2, memo);
 
     return memo[n];
   }

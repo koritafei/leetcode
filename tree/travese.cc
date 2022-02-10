@@ -6,44 +6,38 @@
 class Traver {
 public:
   std::vector<int> traverse(TreeNode *root) {
-    pushLeftBranch(root);
-    TreeNode *visited = new TreeNode();  // 上一次遍历完成的根节点
-    while (sk.size()) {
-      TreeNode *t = sk.top();
+    pushLeftNode(root);
+    TreeNode *visit;  // 上一次遍历完成根节点
 
-      // 左子树遍历完成，且右子树没有遍历
-      if ((nullptr == t->left || visited == t->left) && t->right != visited) {
+    while (stack.size()) {
+      TreeNode *curr = stack.top();
+
+      // 左子树遍历完成处理右子树
+      if ((nullptr == curr->left || visit == curr->left) ||
+          (nullptr != curr->right)) {
         // 中序遍历位置
-        // 遍历右子树
-        res.push_back(t->val);
-
-        pushLeftBranch(root->right);
+        pushLeftNode(curr->right);
       }
 
       // 右子树遍历完成
-      if (nullptr == t->right || visited == t->right) {
+      if (nullptr == curr->right || visit == curr->right) {
         // 后序遍历位置
-        // 以p为根的子树遍历完成，出栈
-        // visited 指向当前栈顶
-
-        visited = sk.top();
-        sk.pop();
+        // 以p为根的子树遍历完成出栈
+        stack.pop();
+        visit = curr;
       }
     }
-
-    return res;
   }
 
 private:
-  void pushLeftBranch(TreeNode *p) {
-    while (p != nullptr) {
-      // 前序代码遍历位置
-      sk.push(p);
-      p = p->left;
+  void pushLeftNode(TreeNode *node) {
+    while (node != nullptr) {
+      // 先序遍历位置
+      stack.push(node);
+      node = node->left;
     }
   }
 
-  std::vector<int> res;
-
-  std::stack<TreeNode *> sk;  // 用于模拟系统递归栈
+  std::stack<TreeNode *> stack;  // 模拟系统栈实现
+  std::vector<int>       res;    // 存储结果集
 };

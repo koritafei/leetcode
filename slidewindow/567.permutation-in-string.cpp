@@ -53,34 +53,34 @@ class Solution {
 public:
   bool checkInclusion(std::string s1, std::string s2) {
     std::map<char, int> need, window;
-
-    int left = 0, right = 0, valid = 0;
-    int len1 = s1.size(), len2 = s2.size();
-
-    for (auto &iter : s1) {
-      need[iter]++;
+    for (auto &ch : s1) {
+      need[ch]++;
     }
 
-    while (right < len2) {
+    int right = 0, left = 0;
+    int valid = 0;
+
+    while (right < s2.size()) {
       char ch = s2[right++];
-      if (need.find(ch) != need.end()) {
+      if (need.count(ch)) {
         window[ch]++;
-        if (need[ch] == window[ch]) {
+        if (window[ch] == need[ch]) {
           valid++;
         }
       }
 
-      while (right - left >= len1) {
+      while (s1.size() <= right - left) {
         if (valid == need.size()) {
           return true;
         }
 
-        char ch = s2[left++];
-        if (window.find(ch) != window.end()) {
-          if (window[ch] == need[ch]) {
+        char c = s2[left++];
+        if (window.count(c)) {
+          if (window[c] == need[c]) {
             valid--;
           }
-          window[ch]--;
+
+          window[c]--;
         }
       }
     }

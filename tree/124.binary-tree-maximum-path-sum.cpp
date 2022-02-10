@@ -73,25 +73,30 @@
 class Solution {
 public:
   int maxPathSum(TreeNode* root) {
-    res = INT_MIN;
-    maxChildSum(root);
-
-    return res;
+    ans = INT_MIN;
+    _maxPathSum(root);
+    return ans;
   }
 
 private:
-  int maxChildSum(TreeNode* root) {
-    if (root == nullptr) {
+  /**
+   * @brief 计算最大路径和
+   * @param  root
+   * @return int 返回当前节点左右子树和的最大值
+   * */
+  int _maxPathSum(TreeNode* root) {
+    if (nullptr == root) {
       return 0;
     }
 
-    int left  = std::max(0, maxChildSum(root->left));
-    int right = std::max(0, maxChildSum(root->right));
+    int left  = std::max(0, _maxPathSum(root->left));
+    int right = std::max(0, _maxPathSum(root->right));
 
-    res = std::max(res, left + right + root->val);
+    ans = std::max(ans, left + right + root->val);
 
     return std::max(left, right) + root->val;
   }
-  int res;
+
+  int ans;  // 最长路径和
 };
 // @lc code=end

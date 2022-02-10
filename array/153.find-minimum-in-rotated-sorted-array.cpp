@@ -76,34 +76,39 @@
 class Solution {
 public:
   int findMin(std::vector<int>& nums) {
+    int len = nums.size();
+    if (0 == len) {
+      return -1;  // 不存在
+    }
     int left = 0, right = nums.size() - 1;
     int mid = 0;
+
     while (left < right) {
       if (left == right - 1) {
         break;
       }
+
       if (nums[left] < nums[right]) {
         return nums[left];
       }
-      mid = left + (right - left) / 2;
-      if (nums[left] > nums[mid]) {
+      int mid = left + (right - left) / 2;
+
+      if (nums[mid] < nums[left]) {
         right = mid;
-        continue;
       }
 
-      if (nums[right] < nums[mid]) {
+      if (nums[mid] > nums[right]) {
         left = mid;
-        continue;
       }
 
       while (left < mid) {
         if (nums[left] == nums[mid]) {
           left++;
-        } else if (nums[left] > nums[mid]) {
+        } else if (nums[left] < nums[mid]) {
+          return nums[left];
+        } else {
           right = mid;
           break;
-        } else {
-          return nums[left];
         }
       }
     }

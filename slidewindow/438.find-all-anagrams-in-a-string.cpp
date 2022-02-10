@@ -62,34 +62,32 @@ public:
   std::vector<int> findAnagrams(std::string s, std::string p) {
     std::vector<int>    res;
     std::map<char, int> need, window;
-    std::size_t         lens = s.size(), lenp = p.size();
-    std::size_t         left = 0, right = 0, valid = 0;
-
-    for (auto &iter : p) {
-      need[iter]++;
+    int                 right = 0, left = 0;
+    int                 valid = 0;
+    for (auto &ch : p) {
+      need[ch]++;
     }
 
-    while (right < lens) {
+    while (right < s.size()) {
       char ch = s[right++];
-      if (need.find(ch) != need.end()) {
+      if (need.count(ch)) {
         window[ch]++;
-        if (window[ch] == need[ch]) {
+        if (need[ch] == window[ch]) {
           valid++;
         }
       }
 
-      while (right - left >= lenp) {
+      while (right - left >= p.size()) {
         if (valid == need.size()) {
           res.push_back(left);
         }
 
-        char ch = s[left++];
-        if (window.find(ch) != window.end()) {
-          if (window[ch] == need[ch]) {
+        char c = s[left++];
+        if (window.count(c)) {
+          if (window[c] == need[c]) {
             valid--;
           }
-
-          window[ch]--;
+          window[c]--;
         }
       }
     }

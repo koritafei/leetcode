@@ -54,31 +54,30 @@ public:
     std::sort(nums.begin(), nums.end());
     int len = nums.size();
     visited = std::vector<bool>(len, false);
-
-    backtrace(nums, len);
+    backtrace(nums, len, 0);
 
     return res;
   }
 
 private:
-  void backtrace(std::vector<int>& nums, int len) {
-    if (path.size() == len) {
+  void backtrace(std::vector<int>& nums, int len, int index) {
+    if (index == len) {
       res.push_back(path);
       return;
     }
 
     for (int i = 0; i < len; i++) {
-      // 去重
-      if ((i > 0 && visited[i - 1] == false && nums[i - 1] == nums[i]) ||
-          (visited[i])) {
+      if (visited[i]) {
         continue;
       }
 
-      // 做选择
+      if (i > 0 && !visited[i - 1] && nums[i - 1] == nums[i]) {
+        continue;
+      }
+
       path.push_back(nums[i]);
       visited[i] = true;
-      backtrace(nums, len);
-      // 撤销选择
+      backtrace(nums, len, index + 1);
       path.pop_back();
       visited[i] = false;
     }

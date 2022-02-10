@@ -69,21 +69,17 @@
 class Solution {
 public:
   ListNode* mergeTwoLists(ListNode* list1, ListNode* list2) {
-    ListNode* dummy = new ListNode(1);
-    ListNode* curr  = dummy;
-
+    ListNode *curr, *dummy = new ListNode;
+    curr = dummy;
     while (list1 && list2) {
-      if (list1->val <= list2->val) {
-        ListNode* tmp = list1->next;
-        curr->next    = list1;
-        curr          = list1;
-        list1         = tmp;
+      if (list1->val > list2->val) {
+        curr->next = list2;
+        list2      = list2->next;
       } else {
-        ListNode* tmp = list2->next;
-        curr->next    = list2;
-        curr          = list2;
-        list2         = tmp;
+        curr->next = list1;
+        list1      = list1->next;
       }
+      curr = curr->next;
     }
 
     if (list1) {

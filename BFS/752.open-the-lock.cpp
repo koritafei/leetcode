@@ -98,47 +98,44 @@ public:
       return 0;
     }
 
-    std::unordered_multiset<std::string> dead;    // dead string
-    std::list<std::string>               first;   //  起点队列
-    std::list<std::string>               second;  // 终点队列
-    std::list<std::string> tmp;  // 临时数组，处理时队列不可改变
-    std::unordered_set<std::string> visited;  // 访问过的数组
-
-    for (auto &iter : deadends) {
-      dead.insert(iter);
+    std::unordered_set<std::string> dead;
+    std::list<std::string>          first;
+    std::list<std::string>          second;
+    std::list<std::string>          tmp;
+    std::unordered_set<std::string> visited;
+    int                             step = 1;
+    for (auto &deadstr : deadends) {
+      dead.insert(deadstr);
     }
 
-    int step = 1;  // 开始
     first.push_back("0000");
-    second.push_back(target);
     visited.insert("0000");
+    second.push_back(target);
     visited.insert(target);
 
-    while (first.size() && second.size()) {
-      // 每次从最小的集合开始
-      if (first.size() > second.size()) {
+    while (first.size()) {
+      if (second.size() > first.size()) {
         first.swap(second);
       }
 
-      int sz = first.size();
-      for (int i = 0; i < sz; i++) {
+      int size = first.size();
+
+      for (int i = 0; i < size; i++) {
         std::string curr = first.front();
         first.pop_front();
+        if (dead.find(curr) != dead.end()) {
+          continue;
+        }
 
-        // 判断first与second是否存在交集，存在则表示路径已满足
         if (std::find(second.begin(), second.end(), curr) != second.end()) {
           return step;
         }
 
-        if (dead.find(curr) != dead.end()) {  // 死锁字符串即系
-          continue;
-        }
-
-        for (int j = 0; j < curr.size(); j++) {
-          std::string plus = plusOne(curr, j);
-          if (visited.find(plus) == visited.end() &&
-              std::find(second.begin(), second.end(), plus) == second.end() &&
-              dead.find(plus) == dead.end()) {
+        for (int i = 0; i < curr.size(); i++) {
+          std::string plus = plusOne(curr, i);
+          if (dead.find(plus) == dead.end() &&
+              visited.find(plus) == visited.end() &&
+              std::find(second.begin(), second.end(), plus) == second.end()) {
             tmp.push_back(plus);
             visited.insert(plus);
           }
@@ -147,10 +144,11 @@ public:
             return step;
           }
 
-          std::string minus = minusOne(curr, j);
-          if (visited.find(minus) == visited.end() &&
-              std::find(second.begin(), second.end(), minus) == second.end() &&
-              dead.find(minus) == dead.end()) {
+          std::string minus = minusOne(curr, i);
+
+          if (dead.find(minus) == dead.end() &&
+              visited.find(minus) == visited.end() &&
+              std::find(second.begin(), second.end(), minus) == second.end()) {
             tmp.push_back(minus);
             visited.insert(minus);
           }
@@ -161,20 +159,17 @@ public:
         }
       }
 
-      // first 遍历完成，
+      step++;
       first.swap(second);
       second.swap(tmp);
       tmp.clear();
-
-      step++;
     }
-
     return -1;
   }
 
 private:
   std::string plusOne(std::string str, int i) {
-    if (str[i] == '9') {
+    if ('9' == str[i]) {
       str[i] = '0';
     } else {
       str[i] += 1;
@@ -184,7 +179,7 @@ private:
   }
 
   std::string minusOne(std::string str, int i) {
-    if (str[i] == '0') {
+    if ('0' == str[i]) {
       str[i] = '9';
     } else {
       str[i] -= 1;
