@@ -61,28 +61,31 @@
 class Solution {
 public:
   std::string longestPalindrome(std::string s) {
-    int         len = s.length();
+    int         len = s.size();
     std::string res;
     for (int i = 0; i < len; i++) {
-      std::string t1 = palindrome(s, i, i);
-      std::string t2 = palindrome(s, i, i + 1);
-      res            = (res.length() > t1.length() ? res : t1);
-      res            = (res.length() > t2.length() ? res : t2);
+      std::string left  = palindrome(s, i, i);
+      std::string right = palindrome(s, i, i + 1);
+
+      res = res.length() > left.length() ? res : left;
+      res = res.length() > right.length() ? res : right;
     }
 
     return res;
   }
 
 private:
-  // 中心法判断回文串
-  std::string palindrome(std::string &s, int lo, int hi) {
-    while (lo >= 0 && hi < s.size() && s[lo] == s[hi]) {
-      lo--;
-      hi++;
+  std::string palindrome(std::string &s, int i, int j) {
+    for (; i >= 0 && j < s.size();) {
+      if (s[i] == s[j]) {
+        i--;
+        j++;
+      } else {
+        break;
+      }
     }
 
-    // 返回以s[lo]和s[hi]为中心的回文串
-    return s.substr(lo + 1, hi - lo - 1);
+    return s.substr(i + 1, j - i - 1);
   }
 };
 // @lc code=end

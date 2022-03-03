@@ -60,6 +60,8 @@
  *
  */
 
+#include "treenode.h"
+
 // @lc code=start
 /**
  * Definition for a binary tree node.
@@ -76,38 +78,22 @@
 class Solution {
 public:
   int sumNumbers(TreeNode* root) {
-    int  res = 0;
-    auto tmp = treeEdge(root);
-    for (auto item : tmp) {
-      res += atoi(item.c_str());
-    }
-
-    return res;
+    return dfs(root, 0);
   }
 
 private:
-  vector<string> treeEdge(TreeNode* root) {
-    vector<string> res;
-    if (root == nullptr) {
-      return res;
+  int dfs(TreeNode* root, int prevSum) {
+    if (nullptr == root) {
+      return 0;
     }
+
+    int sum = prevSum * 10 + root->val;
 
     if (root->left == nullptr && root->right == nullptr) {
-      res.push_back(to_string(root->val));
-      return res;
+      return sum;
+    } else {
+      return dfs(root->left, sum) + dfs(root->right, sum);
     }
-
-    auto left = treeEdge(root->left);
-    for (auto item : left) {
-      res.push_back(to_string(root->val) + item);
-    }
-
-    auto right = treeEdge(root->right);
-    for (auto item : right) {
-      res.push_back(to_string(root->val) + item);
-    }
-
-    return res;
   }
 };
 // @lc code=end
