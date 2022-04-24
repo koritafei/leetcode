@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/find-first-and-last-position-of-element-in-sorted-array/description/
  *
  * algorithms
- * Medium (39.12%)
- * Likes:    8280
- * Dislikes: 255
- * Total Accepted:    906.8K
- * Total Submissions: 2.3M
+ * Medium (39.97%)
+ * Likes:    10300
+ * Dislikes: 286
+ * Total Accepted:    1.1M
+ * Total Submissions: 2.7M
  * Testcase Example:  '[5,7,7,8,8,10]\n8'
  *
  * Given an array of integers nums sorted in non-decreasing order, find the
@@ -45,26 +45,25 @@
 
 #include <vector>
 
+using namespace std;
+
 // @lc code=start
 class Solution {
 public:
-  std::vector<int> searchRange(std::vector<int> &nums, int target) {
-    int left  = left_round(nums, target);
-    int right = right_round(nums, target);
-
-    return std::vector<int>{left, right};
+  vector<int> searchRange(vector<int>& nums, int target) {
+    return std::vector<int>{leftBound(nums, target), rightBound(nums, target)};
   }
 
 private:
-  // 左边界
-  int left_round(std::vector<int> &nums, int target) {
-    int right = nums.size() - 1, left = 0;
+  int leftBound(std::vector<int>& nums, int target) {
+    int left = 0, right = nums.size() - 1;
+
     while (left <= right) {
-      int mid = left + (right - left) / 2;
-      if (nums[mid] < target) {
-        left = mid + 1;
+      int middle = left + (right - left) / 2;
+      if (nums[middle] >= target) {
+        right = middle - 1;
       } else {
-        right = mid - 1;
+        left = middle + 1;
       }
     }
 
@@ -75,15 +74,14 @@ private:
     return left;
   }
 
-  // 右边界
-  int right_round(std::vector<int> &nums, int target) {
+  int rightBound(std::vector<int>& nums, int target) {
     int left = 0, right = nums.size() - 1;
     while (left <= right) {
-      int mid = left + (right - left) / 2;
-      if (nums[mid] > target) {
-        right = mid - 1;
+      int middle = left + (right - left) / 2;
+      if (nums[middle] <= target) {
+        left = middle + 1;
       } else {
-        left = mid + 1;
+        right = middle - 1;
       }
     }
 

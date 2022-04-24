@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/binary-search/description/
  *
  * algorithms
- * Easy (54.59%)
- * Likes:    2782
- * Dislikes: 80
- * Total Accepted:    503.6K
- * Total Submissions: 922.5K
+ * Easy (55.29%)
+ * Likes:    4611
+ * Dislikes: 107
+ * Total Accepted:    832.9K
+ * Total Submissions: 1.5M
  * Testcase Example:  '[-1,0,3,5,9,12]\n9'
  *
  * Given an array of integers nums which is sorted in ascending order, and an
@@ -47,20 +47,22 @@
  *
  *
  */
+
 #include <vector>
+
 // @lc code=start
 class Solution {
 public:
   int search(std::vector<int>& nums, int target) {
-    int right = nums.size() - 1, left = 0;
+    int left = 0, right = nums.size() - 1;
     while (left <= right) {
-      int mid = left + (right - left) / 2;
-      if (nums[mid] == target) {
-        return mid;
-      } else if (target > nums[mid]) {
-        left = mid + 1;
+      int middle = left + (right - left) / 2;
+      if (nums[middle] == target) {
+        return middle;
+      } else if (nums[middle] > target) {
+        right = middle - 1;
       } else {
-        right = mid - 1;
+        left = middle + 1;
       }
     }
 
