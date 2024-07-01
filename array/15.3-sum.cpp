@@ -1,94 +1,77 @@
 /*
  * @lc app=leetcode id=15 lang=cpp
+ * @lcpr version=30113
  *
  * [15] 3Sum
- *
- * https://leetcode.com/problems/3sum/description/
- *
- * algorithms
- * Medium (30.08%)
- * Likes:    14659
- * Dislikes: 1404
- * Total Accepted:    1.6M
- * Total Submissions: 5.4M
- * Testcase Example:  '[-1,0,1,2,-1,-4]'
- *
- * Given an integer array nums, return all the triplets [nums[i], nums[j],
- * nums[k]] such that i != j, i != k, and j != k, and nums[i] + nums[j] +
- * nums[k] == 0.
- *
- * Notice that the solution set must not contain duplicate triplets.
- *
- *
- * Example 1:
- * Input: nums = [-1,0,1,2,-1,-4]
- * Output: [[-1,-1,2],[-1,0,1]]
- * Example 2:
- * Input: nums = []
- * Output: []
- * Example 3:
- * Input: nums = [0]
- * Output: []
- *
- *
- * Constraints:
- *
- *
- * 0 <= nums.length <= 3000
- * -10^5 <= nums[i] <= 10^5
- *
- *
  */
 
+// @lcpr-template-start
 #include <algorithm>
+#include <array>
+#include <bitset>
+#include <climits>
+#include <deque>
+#include <functional>
+#include <iostream>
+#include <list>
+#include <queue>
+#include <stack>
+#include <tuple>
+#include <unordered_map>
+#include <unordered_set>
+#include <utility>
 #include <vector>
-
+// @lcpr-template-end
 // @lc code=start
 class Solution {
 public:
   std::vector<std::vector<int>> threeSum(std::vector<int>& nums) {
-    std::sort(nums.begin(), nums.end());
-    int                           len = nums.size();
     std::vector<std::vector<int>> res;
+    int                           len = nums.size();
 
-    int i = 0;
-    while (i < len) {
-      int target = -nums[i];
+    std::sort(nums.begin(), nums.end());
+    for (int i = 0; i < len; i++) {
       int left = i + 1, right = len - 1;
+      int target = -nums[i];
       while (left < right) {
-        int sum = nums[left] + nums[right];
-        if (sum < target) {
-          // 跳过重复部分
-          while (left + 1 < right && nums[left] == nums[left + 1]) {
-            left++;
-          }
-          left++;
+        int t1 = nums[left], t2 = nums[right];
+        int sum = t1 + t2;
+        if (sum == target) {
+          res.push_back({nums[i], nums[left], nums[right]});
+          while ((++left) < right && nums[left] == t1)
+            ;
+          while (left < (--right) && t2 == nums[right])
+            ;
+        } else if (sum < target) {
+          while ((++left) < right && nums[left] == t1)
+            ;
         } else if (sum > target) {
-          while (right - 1 > left && nums[right] == nums[right - 1]) {
-            right--;
-          }
-          right--;
-        } else {
-          res.push_back(std::vector<int>{nums[i], nums[left], nums[right]});
-          while (right - 1 > left && nums[right] == nums[right - 1]) {
-            right--;
-          }
-          while (left + 1 < right && nums[left] == nums[left + 1]) {
-            left++;
-          }
-          left++;
-          right--;
+          while (left < (--right) && t2 == nums[right])
+            ;
         }
       }
 
-      // 跳过i重复的部分
       while (i + 1 < len && nums[i] == nums[i + 1]) {
         i++;
       }
-      i++;
     }
 
     return res;
   }
 };
 // @lc code=end
+
+/*
+// @lcpr case=start
+// [-1,0,1,2,-1,-4]\n
+// @lcpr case=end
+
+// @lcpr case=start
+// [0,1,1]\n
+// @lcpr case=end
+
+// @lcpr case=start
+// [0,0,0]\n
+// @lcpr case=end
+
+ */

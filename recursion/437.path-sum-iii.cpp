@@ -1,6 +1,6 @@
 /*
  * @lc app=leetcode id=437 lang=cpp
- * @lcpr version=30122
+ * @lcpr version=30204
  *
  * [437] Path Sum III
  */
@@ -21,6 +21,7 @@
 #include <unordered_set>
 #include <utility>
 #include <vector>
+using namespace std;
 // @lcpr-template-end
 // @lc code=start
 /**
@@ -41,20 +42,19 @@ public:
     if (root == nullptr) {
       return 0;
     }
-
-    return __pathSum(root, targetSum) + pathSum(root->left, targetSum) +
+    return _pathSum(root, targetSum) + pathSum(root->left, targetSum) +
            pathSum(root->right, targetSum);
   }
 
 private:
-  int __pathSum(TreeNode* root, int64_t targetSum) {
-    if (root == nullptr) {
+  int _pathSum(TreeNode* root, int64_t targetSum) {
+    if (nullptr == root) {
       return 0;
     }
 
-    return (root->val == targetSum) +
-           __pathSum(root->left, targetSum - root->val) +
-           __pathSum(root->right, targetSum - root->val);
+    return (targetSum == root->val) +
+           _pathSum(root->left, targetSum - root->val) +
+           _pathSum(root->right, targetSum - root->val);
   }
 };
 // @lc code=end

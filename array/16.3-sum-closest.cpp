@@ -1,95 +1,76 @@
 /*
  * @lc app=leetcode id=16 lang=cpp
+ * @lcpr version=30113
  *
  * [16] 3Sum Closest
- *
- * https://leetcode.com/problems/3sum-closest/description/
- *
- * algorithms
- * Medium (46.25%)
- * Likes:    2968
- * Dislikes: 166
- * Total Accepted:    560.2K
- * Total Submissions: 1.2M
- * Testcase Example:  '[-1,2,1,-4]\n1'
- *
- * Given an array nums of n integers and an integer target, find three integers
- * in nums such that the sum is closest to target. Return the sum of the three
- * integers. You may assume that each input would have exactly one solution.
- *
- *
- * Example 1:
- *
- *
- * Input: nums = [-1,2,1,-4], target = 1
- * Output: 2
- * Explanation: The sum that is closest to the target is 2. (-1 + 2 + 1 =
- * 2).
- *
- *
- *
- * Constraints:
- *
- *
- * 3 <= nums.length <= 10^3
- * -10^3 <= nums[i] <= 10^3
- * -10^4 <= target <= 10^4
- *
- *
  */
 
+// @lcpr-template-start
+
 #include <algorithm>
+#include <array>
+#include <bitset>
+#include <climits>
+#include <deque>
+#include <functional>
 #include <iostream>
+#include <list>
+#include <queue>
+#include <stack>
+#include <tuple>
+#include <unordered_map>
+#include <unordered_set>
+#include <utility>
 #include <vector>
-
-using namespace std;
-
+// @lcpr-template-end
 // @lc code=start
 class Solution {
 public:
-  int threeSumClosest(vector<int>& nums, int target) {
+  int threeSumClosest(std::vector<int>& nums, int target) {
+    int closet = INT_MAX;
+    int res    = 0;
+
+    std::sort(nums.begin(), nums.end());
     int len = nums.size();
-    int sum = 0;
-    if (len < 3) {
-      return sum;
-    }
-
-    int diff = INT32_MAX;
-    sort(nums.begin(), nums.end());
-    for (int i = 0; i < len - 2; i++) {
-      int left  = i + 1;
-      int right = len - 1;
+    for (int i = 0; i < len; i++) {
+      int left = i + 1, right = len - 1;
       while (left < right) {
-        int closest = nums[left] + nums[right] + nums[i];
-        int t       = abs(closest - target);
-        if (diff > t) {
-          diff = t;
-          sum  = closest;
-        } else if (t == 0) {
-          return closest;
+        int t1 = nums[left], t2 = nums[right];
+        int sum  = nums[i] + nums[left] + nums[right];
+        int diff = std::abs(target - sum);
+        if (diff == 0) {
+          return target;
+        } else if (diff < closet) {
+          closet = diff;
+          res    = sum;
         }
 
-        if (closest < target) {
-          left++;
-        }
-        if (closest > target) {
-          right--;
+        if (sum < target) {
+          while ((++left) < right && t1 == nums[left])
+            ;
+        } else if (sum > target) {
+          while ((left < (--right) && t2 == nums[right]))
+            ;
         }
       }
 
-      while (i < len - 2 && nums[i] == nums[i + 1]) {
+      while (i + 1 < len - 1 && nums[i] == nums[i + 1]) {
         i++;
       }
     }
 
-    return sum;
+    return res;
   }
 };
 // @lc code=end
 
-int main(int argc, char** argv) {
-  Solution    solution;
-  vector<int> nums   = {-1, 2, 1, -4};
-  int         target = 1;
-  std::cout << solution.threeSumClosest(nums, target) << std::endl;
-}
+/*
+// @lcpr case=start
+// [-1,2,1,-4]\n1\n
+// @lcpr case=end
+
+// @lcpr case=start
+// [0,0,0]\n1\n
+// @lcpr case=end
+
+ */

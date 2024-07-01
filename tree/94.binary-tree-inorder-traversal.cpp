@@ -1,60 +1,27 @@
 /*
  * @lc app=leetcode id=94 lang=cpp
+ * @lcpr version=30113
  *
  * [94] Binary Tree Inorder Traversal
- *
- * https://leetcode.com/problems/binary-tree-inorder-traversal/description/
- *
- * algorithms
- * Easy (69.31%)
- * Likes:    6417
- * Dislikes: 273
- * Total Accepted:    1.3M
- * Total Submissions: 1.8M
- * Testcase Example:  '[1,null,2,3]'
- *
- * Given the root of a binary tree, return the inorder traversal of its nodes'
- * values.
- *
- *
- * Example 1:
- *
- *
- * Input: root = [1,null,2,3]
- * Output: [1,3,2]
- *
- *
- * Example 2:
- *
- *
- * Input: root = []
- * Output: []
- *
- *
- * Example 3:
- *
- *
- * Input: root = [1]
- * Output: [1]
- *
- *
- *
- * Constraints:
- *
- *
- * The number of nodes in the tree is in the range [0, 100].
- * -100 <= Node.val <= 100
- *
- *
- *
- * Follow up: Recursive solution is trivial, could you do it iteratively?
  */
 
+// @lcpr-template-start
+#include <algorithm>
+#include <array>
+#include <bitset>
+#include <climits>
+#include <deque>
+#include <functional>
+#include <iostream>
+#include <list>
+#include <queue>
 #include <stack>
+#include <tuple>
+#include <unordered_map>
+#include <unordered_set>
+#include <utility>
 #include <vector>
-
-#include "treenode.h"
-
+// @lcpr-template-end
 // @lc code=start
 /**
  * Definition for a binary tree node.
@@ -70,39 +37,36 @@
  */
 class Solution {
 public:
-  std::vector<int> inorderTraversal(TreeNode *root) {
-    TreeNode *visited;
-    pushNode(root);
-
-    while (stack.size()) {
-      TreeNode *curr = stack.top();
-
-      if ((curr->left == nullptr || curr->left == visited) &&
-          (curr->right != visited)) {
-        // 中序遍历位置
-        res.push_back(curr->val);
-        pushNode(curr->right);
-      }
-
-      if (curr->right == nullptr || curr->right == visited) {
-        visited = stack.top();
-        stack.pop();
-      }
-    }
-
+  std::vector<int> inorderTraversal(TreeNode* root) {
+    std::vector<int> res;
+    inorderTraversal(root, res);
     return res;
   }
 
 private:
-  void pushNode(TreeNode *root) {
-    while (root) {
-      // 前序遍历位置
-      stack.push(root);
-      root = root->left;
+  void inorderTraversal(TreeNode* root, std::vector<int>& res) {
+    if (root == nullptr) {
+      return;
     }
-  }
 
-  std::stack<TreeNode *> stack;
-  std::vector<int>       res;
+    inorderTraversal(root->left, res);
+    res.push_back(root->val);
+    inorderTraversal(root->right, res);
+  }
 };
 // @lc code=end
+
+/*
+// @lcpr case=start
+// [1,null,2,3]\n
+// @lcpr case=end
+
+// @lcpr case=start
+// []\n
+// @lcpr case=end
+
+// @lcpr case=start
+// [1]\n
+// @lcpr case=end
+
+ */

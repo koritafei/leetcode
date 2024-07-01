@@ -1,8 +1,8 @@
 /*
- * @lc app=leetcode id=96 lang=cpp
- * @lcpr version=30113
+ * @lc app=leetcode id=22 lang=cpp
+ * @lcpr version=30122
  *
- * [96] Unique Binary Search Trees
+ * [22] Generate Parentheses
  */
 
 // @lcpr-template-start
@@ -25,7 +25,19 @@
 // @lc code=start
 class Solution {
 public:
-  int numTrees(int n) {
+  std::vector<std::string> generateParenthesis(int n) {
+    if (n <= 0) {
+      return {""};
+    }
+    std::vector<std::string> res;
+    for (int i = 0; i < n; i++) {
+      for (auto &left : generateParenthesis(i)) {
+        for (auto &right : generateParenthesis(n - i - 1)) {
+          res.emplace_back("(" + left + ")" + right);
+        }
+      }
+    }
+    return res;
   }
 };
 // @lc code=end

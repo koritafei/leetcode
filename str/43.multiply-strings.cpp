@@ -1,76 +1,66 @@
 /*
  * @lc app=leetcode id=43 lang=cpp
+ * @lcpr version=30113
  *
  * [43] Multiply Strings
- *
- * https://leetcode.com/problems/multiply-strings/description/
- *
- * algorithms
- * Medium (36.24%)
- * Likes:    3631
- * Dislikes: 1434
- * Total Accepted:    446.8K
- * Total Submissions: 1.2M
- * Testcase Example:  '"2"\n"3"'
- *
- * Given two non-negative integers num1 and num2 represented as strings, return
- * the product of num1 and num2, also represented as a string.
- *
- * Note: You must not use any built-in BigInteger library or convert the inputs
- * to integer directly.
- *
- *
- * Example 1:
- * Input: num1 = "2", num2 = "3"
- * Output: "6"
- * Example 2:
- * Input: num1 = "123", num2 = "456"
- * Output: "56088"
- *
- *
- * Constraints:
- *
- *
- * 1 <= num1.length, num2.length <= 200
- * num1 and num2 consist of digits only.
- * Both num1 and num2 do not contain any leading zero, except the number 0
- * itself.
- *
- *
  */
 
-#include <string>
+// @lcpr-template-start
+#include <algorithm>
+#include <array>
+#include <bitset>
+#include <climits>
+#include <deque>
+#include <functional>
+#include <iostream>
+#include <list>
+#include <queue>
+#include <stack>
+#include <tuple>
+#include <unordered_map>
+#include <unordered_set>
+#include <utility>
 #include <vector>
 
+// @lcpr-template-end
 // @lc code=start
 class Solution {
 public:
   std::string multiply(std::string num1, std::string num2) {
     int              len1 = num1.size(), len2 = num2.size();
-    std::vector<int> res(len1 + len2, 0);  // 结果最大长度为len1+len2
-
+    int              len = len1 + len2;
+    std::vector<int> res(len, 0);
     for (int i = len1 - 1; i >= 0; i--) {
       for (int j = len2 - 1; j >= 0; j--) {
-        int tmp        = (num1[i] - '0') * (num2[j] - '0');
-        int sum        = res[i + j + 1] + tmp;
-        res[i + j + 1] = sum % 10;
-        res[i + j] += sum / 10;
-      }
-    }
-
-    int i = 0;
-    for (; i < res.size(); i++) {
-      if (0 != res[i]) {
-        break;
+        int p1 = i + j, p2 = i + j + 1;
+        int multi = (num1[i] - '0') * (num2[j] - '0');
+        int sum   = multi + res[p2];
+        res[p2]   = sum % 10;
+        res[p1] += sum / 10;
       }
     }
 
     std::string result;
-    for (; i < res.size(); i++) {
-      result.push_back(res[i] + '0');
+    int         i = 0;
+    while (i < len && res[i] == 0) {
+      i++;
+    }
+    for (; i < len; i++) {
+      result.push_back('0' + res[i]);
     }
 
     return result.size() == 0 ? "0" : result;
   }
 };
 // @lc code=end
+
+/*
+// @lcpr case=start
+// "2"\n"3"\n
+// @lcpr case=end
+
+// @lcpr case=start
+// "123"\n"456"\n
+// @lcpr case=end
+
+ */

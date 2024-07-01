@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/reverse-linked-list/description/
  *
  * algorithms
- * Easy (65.41%)
- * Likes:    6518
- * Dislikes: 124
- * Total Accepted:    1.3M
- * Total Submissions: 2M
+ * Easy (75.69%)
+ * Likes:    20656
+ * Dislikes: 405
+ * Total Accepted:    3.8M
+ * Total Submissions: 5M
  * Testcase Example:  '[1,2,3,4,5]'
  *
  * Given the head of a singly linked list, reverse the list, and return the
@@ -66,15 +66,17 @@
 class Solution {
 public:
   ListNode* reverseList(ListNode* head) {
-    ListNode* dummy = new ListNode(0);
+    ListNode* dummy = new ListNode();
+
     while (head) {
-      ListNode* t = head;
-      head        = head->next;
-      t->next     = dummy->next;
-      dummy->next = t;
+      ListNode* next = head->next;
+      head->next     = dummy->next;
+      dummy->next    = head;
+      head           = next;
     }
+
     head = dummy->next;
-    delete (dummy);
+    delete dummy;
     return head;
   }
 };

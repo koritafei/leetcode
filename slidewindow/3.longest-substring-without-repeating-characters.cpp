@@ -6,11 +6,11 @@
  * https://leetcode.com/problems/longest-substring-without-repeating-characters/description/
  *
  * algorithms
- * Medium (32.53%)
- * Likes:    19372
- * Dislikes: 888
- * Total Accepted:    2.7M
- * Total Submissions: 8.4M
+ * Medium (34.51%)
+ * Likes:    38747
+ * Dislikes: 1805
+ * Total Accepted:    5.5M
+ * Total Submissions: 15.9M
  * Testcase Example:  '"abcabcbb"'
  *
  * Given a string s, find the length of the longest substring without repeating
@@ -43,13 +43,6 @@
  * a substring.
  *
  *
- * Example 4:
- *
- *
- * Input: s = ""
- * Output: 0
- *
- *
  *
  * Constraints:
  *
@@ -60,28 +53,27 @@
  *
  */
 
-#include <climits>
-#include <map>
-#include <string>
-
 // @lc code=start
 class Solution {
 public:
   int lengthOfLongestSubstring(std::string s) {
-    std::map<char, int> window;
-    int                 res = 0, left = 0, right = 0;
-    while (right < s.size()) {
-      char ch = s[right++];
-      window[ch]++;
-      while (window[ch] > 1) {
-        char c = s[left++];
-        window[c]--;
-      }
+    int                      left = 0, right = 0;
+    std::unordered_map<char,int> hash_map;
+    int                      ans = 0;
 
-      res = std::max(res, right - left);
+    while (right < s.size()) {
+      if (hash_map.find(s[right]) == hash_map.end()) {
+        /// 加入
+        hash_map[s[right]] = right;
+      } else {
+        ans             = std::max(ans, hash_map[right] - left + 1);
+        hash_map[right] = right;
+        left            = hash_map[right];
+      }
+      right++;
     }
 
-    return res;
+    return ans;
   }
 };
 // @lc code=end

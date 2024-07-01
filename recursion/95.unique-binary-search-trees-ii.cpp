@@ -1,8 +1,8 @@
 /*
- * @lc app=leetcode id=437 lang=cpp
- * @lcpr version=30122
+ * @lc app=leetcode id=95 lang=cpp
+ * @lcpr version=30204
  *
- * [437] Path Sum III
+ * [95] Unique Binary Search Trees II
  */
 
 // @lcpr-template-start
@@ -21,6 +21,7 @@
 #include <unordered_set>
 #include <utility>
 #include <vector>
+using namespace std;
 // @lcpr-template-end
 // @lc code=start
 /**
@@ -37,35 +38,42 @@
  */
 class Solution {
 public:
-  int pathSum(TreeNode* root, int targetSum) {
-    if (root == nullptr) {
-      return 0;
-    }
-
-    return __pathSum(root, targetSum) + pathSum(root->left, targetSum) +
-           pathSum(root->right, targetSum);
+  std::vector<TreeNode *> generateTrees(int n) {
+    return __generateTrees(1, n);
   }
 
 private:
-  int __pathSum(TreeNode* root, int64_t targetSum) {
-    if (root == nullptr) {
-      return 0;
+  std::vector<TreeNode *> __generateTrees(int low, int high) {
+    if (low == high) {
+      return {new TreeNode(low)};
+    }
+    if (low > high) {
+      return {nullptr};
     }
 
-    return (root->val == targetSum) +
-           __pathSum(root->left, targetSum - root->val) +
-           __pathSum(root->right, targetSum - root->val);
+    std::vector<TreeNode *> ans;
+    for (int i = low; i <= high; i++) {
+      for (auto *left : __generateTrees(low, i - 1)) {
+        for (auto *right : __generateTrees(i + 1, high)) {
+          auto *root  = new TreeNode(i);
+          root->left  = left;
+          root->right = right;
+          ans.emplace_back(root);
+        }
+      }
+    }
+    return ans;
   }
 };
 // @lc code=end
 
 /*
 // @lcpr case=start
-// [10,5,-3,3,2,null,11,3,-2,null,1]\n8\n
+// 3\n
 // @lcpr case=end
 
 // @lcpr case=start
-// [5,4,8,11,null,13,4,7,2,null,null,5,1]\n22\n
+// 1\n
 // @lcpr case=end
 
  */
